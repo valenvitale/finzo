@@ -1,6 +1,6 @@
 # PROYECTO INTEGRADOR — METODOLOGÍA DE SISTEMAS II
 
-# 💰 MONEY MANAGER
+# 💰 FINZO
 
 ### Sistema de gestión y análisis de finanzas personales
 
@@ -10,7 +10,7 @@
 
 ### ¿Qué queremos desarrollar?
 
-**Money Manager** será una aplicación web que permita a una persona llevar un registro de sus finanzas personales.
+**Finzo** será una aplicación web que permita a una persona llevar un registro de sus finanzas personales.
 
 El usuario podrá registrar sus:
 
@@ -25,7 +25,7 @@ La aplicación buscará resolver un problema sencillo pero cotidiano:
 
 > Muchas personas saben cuánto dinero tienen, pero no saben exactamente en qué lo están gastando, cuánto gastan por categoría o cómo evolucionan sus gastos a lo largo del tiempo.
 
-Money Manager busca centralizar esa información y convertirla en información útil para tomar decisiones.
+Finzo busca centralizar esa información y convertirla en información útil para tomar decisiones.
 
 ## 2. ¿POR QUÉ ELEGIMOS ESTE PROYECTO?
 
@@ -33,7 +33,7 @@ La propuesta está pensada específicamente para las características de Metodol
 
 La materia establece que el proyecto debe tener un **alcance razonable**, ser suficientemente pequeño como para poder mejorarlo y permitir aplicar los conceptos trabajados durante la cursada. También aclara que no se busca hacer la mayor cantidad posible de funcionalidades, sino demostrar criterio, calidad y evolución.
 
-Money Manager cumple con esto porque:
+Finzo cumple con esto porque:
 
 #### Es suficientemente pequeño
 
@@ -207,13 +207,13 @@ Con esto ya tenemos un sistema funcional.
 
 ## 7. EJEMPLO DE USO
 
-Un usuario ingresa a Money Manager.
+Un usuario ingresa a Finzo.
 
 ### Dashboard
 
 ```
 ─────────────────────────────────────
-           MONEY MANAGER
+           FINZO
 
 Saldo disponible
 $ 450.000
@@ -1113,7 +1113,7 @@ Es preferible tener un MVP con arquitectura limpia, CI y tests, que 25 funcional
 - Push a `main` o `develop` → Vercel auto-deploya
 - Preview deploy para cada PR
 - Logs y monitoring integrados
-- Dominio: moneymanager.vercel.app (o similar)
+- Dominio: finzo.vercel.app (o similar)
 
 **Backend + Database (Supabase):**
 
