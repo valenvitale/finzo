@@ -480,3 +480,81 @@ FINZO/
 ├── README.md
 ├── package.json
 └── pnpm-workspace.yaml
+
+## ¿Por qué esta estructura?
+Cada parte tendria una **responsabilidad clara**.
+
+                  HTTP
+                   │
+                   ▼
+              ┌─────────┐
+              │ Routes  │
+              └────┬────┘
+                   │
+                   ▼
+            ┌──────────────┐
+            │ Controllers  │
+            └──────┬───────┘
+                   │
+                   ▼
+             ┌──────────┐
+             │ Services │
+             └────┬─────┘
+                  │
+                  ▼
+          ┌────────────────┐
+          │  Repositories  │
+          └───────┬────────┘
+                  │
+                  ▼
+             PostgreSQL
+
+## A DEFINIR !!
+
+### DEPENDENCIAS
+
+1. Backend
+| Dependencia             | Para qué la usamos                             |
+| ----------------------- | ---------------------------------------------- |
+| `express`               | Crear la API REST y manejar rutas HTTP         |
+| `@supabase/supabase-js` | Conectarnos con Supabase                       |
+| `cors`                  | Permitir comunicación entre frontend y backend |
+| `dotenv`                | Cargar variables de entorno                    |
+| `zod`                   | Validar los datos que recibe la API            |
+
+   > DESAROLLO
+   | Dependencia         | Para qué                               |
+   | ------------------- | -------------------------------------- |
+   | `typescript`        | Tipado estático                        |
+   | `tsx`               | Ejecutar TypeScript durante desarrollo |
+   | `vitest`            | Testing                                |
+   | `supertest`         | Probar endpoints HTTP                  |
+   | `eslint`            | Lint                                   |
+   | `typescript-eslint` | Integrar ESLint con TypeScript         |
+
+2. Frontend
+| Dependencia             | Para qué                          |
+| ----------------------- | --------------------------------- |
+| `react`                 | Construcción de la interfaz       |
+| `react-dom`             | Renderizar React en el navegador  |
+| `react-router-dom`      | Navegación entre páginas          |
+| `@supabase/supabase-js` | Autenticación/sesión con Supabase |
+| `recharts`              | Gráficos de reportes              |
+| `zod`                   | Validación de formularios/datos   |
+
+   > DESARROLLO
+   | Dependencia                   | Para qué                             |
+   | ----------------------------- | ------------------------------------ |
+   | `typescript`                  | Tipado                               |
+   | `vite`                        | Servidor de desarrollo y build       |
+   | `@vitejs/plugin-react`        | Integración React + Vite             |
+   | `vitest`                      | Tests                                |
+   | `@testing-library/react`      | Testing de componentes               |
+   | `@testing-library/jest-dom`   | Matchers para DOM                    |
+   | `eslint`                      | Lint                                 |
+   | `typescript-eslint`           | ESLint + TypeScript                  |
+   | `eslint-plugin-react-hooks`   | Reglas para React Hooks              |
+   | `eslint-plugin-react-refresh` | Reglas relacionadas con Fast Refresh |
+
+3. Tailwind ??
+Como el diseño que charlamos contiene fondo oscuro, cards, bordes redondeados, colores suaves, componentes reutilizables y dashbord (entre otras cosas), Tailwind CSS nos vendria bien pero todavia esta por definirse. Dependiendo de la versión/configuración que elijamos, tendriamos que determinar las herramientas correspondientes de Vite.
