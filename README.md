@@ -131,6 +131,7 @@ Dependiendo del tiempo disponible se podrán incorporar:
 
 ## Arquitectura
 
+```text
 ┌──────────────────────────────────┐
 │            FRONTEND              │
 │                                  │
@@ -163,9 +164,10 @@ Dependiendo del tiempo disponible se podrán incorporar:
 │                                  │
 │          Supabase Auth           │
 └──────────────────────────────────┘
-
+```
 ## Flujo General
 
+```text
 Usuario
    │
    ▼
@@ -194,6 +196,7 @@ Response
    │
    ▼
 Frontend
+```
 
 # INSTALACIÓN
 
@@ -229,16 +232,18 @@ DATABASE_URL=
 JWT_SECRET=
 ```
 
-## `.gitignore`:
+## '.gitignore':
+
 El respositorio debe ignorar:
-> .env
-> .env.local
-> node_modules/
-> dist/
-> coverage/
+* .env
+* .env.local
+* node_modules/
+* dist/
+* coverage/
 
 # ESTRUCTURA DEL PROYECTO
 
+```text
 FINZO/
 │
 ├── backend/
@@ -480,6 +485,7 @@ FINZO/
 ├── README.md
 ├── package.json
 └── pnpm-workspace.yaml
+```
 
 ## ¿Por qué esta estructura?
 Cada parte tendria una **responsabilidad clara**.
@@ -514,6 +520,7 @@ Cada parte tendria una **responsabilidad clara**.
 ### DEPENDENCIAS
 
 1. Backend
+```text
 | Dependencia             | Para qué la usamos                             |
 | ----------------------- | ---------------------------------------------- |
 | `express`               | Crear la API REST y manejar rutas HTTP         |
@@ -531,8 +538,9 @@ Cada parte tendria una **responsabilidad clara**.
    | `supertest`         | Probar endpoints HTTP                  |
    | `eslint`            | Lint                                   |
    | `typescript-eslint` | Integrar ESLint con TypeScript         |
-
+```
 2. Frontend
+```text
 | Dependencia             | Para qué                          |
 | ----------------------- | --------------------------------- |
 | `react`                 | Construcción de la interfaz       |
@@ -555,6 +563,8 @@ Cada parte tendria una **responsabilidad clara**.
    | `typescript-eslint`           | ESLint + TypeScript                  |
    | `eslint-plugin-react-hooks`   | Reglas para React Hooks              |
    | `eslint-plugin-react-refresh` | Reglas relacionadas con Fast Refresh |
+```
 
-3. Tailwind ??
-Como el diseño que charlamos contiene fondo oscuro, cards, bordes redondeados, colores suaves, componentes reutilizables y dashbord (entre otras cosas), Tailwind CSS nos vendria bien pero todavia esta por definirse. Dependiendo de la versión/configuración que elijamos, tendriamos que determinar las herramientas correspondientes de Vite.
+ 3. Tailwind ??
+
+    Como el diseño que charlamos contiene fondo oscuro, cards, bordes redondeados, colores suaves,         componentes reutilizables y dashbord (entre otras cosas), Tailwind CSS nos vendria bien pero           todavia esta por definirse. Dependiendo de la versión/configuración que elijamos, tendriamos que       determinar las herramientas correspondientes de Vite.
