@@ -505,7 +505,7 @@ Los roles son responsabilidades principales, no áreas exclusivas.
 
 ---
 
-## 16. Plan de trabajo y entregas
+## 13. Plan de trabajo y entregas
 
 ### Etapa 1: fundación
 
@@ -560,7 +560,7 @@ Los roles son responsabilidades principales, no áreas exclusivas.
 
 ---
 
-## 13. Definicion de tarea completada
+## 14. Definicion de tarea completada
 
 Una tarea se considera terminada cuando, según corresponda:
 
@@ -579,12 +579,12 @@ Una historia incompleta al final del sprint no se contabiliza como terminada; vu
 
 ---
 
-## 14. Riesgos y mitigaciones
+## 15. Riesgos y mitigaciones
 
 | Riesgo                       | Impacto                            | Mitigación                                                          |
 | ---------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
 | Ampliar demasiado el alcance | Retrasos y baja calidad            | Congelar el MVP y exigir que los extras pasen por priorización      |
-| Dejar tests para el final    | Regresiones y refactoring riesgoso | Añadir tests dentro de la Definition of Done                        |
+| Dejar tests para el final    | Regresiones y refactoring riesgoso | Añadir tests dentro de la Definicion de tarea completada                        |
 | Sobrediseñar                 | Complejidad innecesaria            | Exigir un problema concreto antes de introducir un patrón           |
 | Integración tardía           | Conflictos y fallos acumulados     | PR pequeños e integración frecuente en `develop`                    |
 | Problemas de autorización    | Exposición de datos                | Tests de aislamiento, middleware y RLS desde el MVP                 |
@@ -593,7 +593,7 @@ Una historia incompleta al final del sprint no se contabiliza como terminada; vu
 
 ---
 
-## 15. Indicadores de éxito
+## 16. Indicadores de éxito
 
 El proyecto se considerará exitoso si al cierre:
 
