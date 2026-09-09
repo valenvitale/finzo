@@ -4,13 +4,18 @@
 
 Permite a los usuarios registrar sus ingresos y gastos, clasificarlos mediante categorías y consultar información resumida sobre su situación financiera.
 
-El objetivo principal es transformar el registro de movimientos financieros en información útil
+El objetivo principal es transformar el registro de movimientos financieros en información útil.
+
+## Integrantes del Proyecto
+
+* **Alessio Cragno:** @
+* **Federico Heinreich** @fedeheinreich
+* **Máximo Messina** @maxemessina
+* **Valentina Vitale** @valenvitale
 
 ## Objetivo general
 
 Desarrollar una aplicación web que permita registrar, organizar y analizar ingresos y gastos personales.
-
-## Objetivos técnicos
 
 Durante el desarrollo se busca aplicar:
 
@@ -23,10 +28,6 @@ Durante el desarrollo se busca aplicar:
 - Separación de responsabilidades.
 - Principios SOLID.
 - Testing automatizado.
-- Control de versiones con Git.
-- Pull Requests y Code Review.
-- Integración continua mediante GitHub Actions.
-- Refactoring.
 - Documentación técnica
 
 ## Alcance
