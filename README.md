@@ -4,18 +4,7 @@
 
 Permite a los usuarios registrar sus ingresos y gastos, clasificarlos mediante categorías y consultar información resumida sobre su situación financiera.
 
-El objetivo principal es transformar el registro de movimientos financieros en información útil.
-
-## Integrantes del Proyecto
-
-* **Alessio Cragno:** @
-* **Federico Heinreich** @fedeheinreich
-* **Máximo Messina** @maxemessina
-* **Valentina Vitale** @valenvitale
-
-## Objetivo general
-
-Desarrollar una aplicación web que permita registrar, organizar y analizar ingresos y gastos personales.
+El **objetivo principal** es desarrollar una aplicación web que permita registrar, organizar y analizar ingresos y gastos personales. Transformando el peso de movimientos financieros en información útil.
 
 Durante el desarrollo se busca aplicar:
 
@@ -30,10 +19,39 @@ Durante el desarrollo se busca aplicar:
 - Testing automatizado.
 - Documentación técnica
 
----
-# STACK TECNOLÓGICO
+## Integrantes del Proyecto
 
-## FRONTEND
+* **Alessio Cragno:** @
+* **Federico Heinreich** @fedeheinreich
+* **Máximo Messina** @maxemessina
+* **Valentina Vitale** @valenvitale
+
+## Instalación
+
+1. Clonar el repositorio
+``` bash
+git clone <URL_DEL_REPOSITORIO>
+cd finzo
+```
+
+2. Instalar dependencias
+``` bash
+pnpm install
+```
+
+3. Si el proyecto esta dividido en frontend y backend:
+
+``` bash
+cd frontend
+pnpm install
+
+cd backend
+pnpm install
+```
+
+## Stack Tecnológico
+
+### Frontend
 | Tecnología   | Uso                               |
 | ------------ | --------------------------------- |
 | React        | Construcción de la interfaz       |
@@ -41,14 +59,14 @@ Durante el desarrollo se busca aplicar:
 | Tailwind CSS | Estilos                           |
 | Vite         | Herramienta de desarrollo y build |
 
-## BACKEND
+### Backend
 | Tecnología | Uso                     |
 | ---------- | ----------------------- |
 | Node.js    | Runtime                 |
 | TypeScript | Tipado estático         |
 | Express    | Framework para API REST |
 
-## BASE DE DATOS Y AUTENTICACIÓN
+### Base de datos y autenticación
 | Tecnología    | Uso                               |
 | ------------- | --------------------------------- |
 | Supabase      | Plataforma de backend y servicios |
@@ -56,13 +74,13 @@ Durante el desarrollo se busca aplicar:
 | Supabase Auth | Autenticación                     |
 | JWT           | Identificación de sesiones        |
 
-## TESTING
+### Testing
 | Tecnología      | Uso                  |
 | --------------- | -------------------- |
 | Vitest          | Tests                |
 | Testing Library | Testing del frontend |
 
-## DevOps
+### DevOps
 | Tecnología     | Uso                        |
 | -------------- | -------------------------- |
 | Git            | Control de versiones       |
@@ -71,12 +89,13 @@ Durante el desarrollo se busca aplicar:
 | Vercel         | Deploy del frontend        |
 | Supabase       | Hosting de backend/DB      |
 
-## Gestión del Proyecto 
+### Gestión del Proyecto 
 - Jira
 - GitHub Issues
 - GitHub Pull Requests
 - Discord / reuniones presenciales
 
+---
 ## Arquitectura
 
 ```text
@@ -115,7 +134,7 @@ Durante el desarrollo se busca aplicar:
 ```
 ## Dependencias elegidas (por definir)
 
-1. Backend
+### Backend
 ```text
 | Dependencia             | Para qué la usamos                             |
 | ----------------------- | ---------------------------------------------- |
@@ -135,7 +154,7 @@ Durante el desarrollo se busca aplicar:
    | `eslint`            | Lint                                   |
    | `typescript-eslint` | Integrar ESLint con TypeScript         |
 ```
-2. Frontend
+### Frontend
 ```text
 | Dependencia             | Para qué                          |
 | ----------------------- | --------------------------------- |
@@ -161,7 +180,7 @@ Durante el desarrollo se busca aplicar:
    | `eslint-plugin-react-refresh` | Reglas relacionadas con Fast Refresh |
 ```
 
- 3. Tailwind ??
+### Tailwind ?
 
     Como el diseño que charlamos contiene fondo oscuro, cards, bordes redondeados, colores suaves,         componentes reutilizables y dashbord (entre otras cosas), Tailwind CSS nos vendria bien pero           todavia esta por definirse. Dependiendo de la versión/configuración que elijamos, tendriamos que       determinar las herramientas correspondientes de Vite.
 
