@@ -1,4 +1,4 @@
-# 💰 FINZO — Gestión de Finanzas Personales
+# 💰 Finzo — Gestión de Finanzas Personales
 
 <div align="center">
 
@@ -15,7 +15,7 @@
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
 **Trabajo Práctico Integrador — Metodología de Sistemas II**  
-*Tecnicatura Universitaria en Programación*
+_Tecnicatura Universitaria en Programación_
 
 </div>
 
@@ -40,20 +40,25 @@
 Llevar el control de la economía personal cotidiana suele ser frustrante y desordenado. La mayoría de las personas conocen su saldo bancario puntual, pero **desconocen con exactitud en qué gastan, cuánto destinan a gastos hormiga o no esenciales, y cómo evoluciona su capacidad de ahorro mes a mes**.
 
 Las soluciones habituales presentan barreras significativas:
+
 - **Planillas de cálculo (Excel / Sheets):** Requieren configuración manual, son propensas a errores de fórmula y resultan incómodas de usar desde dispositivos móviles o en el día a día.
 - **Sistemas contables tradicionales:** Son excesivamente complejos, con terminología técnica que sobrepasa al usuario común.
 - **Apps comerciales conectadas a bancos:** Suelen generar desconfianza por la privacidad de credenciales financieras y presentan poca flexibilidad para categorizaciones a medida.
 
 ### Nuestra Propuesta de Valor
+
 **Finzo** es una aplicación web intuitiva, ágil y segura diseñada para registrar, categorizar y analizar ingresos y gastos personales sin fricción. Transforma anotaciones dispersas en **información gráfica y procesable** para la toma de decisiones financieras responsables:
+
 - ¿Cuánto dinero gasté este mes y cuánto me queda disponible?
 - ¿Cuáles son las categorías que más impactan en mi presupuesto?
 - ¿Cuál es mi balance neto y mi tasa de ahorro mensual?
 
 ### Enfoque Académico
+
 El proyecto se desarrolla bajo el marco de **Metodología de Sistemas II**, aplicando estándares de calidad de software de la industria:
+
 - Arquitectura cliente-servidor con separación estricta de responsabilidades (capas).
-- Diseño guiado por principios **SOLID** y código limpio (*Clean Code*).
+- Diseño guiado por principios **SOLID** y código limpio (_Clean Code_).
 - Testing automatizado (unitario y de integración).
 - Gestión colaborativa con Git/GitHub (ramas, issues, pull requests y revisiones de código).
 - Integración continua y documentación viva.
@@ -64,59 +69,65 @@ El proyecto se desarrolla bajo el marco de **Metodología de Sistemas II**, apli
 
 **Grupo 1 — Metodología de Sistemas II**
 
-| Integrante | Usuario GitHub | Rol principal en el equipo |
-| :--- | :--- | :--- |
-| **Federico Heinrich** | [@fedeheinrich](https://github.com/fedeheinrich) | Fullstack Developer |
-| **Máximo Messina** | [@maxemessina](https://github.com/maxemessina) | Fullstack Developer |
-| **Valentina Vitale** | [@valenvitale](https://github.com/valenvitale) | Fullstack Developer |
-| **Alessio Cragno** | [@alesiocragno](https://github.com/alesiocragno) | Fullstack Developer |
+| Integrante            | Usuario GitHub                                   | Rol principal en el equipo |
+| :-------------------- | :----------------------------------------------- | :------------------------- |
+| **Federico Heinrich** | [@fedeheinrich](https://github.com/fedeheinrich) | Fullstack Developer        |
+| **Máximo Messina**    | [@maxemessina](https://github.com/maxemessina)   | Fullstack Developer        |
+| **Valentina Vitale**  | [@valenvitale](https://github.com/valenvitale)   | Fullstack Developer        |
+| **Alessio Cragno**    | [@alesiocragno](https://github.com/alesiocragno) | Fullstack Developer        |
 
 ---
 
 ## 🛠️ Tecnología Elegida
 
-La selección de tecnologías responde a la búsqueda de un stack moderno, fuertemente tipado de punta a punta (*end-to-end type safety*), con alto rendimiento y fácil mantenibilidad.
+La selección de tecnologías responde a la búsqueda de un stack moderno, fuertemente tipado de punta a punta (_end-to-end type safety_), con alto rendimiento y fácil mantenibilidad.
 
 ### Frontend
-| Herramienta | Versión / Tipo | Justificación técnica |
-| :--- | :--- | :--- |
-| **React 19** | Librería UI | Estándar de la industria para SPAs declarativas, componentización y gestión de estado reactivo. |
-| **TypeScript** | Lenguaje | Tipado estático que previene errores en tiempo de compilación y acelera el desarrollo en equipo. |
-| **Vite** | Build Tool / Bundler | Servidor de desarrollo instantáneo con HMR (*Hot Module Replacement*) y empaquetado optimizado con Rollup/esbuild. |
-| **Tailwind CSS** | Estilos | Diseño ágil basado en utilidades, consistente para paletas de color, temas oscuros y componentes responsive. |
+
+| Herramienta      | Versión / Tipo       | Justificación técnica                                                                                              |
+| :--------------- | :------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| **React 19**     | Librería UI          | Estándar de la industria para SPAs declarativas, componentización y gestión de estado reactivo.                    |
+| **TypeScript**   | Lenguaje             | Tipado estático que previene errores en tiempo de compilación y acelera el desarrollo en equipo.                   |
+| **Vite**         | Build Tool / Bundler | Servidor de desarrollo instantáneo con HMR (_Hot Module Replacement_) y empaquetado optimizado con Rollup/esbuild. |
+| **Tailwind CSS** | Estilos              | Diseño ágil basado en utilidades, consistente para paletas de color, temas oscuros y componentes responsive.       |
 
 ### Backend
-| Herramienta | Versión / Tipo | Justificación técnica |
-| :--- | :--- | :--- |
-| **Node.js** | Runtime | Plataforma asíncrona no bloqueante basada en el motor V8 de JavaScript. |
-| **Express 5** | Framework HTTP | Minimalista, maduro y flexible para estructurar una API REST desacoplada mediante middlewares y routers. |
-| **TypeScript** | Lenguaje | Consistencia de tipos con el frontend; facilita contratos de datos (*DTOs*, interfaces y validaciones). |
-| **tsx** | Ejecutor dev | Ejecución en caliente de TypeScript en Node.js sin necesidad de compilación manual previa. |
+
+| Herramienta    | Versión / Tipo | Justificación técnica                                                                                    |
+| :------------- | :------------- | :------------------------------------------------------------------------------------------------------- |
+| **Node.js**    | Runtime        | Plataforma asíncrona no bloqueante basada en el motor V8 de JavaScript.                                  |
+| **Express 5**  | Framework HTTP | Minimalista, maduro y flexible para estructurar una API REST desacoplada mediante middlewares y routers. |
+| **TypeScript** | Lenguaje       | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones).  |
+| **tsx**        | Ejecutor dev   | Ejecución en caliente de TypeScript en Node.js sin necesidad de compilación manual previa.               |
 
 ### Base de Datos y Autenticación
-| Herramienta | Tipo | Justificación técnica |
-| :--- | :--- | :--- |
-| **PostgreSQL** | Motor de Base de Datos | Base de datos relacional robusta, con soporte transaccional (ACID), integridad referencial y claves foráneas. |
-| **Supabase** | Backend as a Service | Administrador de PostgreSQL cloud, cliente oficial `@supabase/supabase-js` y gestión de tokens/sesiones. |
-| **Supabase Auth** | Autenticación & JWT | Manejo seguro de registro, login y sesiones mediante JSON Web Tokens sin reinventar la seguridad crítica. |
+
+| Herramienta       | Tipo                   | Justificación técnica                                                                                         |
+| :---------------- | :--------------------- | :------------------------------------------------------------------------------------------------------------ |
+| **PostgreSQL**    | Motor de Base de Datos | Base de datos relacional robusta, con soporte transaccional (ACID), integridad referencial y claves foráneas. |
+| **Supabase**      | Backend as a Service   | Administrador de PostgreSQL cloud, cliente oficial `@supabase/supabase-js` y gestión de tokens/sesiones.      |
+| **Supabase Auth** | Autenticación & JWT    | Manejo seguro de registro, login y sesiones mediante JSON Web Tokens sin reinventar la seguridad crítica.     |
 
 ### Testing y Calidad de Código
-| Herramienta | Tipo | Justificación técnica |
-| :--- | :--- | :--- |
-| **Vitest** | Test Runner | Motor de pruebas ultrarrápido compatible de forma nativa con la configuración de Vite y TypeScript. |
-| **React Testing Library** | Testing de Componentes | Pruebas centradas en el comportamiento del usuario en la interfaz. |
-| **ESLint** | Linter | Detección temprana de errores de sintaxis y aplicación de reglas de estilo consistentes. |
+
+| Herramienta               | Tipo                   | Justificación técnica                                                                               |
+| :------------------------ | :--------------------- | :-------------------------------------------------------------------------------------------------- |
+| **Vitest**                | Test Runner            | Motor de pruebas ultrarrápido compatible de forma nativa con la configuración de Vite y TypeScript. |
+| **React Testing Library** | Testing de Componentes | Pruebas centradas en el comportamiento del usuario en la interfaz.                                  |
+| **ESLint**                | Linter                 | Detección temprana de errores de sintaxis y aplicación de reglas de estilo consistentes.            |
 
 ### Despliegue e Infraestructura (DevOps & Hosting)
-| Herramienta | Tipo | Justificación técnica |
-| :--- | :--- | :--- |
-| **Render** | Cloud PaaS (Web Service) | **Hosting del Backend**: Plataforma para ejecutar y publicar la API de Node.js/Express. Mantiene el proceso activo en la nube con soporte para TypeScript, HTTPS automático y despliegue continuo desde GitHub. |
-| **Vercel** | Edge Network / Hosting | **Hosting del Frontend**: Plataforma optimizada para SPAs en React/Vite con distribución global mediante CDN y compilación continua. |
-| **GitHub Actions** | CI/CD | Automatización de flujos de verificación (linter, comprobación de tipos y tests automáticos en cada pull request). |
+
+| Herramienta        | Tipo                     | Justificación técnica                                                                                                                                                                                           |
+| :----------------- | :----------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Render**         | Cloud PaaS (Web Service) | **Hosting del Backend**: Plataforma para ejecutar y publicar la API de Node.js/Express. Mantiene el proceso activo en la nube con soporte para TypeScript, HTTPS automático y despliegue continuo desde GitHub. |
+| **Vercel**         | Edge Network / Hosting   | **Hosting del Frontend**: Plataforma optimizada para SPAs en React/Vite con distribución global mediante CDN y compilación continua.                                                                            |
+| **GitHub Actions** | CI/CD                    | Automatización de flujos de verificación (linter, comprobación de tipos y tests automáticos en cada pull request).                                                                                              |
 
 ### Entorno y Gestión de Paquetes
-| Herramienta | Justificación técnica |
-| :--- | :--- |
+
+| Herramienta         | Justificación técnica                                                                                                                               |
+| :------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **pnpm Workspaces** | Repositorio monorepo eficiente en disco, con resolución de dependencias compartidas y ejecución coordinada entre paquetes (`frontend` y `backend`). |
 
 ---
@@ -124,8 +135,10 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 ## 📦 Cómo Instalar Dependencias
 
 ### Prerrequisitos
+
 Asegurarse de tener instalado en el entorno local:
-- [Node.js](https://nodejs.org/) (versión especificada en el archivo `.nvmrc` — Node 24 o versión LTS v20+). Si utilizas `nvm` (*Node Version Manager*), puedes activar la versión requerida directamente con:
+
+- [Node.js](https://nodejs.org/) (versión especificada en el archivo `.nvmrc` — Node 24 o versión LTS v20+). Si utilizas `nvm` (_Node Version Manager_), puedes activar la versión requerida directamente con:
   ```bash
   nvm use
   ```
@@ -138,6 +151,7 @@ Asegurarse de tener instalado en el entorno local:
 ### Paso a paso
 
 1. **Clonar el repositorio:**
+
    ```bash
    git clone https://github.com/valenvitale/finzo.git
    cd finzo
@@ -145,11 +159,13 @@ Asegurarse de tener instalado en el entorno local:
 
 2. **Instalar todas las dependencias del monorepo:**
    Al utilizar `pnpm-workspace.yaml`, un único comando en la raíz instala las dependencias de la raíz, del frontend y del backend:
+
    ```bash
    pnpm install
    ```
 
-   *(Opcional)* Si prefieres instalar dependencias en cada paquete por separado:
+   _(Opcional)_ Si prefieres instalar dependencias en cada paquete por separado:
+
    ```bash
    # Para el backend
    cd backend && pnpm install
@@ -167,7 +183,9 @@ Asegurarse de tener instalado en el entorno local:
 Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo:
 
 #### Backend (`backend/.env`):
+
 Crear el archivo `backend/.env` con los valores correspondientes:
+
 ```env
 PORT=3000
 NODE_ENV=development
@@ -177,7 +195,9 @@ SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
 ```
 
 #### Frontend (`frontend/.env`):
+
 Crear el archivo `frontend/.env` con las variables públicas de Vite:
+
 ```env
 VITE_API_URL=http://localhost:3000/api
 VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
@@ -194,6 +214,7 @@ VITE_SUPABASE_ANON_KEY=tu-anon-key
 Puedes iniciar cada servicio desde la raíz utilizando los filtros de pnpm o posicionándote en su directorio correspondiente:
 
 #### Iniciar el Backend (API):
+
 ```bash
 # Opción A: Desde la raíz
 pnpm --filter backend dev
@@ -202,9 +223,11 @@ pnpm --filter backend dev
 cd backend
 pnpm dev
 ```
+
 > El servidor backend iniciará en `http://localhost:3000`.
 
 #### Iniciar el Frontend (Web App):
+
 ```bash
 # Opción A: Desde la raíz
 pnpm --filter frontend dev
@@ -213,6 +236,7 @@ pnpm --filter frontend dev
 cd frontend
 pnpm dev
 ```
+
 > La aplicación estará disponible en `http://localhost:5173` (o el puerto provisto por Vite).
 
 ---
@@ -237,6 +261,7 @@ pnpm --filter frontend test
 > **Fase Taller I:** El proyecto se encuentra en su etapa de arranque e inicialización arquitectónica. Esta sección documenta el estado real del repositorio y el plan de trabajo inmediato.
 
 ### ✅ Estado Actual (Completado)
+
 - [x] **Monorepo configurado:** Estructura de espacios de trabajo (`pnpm-workspace.yaml`) integrando los paquetes `frontend` y `backend`.
 - [x] **Arquitectura de directorios:** Estructura en capas en el backend (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `models`, `types`) y arquitectura por módulos y componentes en el frontend.
 - [x] **Configuración de base:** Archivos `tsconfig.json`, `package.json`, `vitest.config.ts`, `.nvmrc` y reglas de `.gitignore` creados.
@@ -244,6 +269,7 @@ pnpm --filter frontend test
 - [x] **Definición del stack y dependencias:** Dependencias base instaladas (Express 5, React 19, Supabase JS, Tailwind, Vitest).
 
 ### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
+
 - [ ] **Ajuste de scripts en `package.json`:** Definir los comandos `"scripts": { "dev": ..., "build": ..., "test": ... }` correspondientes en los paquetes para estandarizar el arranque.
 - [ ] **Configuración del proyecto en Supabase:** Creación de la instancia en la nube, obtención de claves API y configuración de clientes.
 - [ ] **Migraciones iniciales de base de datos:** Escribir los scripts SQL en `backend/migrations/` para las tablas principales (`profiles`, `categories`, `transactions`).
@@ -400,18 +426,21 @@ FINZO/
 
 El desarrollo del proyecto se ejecutará de manera incremental y modular:
 
-### Fase 1: MVP (Mínimo Producto Viable) — *Prioridad Alta*
+### Fase 1: MVP (Mínimo Producto Viable) — _Prioridad Alta_
+
 - **Autenticación:** Registro de usuario, inicio de sesión, cierre de sesión y control de accesos mediante JWT.
 - **Gestión de Movimientos:** Crear, listar, editar y eliminar ingresos y gastos (monto, fecha, descripción y categoría).
 - **Gestión de Categorías:** Categorías predeterminadas y personalizadas separadas por tipo (ingreso / gasto).
 - **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de últimos movimientos.
 
-### Fase 2: Análisis Financiero — *Prioridad Media*
+### Fase 2: Análisis Financiero — _Prioridad Media_
+
 - Gráficos de distribución de gastos por categoría (Recharts).
 - Comparativa visual entre meses/períodos.
 - Indicador de tasa de ahorro mensual.
 
-### Fase 3: Planificación Avanzada — *Prioridad Futura*
+### Fase 3: Planificación Avanzada — _Prioridad Futura_
+
 - Presupuestos límite por categoría con alertas visuales de exceso.
 - Definición y seguimiento de metas de ahorro.
 - Exportación e importación de reportes en formato CSV.
@@ -420,10 +449,27 @@ El desarrollo del proyecto se ejecutará de manera incremental y modular:
 
 ## 📜 Metodología de Trabajo y Convenciones
 
-- **Gitflow / Ramas:** Desarrollo orientado a ramas de características (`feature/nombre-tarea`), integradas mediante Pull Requests a `develop`.
-- **Commits:** Mensajes en español siguiendo la convención de [Conventional Commits](https://www.conventionalcommits.org/es/). Ejemplo: feat: implementa carrito de compras.
-  - `feat: ...` para nuevas funcionalidades.
-  - `fix: ...` para corrección de bugs.
-  - `docs: ...` para cambios en la documentación.
-  - `refactor: ...` para refactorizaciones de código.
-  - `test: ...` para agregado o modificación de pruebas.
+Para mantener el repositorio organizado entre los cuatro, usamos la estrategia Git Flow orientada a ramas de características y los estandares de contribucion detallados a continuacion.
+
+### Estrategia de Ramificación Git Flow
+
+- main: Código en su version estable y completa (V1.0).
+
+- release/x.0 : Preparacion de una nueva version. Se crea cuando develop tiene suficientes funcionalidades para una entrega, sirve para corregir errores menores durante la revision, ajustar numeros de version, actualizar documentacion y **IMPORTANTE: no agregar funcionalidades nuevas**.
+  > \*Se crea desde **develop\***, y una vez que se completa el trabajo en dicha rama (obtenemos la version estable) se realiza el merge a develop y a main para actualizar el codigo en ambas ramas.
+- develop: rama de desarrollo.
+
+- feature/nombre-de-la-funcionalidad: Para crear nuevas funcionalidades.
+
+  > \*Se crea desde **develop\*** para trabajar en una nueva funcion a implementar. Una vez completada la funcionalidad, se hace el merge a develop y se elimina la rama.
+
+- hotfix: Correcion urgente de un error que se encuentra en main.
+  > Cuando encontramos un error importante en la version estable, \*se crea desde **main\*** para trabajar en la correcion del error y solucionarlo lo antes posible. Una vez corregido el bug, se hace el merge a main y a develop.
+
+### Estandares de contribución
+
+- **Commits**: Utilizar titulos descriptivos con el formato `tipo: descripción`.
+
+  > Ejemplo: `feat: implementación de login` o `fix: corrección de ruta API`.
+
+- **Revisiones de Pull Requests (PR)**: Al menos un compañero de equipo debe revisar una solicitud de incorporacion de cambios antes de fusionarla (merge) con develop.
