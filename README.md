@@ -1,588 +1,429 @@
-# FINZO
+# 💰 FINZO — Gestión de Finanzas Personales
 
-**Finzo** es una aplicación web destinada a la gestión de finanzas personales.
+<div align="center">
 
-Permite a los usuarios registrar sus ingresos y gastos, clasificarlos mediante categorías y consultar información resumida sobre su situación financiera.
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-El **objetivo principal** es desarrollar una aplicación web que permita registrar, organizar y analizar ingresos y gastos personales. Transformando el peso de movimientos financieros en información útil.
+**Trabajo Práctico Integrador — Metodología de Sistemas II**  
+*Tecnicatura Universitaria en Programación*
 
-Durante el desarrollo se busca aplicar:
-
-- Arquitectura cliente-servidor.
-- Desarrollo frontend con React y TypeScript.
-- Desarrollo backend con Node.js, TypeScript y Express.
-- Persistencia de datos mediante PostgreSQL.
-- Autenticación mediante Supabase Auth.
-- API REST.
-- Separación de responsabilidades.
-- Principios SOLID.
-- Testing automatizado.
-- Documentación técnica
-
-## Integrantes del Proyecto
-
-* **Alessio Cragno:** @alesiocragno
-* **Federico Heinreich** @fedeheinreich
-* **Máximo Messina** @maxemessina
-* **Valentina Vitale** @valenvitale
-
-## Instalación
-
-1. Clonar el repositorio
-``` bash
-git clone <URL_DEL_REPOSITORIO>
-cd finzo
-```
-
-2. Instalar dependencias
-``` bash
-pnpm install
-```
-
-3. Si el proyecto esta dividido en frontend y backend:
-
-``` bash
-cd frontend
-pnpm install
-
-cd backend
-pnpm install
-```
-
-## Stack Tecnológico
-
-### Frontend
-| Tecnología   | Uso                               |
-| ------------ | --------------------------------- |
-| React        | Construcción de la interfaz       |
-| TypeScript   | Tipado estático                   |
-| Tailwind CSS | Estilos                           |
-| Vite         | Herramienta de desarrollo y build |
-
-### Backend
-| Tecnología | Uso                     |
-| ---------- | ----------------------- |
-| Node.js    | Runtime                 |
-| TypeScript | Tipado estático         |
-| Express    | Framework para API REST |
-
-### Base de datos y autenticación
-| Tecnología    | Uso                               |
-| ------------- | --------------------------------- |
-| Supabase      | Plataforma de backend y servicios |
-| PostgreSQL    | Base de datos relacional          |
-| Supabase Auth | Autenticación                     |
-| JWT           | Identificación de sesiones        |
-
-### Testing
-| Tecnología      | Uso                  |
-| --------------- | -------------------- |
-| Vitest          | Tests                |
-| Testing Library | Testing del frontend |
-
-### DevOps
-| Tecnología     | Uso                        |
-| -------------- | -------------------------- |
-| Git            | Control de versiones       |
-| GitHub         | Repositorio y colaboración |
-| GitHub Actions | Integración continua       |
-| Vercel         | Deploy del frontend        |
-| Supabase       | Hosting de backend/DB      |
-
-### Gestión del Proyecto 
-- Jira
-- GitHub Issues
-- GitHub Pull Requests
-- Discord / reuniones presenciales
+</div>
 
 ---
-## Arquitectura
 
-```text
-┌──────────────────────────────────┐
-│            FRONTEND              │
-│                                  │
-│       React + TypeScript         │
-│           + Vite                 │
-│                                  │
-└───────────────┬──────────────────┘
-                │
-                │ HTTP / REST
-                ▼
-┌──────────────────────────────────┐
-│             BACKEND              │
-│                                  │
-│      Node.js + TypeScript        │
-│            Express               │
-│                                  │
-│ Controllers                      │
-│      ↓                           │
-│ Services                         │
-│      ↓                           │
-│ Repositories                     │
-│      ↓                           │
-└───────────────┬──────────────────┘
-                │
-                ▼
-┌──────────────────────────────────┐
-│             SUPABASE             │
-│                                  │
-│          PostgreSQL              │
-│                                  │
-│          Supabase Auth           │
-└──────────────────────────────────┘
+## 📌 Tabla de Contenidos
+
+1. [Qué problema resuelve el proyecto](#-qué-problema-resuelve-el-proyecto)
+2. [Integrantes](#-integrantes-del-equipo)
+3. [Tecnología elegida](#-tecnología-elegida)
+4. [Cómo instalar dependencias](#-cómo-instalar-dependencias)
+5. [Cómo ejecutar el proyecto](#-cómo-ejecutar-el-proyecto)
+6. [Estado actual y pendientes conocidos](#-estado-actual-y-pendientes-conocidos)
+7. [Arquitectura y diseño](#-arquitectura-y-diseño)
+8. [Estructura del repositorio](#-estructura-del-repositorio)
+9. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
+
+---
+
+## 💡 Qué problema resuelve el proyecto
+
+Llevar el control de la economía personal cotidiana suele ser frustrante y desordenado. La mayoría de las personas conocen su saldo bancario puntual, pero **desconocen con exactitud en qué gastan, cuánto destinan a gastos hormiga o no esenciales, y cómo evoluciona su capacidad de ahorro mes a mes**.
+
+Las soluciones habituales presentan barreras significativas:
+- **Planillas de cálculo (Excel / Sheets):** Requieren configuración manual, son propensas a errores de fórmula y resultan incómodas de usar desde dispositivos móviles o en el día a día.
+- **Sistemas contables tradicionales:** Son excesivamente complejos, con terminología técnica que sobrepasa al usuario común.
+- **Apps comerciales conectadas a bancos:** Suelen generar desconfianza por la privacidad de credenciales financieras y presentan poca flexibilidad para categorizaciones a medida.
+
+### Nuestra Propuesta de Valor
+**Finzo** es una aplicación web intuitiva, ágil y segura diseñada para registrar, categorizar y analizar ingresos y gastos personales sin fricción. Transforma anotaciones dispersas en **información gráfica y procesable** para la toma de decisiones financieras responsables:
+- ¿Cuánto dinero gasté este mes y cuánto me queda disponible?
+- ¿Cuáles son las categorías que más impactan en mi presupuesto?
+- ¿Cuál es mi balance neto y mi tasa de ahorro mensual?
+
+### Enfoque Académico
+El proyecto se desarrolla bajo el marco de **Metodología de Sistemas II**, aplicando estándares de calidad de software de la industria:
+- Arquitectura cliente-servidor con separación estricta de responsabilidades (capas).
+- Diseño guiado por principios **SOLID** y código limpio (*Clean Code*).
+- Testing automatizado (unitario y de integración).
+- Gestión colaborativa con Git/GitHub (ramas, issues, pull requests y revisiones de código).
+- Integración continua y documentación viva.
+
+---
+
+## 👥 Integrantes del Equipo
+
+**Grupo 1 — Metodología de Sistemas II**
+
+| Integrante | Usuario GitHub | Rol principal en el equipo |
+| :--- | :--- | :--- |
+| **Federico Heinrich** | [@fedeheinrich](https://github.com/fedeheinrich) | Fullstack Developer |
+| **Máximo Messina** | [@maxemessina](https://github.com/maxemessina) | Fullstack Developer |
+| **Valentina Vitale** | [@valenvitale](https://github.com/valenvitale) | Fullstack Developer |
+| **Alessio Cragno** | [@alesiocragno](https://github.com/alesiocragno) | Fullstack Developer |
+
+---
+
+## 🛠️ Tecnología Elegida
+
+La selección de tecnologías responde a la búsqueda de un stack moderno, fuertemente tipado de punta a punta (*end-to-end type safety*), con alto rendimiento y fácil mantenibilidad.
+
+### Frontend
+| Herramienta | Versión / Tipo | Justificación técnica |
+| :--- | :--- | :--- |
+| **React 19** | Librería UI | Estándar de la industria para SPAs declarativas, componentización y gestión de estado reactivo. |
+| **TypeScript** | Lenguaje | Tipado estático que previene errores en tiempo de compilación y acelera el desarrollo en equipo. |
+| **Vite** | Build Tool / Bundler | Servidor de desarrollo instantáneo con HMR (*Hot Module Replacement*) y empaquetado optimizado con Rollup/esbuild. |
+| **Tailwind CSS** | Estilos | Diseño ágil basado en utilidades, consistente para paletas de color, temas oscuros y componentes responsive. |
+
+### Backend
+| Herramienta | Versión / Tipo | Justificación técnica |
+| :--- | :--- | :--- |
+| **Node.js** | Runtime | Plataforma asíncrona no bloqueante basada en el motor V8 de JavaScript. |
+| **Express 5** | Framework HTTP | Minimalista, maduro y flexible para estructurar una API REST desacoplada mediante middlewares y routers. |
+| **TypeScript** | Lenguaje | Consistencia de tipos con el frontend; facilita contratos de datos (*DTOs*, interfaces y validaciones). |
+| **tsx** | Ejecutor dev | Ejecución en caliente de TypeScript en Node.js sin necesidad de compilación manual previa. |
+
+### Base de Datos y Autenticación
+| Herramienta | Tipo | Justificación técnica |
+| :--- | :--- | :--- |
+| **PostgreSQL** | Motor de Base de Datos | Base de datos relacional robusta, con soporte transaccional (ACID), integridad referencial y claves foráneas. |
+| **Supabase** | Backend as a Service | Administrador de PostgreSQL cloud, cliente oficial `@supabase/supabase-js` y gestión de tokens/sesiones. |
+| **Supabase Auth** | Autenticación & JWT | Manejo seguro de registro, login y sesiones mediante JSON Web Tokens sin reinventar la seguridad crítica. |
+
+### Testing y Calidad de Código
+| Herramienta | Tipo | Justificación técnica |
+| :--- | :--- | :--- |
+| **Vitest** | Test Runner | Motor de pruebas ultrarrápido compatible de forma nativa con la configuración de Vite y TypeScript. |
+| **React Testing Library** | Testing de Componentes | Pruebas centradas en el comportamiento del usuario en la interfaz. |
+| **ESLint** | Linter | Detección temprana de errores de sintaxis y aplicación de reglas de estilo consistentes. |
+
+### Despliegue e Infraestructura (DevOps & Hosting)
+| Herramienta | Tipo | Justificación técnica |
+| :--- | :--- | :--- |
+| **Render** | Cloud PaaS (Web Service) | **Hosting del Backend**: Plataforma para ejecutar y publicar la API de Node.js/Express. Mantiene el proceso activo en la nube con soporte para TypeScript, HTTPS automático y despliegue continuo desde GitHub. |
+| **Vercel** | Edge Network / Hosting | **Hosting del Frontend**: Plataforma optimizada para SPAs en React/Vite con distribución global mediante CDN y compilación continua. |
+| **GitHub Actions** | CI/CD | Automatización de flujos de verificación (linter, comprobación de tipos y tests automáticos en cada pull request). |
+
+### Entorno y Gestión de Paquetes
+| Herramienta | Justificación técnica |
+| :--- | :--- |
+| **pnpm Workspaces** | Repositorio monorepo eficiente en disco, con resolución de dependencias compartidas y ejecución coordinada entre paquetes (`frontend` y `backend`). |
+
+---
+
+## 📦 Cómo Instalar Dependencias
+
+### Prerrequisitos
+Asegurarse de tener instalado en el entorno local:
+- [Node.js](https://nodejs.org/) (versión especificada en el archivo `.nvmrc` — Node 24 o versión LTS v20+). Si utilizas `nvm` (*Node Version Manager*), puedes activar la versión requerida directamente con:
+  ```bash
+  nvm use
+  ```
+- [pnpm](https://pnpm.io/) (versión 9 o superior). Si no lo tienes instalado:
+  ```bash
+  npm install -g pnpm
+  ```
+- [Git](https://git-scm.com/)
+
+### Paso a paso
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/valenvitale/finzo.git
+   cd finzo
+   ```
+
+2. **Instalar todas las dependencias del monorepo:**
+   Al utilizar `pnpm-workspace.yaml`, un único comando en la raíz instala las dependencias de la raíz, del frontend y del backend:
+   ```bash
+   pnpm install
+   ```
+
+   *(Opcional)* Si prefieres instalar dependencias en cada paquete por separado:
+   ```bash
+   # Para el backend
+   cd backend && pnpm install
+
+   # Para el frontend
+   cd ../frontend && pnpm install
+   ```
+
+---
+
+## 🚀 Cómo Ejecutar el Proyecto
+
+### 1. Configurar las Variables de Entorno
+
+Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo:
+
+#### Backend (`backend/.env`):
+Crear el archivo `backend/.env` con los valores correspondientes:
+```env
+PORT=3000
+NODE_ENV=development
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_ANON_KEY=tu-anon-key
+SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
 ```
-## Flujo General
 
-```text
-Usuario
-   │
-   ▼
-Formulario React
-   │
-   ▼
-Request HTTP
-   │
-   ▼
-Express Route
-   │
-   ▼
-Controller
-   │
-   ▼
-Service
-   │
-   ▼
-Repository
-   │
-   ▼
-Supabase / PostgreSQL
-   │
-   ▼
-Response
-   │
-   ▼
-Frontend
+#### Frontend (`frontend/.env`):
+Crear el archivo `frontend/.env` con las variables públicas de Vite:
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=tu-anon-key
 ```
 
-# INSTALACIÓN
+> [!WARNING]
+> Nunca comitear ni subir archivos `.env` reales al repositorio. Ambos directorios cuentan con reglas en `.gitignore` para salvaguardar claves sensibles.
 
-1. Clonar el repositorio
-``` bash
-git clone <URL_DEL_REPOSITORIO>
-cd finzo
-```
+---
 
-2. Instalar dependencias
-``` bash
-pnpm install
-```
+### 2. Ejecutar los Servidores de Desarrollo
 
-Si el proyecto esta dividido en frontend y backend:
+Puedes iniciar cada servicio desde la raíz utilizando los filtros de pnpm o posicionándote en su directorio correspondiente:
 
-``` bash
-cd frontend
-pnpm install
+#### Iniciar el Backend (API):
+```bash
+# Opción A: Desde la raíz
+pnpm --filter backend dev
 
+# Opción B: Ingresando al directorio
 cd backend
-pnpm install
+pnpm dev
+```
+> El servidor backend iniciará en `http://localhost:3000`.
+
+#### Iniciar el Frontend (Web App):
+```bash
+# Opción A: Desde la raíz
+pnpm --filter frontend dev
+
+# Opción B: Ingresando al directorio
+cd frontend
+pnpm dev
+```
+> La aplicación estará disponible en `http://localhost:5173` (o el puerto provisto por Vite).
+
+---
+
+### 3. Ejecución de Pruebas Automatizadas
+
+Para ejecutar las suites de tests unitarios y de integración con Vitest:
+
+```bash
+# Ejecutar tests del backend
+pnpm --filter backend test
+
+# Ejecutar tests del frontend
+pnpm --filter frontend test
 ```
 
-# VARIABLES DEL ENTORNO
-El archivo `.env` no debe subirse al repositorio.
+---
 
-Debe existir un archivo `.env.example` que muestre las variables necesarias sin contener valores sensibles.
+## 📊 Estado Actual y Pendientes Conocidos
 
-Ejemplo:
+> [!NOTE]
+> **Fase Taller I:** El proyecto se encuentra en su etapa de arranque e inicialización arquitectónica. Esta sección documenta el estado real del repositorio y el plan de trabajo inmediato.
+
+### ✅ Estado Actual (Completado)
+- [x] **Monorepo configurado:** Estructura de espacios de trabajo (`pnpm-workspace.yaml`) integrando los paquetes `frontend` y `backend`.
+- [x] **Arquitectura de directorios:** Estructura en capas en el backend (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `models`, `types`) y arquitectura por módulos y componentes en el frontend.
+- [x] **Configuración de base:** Archivos `tsconfig.json`, `package.json`, `vitest.config.ts`, `.nvmrc` y reglas de `.gitignore` creados.
+- [x] **Definición funcional y técnica:** Propuesta formal del proyecto aprobada y documentada en detalle en [`PROPUESTA.md`](./PROPUESTA.md).
+- [x] **Definición del stack y dependencias:** Dependencias base instaladas (Express 5, React 19, Supabase JS, Tailwind, Vitest).
+
+### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
+- [ ] **Ajuste de scripts en `package.json`:** Definir los comandos `"scripts": { "dev": ..., "build": ..., "test": ... }` correspondientes en los paquetes para estandarizar el arranque.
+- [ ] **Configuración del proyecto en Supabase:** Creación de la instancia en la nube, obtención de claves API y configuración de clientes.
+- [ ] **Migraciones iniciales de base de datos:** Escribir los scripts SQL en `backend/migrations/` para las tablas principales (`profiles`, `categories`, `transactions`).
+- [ ] **Flujo de autenticación:** Implementar registro, login y middleware de validación de tokens JWT en el backend.
+- [ ] **CRUD de categorías y movimientos:** Desarrollo de endpoints REST y servicios para registrar ingresos/gastos y clasificar por categorías.
+- [ ] **Dashboard inicial en Frontend:** Construcción de vistas de balance actual, historial de movimientos y formulario de carga.
+- [ ] **Pipeline de CI:** Configurar flujos de trabajo en `.github/workflows/` para ejecución automática de linter y tests en cada Pull Request.
+- [ ] **Despliegue a producción:** Configurar servicio en **Render** para la API del backend y proyecto en **Vercel** para la SPA del frontend.
+
+---
+
+## 🏗️ Arquitectura y Diseño
+
+### Arquitectura General del Sistema
+
+El sistema implementa una arquitectura desacoplada **Cliente-Servidor (SPA + REST API)** con persistencia relacional en Supabase:
+
+```text
+┌──────────────────────────────────────────────────────────┐
+│          FRONTEND (SPA) — Alojado en Vercel              │
+│                                                          │
+│   React 19 + TypeScript + Vite + Tailwind CSS            │
+│   - Context API / Hooks personalizados                   │
+│   - Vistas (Dashboard, Movimientos, Categorías)          │
+│   - Cliente API / Supabase Client                        │
+└────────────────────────────┬─────────────────────────────┘
+                             │
+                             │ HTTP / JSON (REST)
+                             ▼
+┌──────────────────────────────────────────────────────────┐
+│      BACKEND (API REST) — Alojado en Render (Web Service) │
+│                                                          │
+│   Node.js + Express 5 + TypeScript                       │
+│                                                          │
+│   Routes          Mapeo de URLs y métodos HTTP           │
+│     │                                                    │
+│     ▼                                                    │
+│   Middlewares     Auth (JWT), validación y errores       │
+│     │                                                    │
+│     ▼                                                    │
+│   Controllers     Manejo de Request / Response HTTP      │
+│     │                                                    │
+│     ▼                                                    │
+│   Services        Reglas de negocio y cálculos           │
+│     │                                                    │
+│     ▼                                                    │
+│   Repositories    Acceso a datos y persistencia          │
+└────────────────────────────┬─────────────────────────────┘
+                             │
+                             ▼
+┌──────────────────────────────────────────────────────────┐
+│              PERSISTENCIA & AUTH — Supabase Cloud        │
+│                                                          │
+│   - PostgreSQL: Base de datos relacional transaccional   │
+│   - Supabase Auth: Gestión de usuarios y sesiones JWT    │
+└──────────────────────────────────────────────────────────┘
 ```
-DATABASE_URL=
-JWT_SECRET=
+
+### Flujo de Datos por Capas
+
+Cada petición entrante atraviesa una secuencia de capas con responsabilidad única:
+
+```text
+Usuario en Frontend
+       │  (Envía formulario de movimiento)
+       ▼
+Cliente HTTP (Fetch / Axios / Service)
+       │  POST /api/transactions
+       ▼
+Express Route (`transaction.routes.ts`)
+       │
+       ▼
+Middlewares (`auth.middleware.ts`, `validation.middleware.ts`)
+       │  Valida sesión y esquema de datos
+       ▼
+Controller (`transaction.controller.ts`)
+       │  Extrae parámetros y delega
+       ▼
+Service (`transaction.service.ts`)
+       │  Aplica lógica de negocio (validar saldos, reglas)
+       ▼
+Repository (`transaction.repository.ts`)
+       │  Ejecuta consulta en base de datos
+       ▼
+PostgreSQL / Supabase
+       │  Almacena y retorna el registro
+       ▼
+Respuesta JSON 201 Created → Renderizado en UI
 ```
 
-## '.gitignore':
+---
 
-El respositorio debe ignorar:
-* .env
-* .env.local
-* node_modules/
-* dist/
-* coverage/
+## 📁 Estructura del Repositorio
 
-# ESTRUCTURA DEL PROYECTO
+A continuación se detalla la distribución de archivos y directorios planificada para el proyecto:
 
 ```text
 FINZO/
-│
 ├── backend/
-│   │
+│   ├── migrations/             # Scripts SQL de creación y migración de tablas
+│   ├── seeders/                # Datos semilla de prueba y categorías base
 │   ├── src/
-│   │   ├── controllers/
-│   │   │   ├── auth.controller.ts
-│   │   │   ├── transaction.controller.ts
-│   │   │   ├── category.controller.ts
-│   │   │   ├── profile.controller.ts
-│   │   │   ├── budget.controller.ts
-│   │   │   └── goal.controller.ts
-│   │   │
-│   │   ├── services/
-│   │   │   ├── auth.service.ts
-│   │   │   ├── transaction.service.ts
-│   │   │   ├── category.service.ts
-│   │   │   ├── profile.service.ts
-│   │   │   ├── budget.service.ts
-│   │   │   ├── goal.service.ts
-│   │   │   └── report.service.ts
-│   │   │
-│   │   ├── repositories/
-│   │   │   ├── transaction.repository.ts
-│   │   │   ├── category.repository.ts
-│   │   │   ├── profile.repository.ts
-│   │   │   ├── budget.repository.ts
-│   │   │   └── goal.repository.ts
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── auth.routes.ts
-│   │   │   ├── transaction.routes.ts
-│   │   │   ├── category.routes.ts
-│   │   │   ├── profile.routes.ts
-│   │   │   ├── budget.routes.ts
-│   │   │   ├── goal.routes.ts
-│   │   │   └── report.routes.ts
-│   │   │
-│   │   ├── middlewares/
-│   │   │   ├── auth.middleware.ts
-│   │   │   ├── error.middleware.ts
-│   │   │   └── validation.middleware.ts
-│   │   │
-│   │   ├── models/
-│   │   │   ├── transaction.model.ts
-│   │   │   ├── category.model.ts
-│   │   │   ├── profile.model.ts
-│   │   │   ├── budget.model.ts
-│   │   │   └── goal.model.ts
-│   │   │
-│   │   ├── types/
-│   │   │   ├── auth.types.ts
-│   │   │   ├── transaction.types.ts
-│   │   │   ├── category.types.ts
-│   │   │   ├── profile.types.ts
-│   │   │   ├── budget.types.ts
-│   │   │   └── goal.types.ts
-│   │   │
-│   │   ├── utils/
-│   │   │   ├── calculations.ts
-│   │   │   ├── errors.ts
-│   │   │   └── constants.ts
-│   │   │
-│   │   ├── config/
-│   │   │   ├── env.ts
-│   │   │   └── supabase.ts
-│   │   │
-│   │   ├── app.ts
-│   │   └── server.ts
-│   │
-│   ├── tests/
-│   │   ├── unit/
-│   │   │   ├── calculations.test.ts
-│   │   │   ├── transaction.service.test.ts
-│   │   │   └── category.service.test.ts
-│   │   │
-│   │   ├── integration/
-│   │   │   ├── auth.test.ts
-│   │   │   ├── transactions.test.ts
-│   │   │   └── categories.test.ts
-│   │   │
-│   │   └── setup.ts
-│   │
-│   ├── migrations/
-│   │   ├── 001_create_profiles.sql
-│   │   ├── 002_create_categories.sql
-│   │   ├── 003_create_transactions.sql
-│   │   ├── 004_create_budgets.sql
-│   │   └── 005_create_goals.sql
-│   │
-│   ├── seeders/
-│   │   ├── seed.ts
-│   │   └── data/
-│   │       ├── categories.ts
-│   │       └── demo-data.ts
-│   │
-│   ├── .env
-│   ├── .env.example
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vitest.config.ts
+│   │   ├── config/             # Configuración de entorno y clientes externos
+│   │   ├── controllers/        # Controladores que reciben peticiones HTTP
+│   │   ├── middlewares/        # Middlewares de autenticación, validación y error
+│   │   ├── models/             # Interfaces y modelos de dominio
+│   │   ├── repositories/       # Abstracción y acceso a la base de datos
+│   │   ├── routes/             # Definición de endpoints REST
+│   │   ├── services/           # Lógica y reglas de negocio del sistema
+│   │   ├── types/              # Declaraciones de tipos TypeScript y DTOs
+│   │   ├── utils/              # Funciones auxiliares de cálculo y formato
+│   │   ├── app.ts              # Configuración de la aplicación Express
+│   │   └── server.ts           # Punto de entrada y levantamiento del servidor
+│   ├── tests/                  # Tests unitarios y de integración (Vitest)
+│   ├── .env.example            # Plantilla de variables de entorno para backend
+│   ├── package.json            # Dependencias y scripts del backend
+│   ├── tsconfig.json           # Configuración de TypeScript
+│   └── vitest.config.ts        # Configuración de Vitest para backend
 │
 ├── frontend/
-│   │
+│   ├── public/                 # Archivos estáticos públicos (logos, favicons)
 │   ├── src/
-│   │   │
-│   │   ├── components/
-│   │   │   ├── common/
-│   │   │   │   ├── Button.tsx
-│   │   │   │   ├── Input.tsx
-│   │   │   │   ├── Modal.tsx
-│   │   │   │   ├── Card.tsx
-│   │   │   │   ├── Select.tsx
-│   │   │   │   └── Loading.tsx
-│   │   │   │
-│   │   │   ├── layout/
-│   │   │   │   ├── Navbar.tsx
-│   │   │   │   ├── Sidebar.tsx
-│   │   │   │   ├── Header.tsx
-│   │   │   │   └── PageContainer.tsx
-│   │   │   │
-│   │   │   ├── dashboard/
-│   │   │   │   ├── BalanceCard.tsx
-│   │   │   │   ├── IncomeCard.tsx
-│   │   │   │   ├── ExpenseCard.tsx
-│   │   │   │   └── RecentTransactions.tsx
-│   │   │   │
-│   │   │   ├── transactions/
-│   │   │   │   ├── TransactionForm.tsx
-│   │   │   │   ├── TransactionTable.tsx
-│   │   │   │   ├── TransactionFilters.tsx
-│   │   │   │   └── TransactionCard.tsx
-│   │   │   │
-│   │   │   ├── categories/
-│   │   │   │   ├── CategoryForm.tsx
-│   │   │   │   ├── CategoryList.tsx
-│   │   │   │   └── CategoryCard.tsx
-│   │   │   │
-│   │   │   ├── budgets/
-│   │   │   │   ├── BudgetCard.tsx
-│   │   │   │   ├── BudgetForm.tsx
-│   │   │   │   └── BudgetProgress.tsx
-│   │   │   │
-│   │   │   ├── goals/
-│   │   │   │   ├── GoalCard.tsx
-│   │   │   │   ├── GoalForm.tsx
-│   │   │   │   └── GoalProgress.tsx
-│   │   │   │
-│   │   │   └── reports/
-│   │   │       ├── IncomeExpenseChart.tsx
-│   │   │       ├── CategoryChart.tsx
-│   │   │       └── SavingsRate.tsx
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── auth/
-│   │   │   │   ├── Login.tsx
-│   │   │   │   └── Register.tsx
-│   │   │   │
-│   │   │   ├── Dashboard.tsx
-│   │   │   ├── Transactions.tsx
-│   │   │   ├── Categories.tsx
-│   │   │   ├── Budgets.tsx
-│   │   │   ├── Goals.tsx
-│   │   │   ├── Reports.tsx
-│   │   │   ├── Profile.tsx
-│   │   │   └── Settings.tsx
-│   │   │
-│   │   ├── services/
-│   │   │   ├── api.ts
-│   │   │   ├── auth.service.ts
-│   │   │   ├── transaction.service.ts
-│   │   │   ├── category.service.ts
-│   │   │   ├── profile.service.ts
-│   │   │   ├── budget.service.ts
-│   │   │   ├── goal.service.ts
-│   │   │   └── report.service.ts
-│   │   │
-│   │   ├── hooks/
-│   │   │   ├── useAuth.ts
-│   │   │   ├── useTransactions.ts
-│   │   │   ├── useCategories.ts
-│   │   │   ├── useBudgets.ts
-│   │   │   └── useGoals.ts
-│   │   │
-│   │   ├── context/
-│   │   │   └── AuthContext.tsx
-│   │   │
-│   │   ├── types/
-│   │   │   ├── transaction.types.ts
-│   │   │   ├── category.types.ts
-│   │   │   ├── profile.types.ts
-│   │   │   ├── budget.types.ts
-│   │   │   └── goal.types.ts
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── AppRoutes.tsx
-│   │   │   ├── ProtectedRoute.tsx
-│   │   │   └── PublicRoute.tsx
-│   │   │
-│   │   ├── utils/
-│   │   │   ├── formatCurrency.ts
-│   │   │   ├── formatDate.ts
-│   │   │   └── validations.ts
-│   │   │
-│   │   ├── styles/
-│   │   │   ├── globals.css
-│   │   │   └── variables.css
-│   │   │
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   │
-│   ├── public/
-│   │   ├── logo.svg
-│   │   ├── favicon.svg
-│   │   └── images/
-│   │
-│   ├── .env
-│   ├── .env.example
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vite.config.ts
-│   └── vitest.config.ts
+│   │   ├── components/         # Componentes reutilizables (UI, layout, dashboard)
+│   │   ├── context/            # Contextos globales de React (AuthContext)
+│   │   ├── hooks/              # Custom hooks para lógica desacoplada
+│   │   ├── pages/              # Vistas principales (Dashboard, Movimientos, Login)
+│   │   ├── routes/             # Enrutamiento de la aplicación (protegidas/públicas)
+│   │   ├── services/           # Clientes HTTP y llamadas al backend
+│   │   ├── styles/             # Estilos globales y configuración de estilos
+│   │   ├── types/              # Tipos compartidos en la interfaz
+│   │   ├── utils/              # Funciones auxiliares de formato y fechas
+│   │   ├── App.tsx             # Componente raíz de React
+│   │   └── Main.tsx            # Punto de montaje en el DOM
+│   ├── .env.example            # Plantilla de variables de entorno para frontend
+│   ├── package.json            # Dependencias y scripts del frontend
+│   ├── tsconfig.json           # Configuración de TypeScript
+│   ├── vite.config.ts          # Configuración del bundler Vite
+│   └── vitest.config.ts        # Configuración de pruebas para frontend
 │
-│
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── pull-request.yml
-│
-├── docs/
+├── docs/                       # Documentación complementaria (API, diagramas)
 │   └── API.md
-│
-├── .gitignore
-├── README.md
-├── PROPUESTA.md
-├── package.json
-├── pnpm-lock.yaml
-└── pnpm-workspace.yaml
+├── .github/                    # Automatización e integración continua
+│   └── workflows/              # GitHub Actions para CI/CD
+├── .gitignore                  # Reglas de exclusión de Git
+├── pnpm-workspace.yaml         # Configuración del monorepo con pnpm
+├── package.json                # Configuración raíz del monorepo
+├── PROPUESTA.md                # Documento completo de la propuesta académica
+└── README.md                   # Documentación principal del proyecto
 ```
 
-## ¿Por qué esta estructura?
-Cada parte tendria una **responsabilidad clara**.
+---
 
-                  HTTP
-                   │
-                   ▼
-              ┌─────────┐
-              │ Routes  │
-              └────┬────┘
-                   │
-                   ▼
-            ┌──────────────┐
-            │ Controllers  │
-            └──────┬───────┘
-                   │
-                   ▼
-             ┌──────────┐
-             │ Services │
-             └────┬─────┘
-                  │
-                  ▼
-          ┌────────────────┐
-          │  Repositories  │
-          └───────┬────────┘
-                  │
-                  ▼
-             PostgreSQL
+## 🎯 Alcance del MVP y Roadmap
 
-## A DEFINIR !!
+El desarrollo del proyecto se ejecutará de manera incremental y modular:
 
-### DEPENDENCIAS
+### Fase 1: MVP (Mínimo Producto Viable) — *Prioridad Alta*
+- **Autenticación:** Registro de usuario, inicio de sesión, cierre de sesión y control de accesos mediante JWT.
+- **Gestión de Movimientos:** Crear, listar, editar y eliminar ingresos y gastos (monto, fecha, descripción y categoría).
+- **Gestión de Categorías:** Categorías predeterminadas y personalizadas separadas por tipo (ingreso / gasto).
+- **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de últimos movimientos.
 
-1. Backend
-```text
-| Dependencia             | Para qué la usamos                             |
-| ----------------------- | ---------------------------------------------- |
-| `express`               | Crear la API REST y manejar rutas HTTP         |
-| `@supabase/supabase-js` | Conectarnos con Supabase                       |
-| `cors`                  | Permitir comunicación entre frontend y backend |
-| `dotenv`                | Cargar variables de entorno                    |
-| `zod`                   | Validar los datos que recibe la API            |
+### Fase 2: Análisis Financiero — *Prioridad Media*
+- Gráficos de distribución de gastos por categoría (Recharts).
+- Comparativa visual entre meses/períodos.
+- Indicador de tasa de ahorro mensual.
 
-   > DESAROLLO
-   | Dependencia         | Para qué                               |
-   | ------------------- | -------------------------------------- |
-   | `typescript`        | Tipado estático                        |
-   | `tsx`               | Ejecutar TypeScript durante desarrollo |
-   | `vitest`            | Testing                                |
-   | `supertest`         | Probar endpoints HTTP                  |
-   | `eslint`            | Lint                                   |
-   | `typescript-eslint` | Integrar ESLint con TypeScript         |
-```
-### Frontend
-```text
-| Dependencia             | Para qué                          |
-| ----------------------- | --------------------------------- |
-| `react`                 | Construcción de la interfaz       |
-| `react-dom`             | Renderizar React en el navegador  |
-| `react-router-dom`      | Navegación entre páginas          |
-| `@supabase/supabase-js` | Autenticación/sesión con Supabase |
-| `recharts`              | Gráficos de reportes              |
-| `zod`                   | Validación de formularios/datos   |
+### Fase 3: Planificación Avanzada — *Prioridad Futura*
+- Presupuestos límite por categoría con alertas visuales de exceso.
+- Definición y seguimiento de metas de ahorro.
+- Exportación e importación de reportes en formato CSV.
 
-   > DESARROLLO
-   | Dependencia                   | Para qué                             |
-   | ----------------------------- | ------------------------------------ |
-   | `typescript`                  | Tipado                               |
-   | `vite`                        | Servidor de desarrollo y build       |
-   | `@vitejs/plugin-react`        | Integración React + Vite             |
-   | `vitest`                      | Tests                                |
-   | `@testing-library/react`      | Testing de componentes               |
-   | `@testing-library/jest-dom`   | Matchers para DOM                    |
-   | `eslint`                      | Lint                                 |
-   | `typescript-eslint`           | ESLint + TypeScript                  |
-   | `eslint-plugin-react-hooks`   | Reglas para React Hooks              |
-   | `eslint-plugin-react-refresh` | Reglas relacionadas con Fast Refresh |
-```
+---
 
-### Tailwind ?
+## 📜 Metodología de Trabajo y Convenciones
 
-    Como el diseño que charlamos contiene fondo oscuro, cards, bordes redondeados, colores suaves,         componentes reutilizables y dashbord (entre otras cosas), Tailwind CSS nos vendria bien pero           todavia esta por definirse. Dependiendo de la versión/configuración que elijamos, tendriamos que       determinar las herramientas correspondientes de Vite.
-
-## Alcance planificado para el desarrollo
-El proyecto se desarrollará de manera incremental.
-
-La primera versión funcional será un MVP que permita:
-- Autenticación
-    - Registro.
-    - Inicio de sesión.
-    - Cierre de sesión.
-    - Identificación del usuario autenticado.
-- Movimientos
-    - Crear ingresos.
-    - Crear gastos.
-    - Consultar movimientos.
-    - Editar movimientos.
-    - Eliminar movimientos.
-    - Filtrar movimientos.
-- Categorías
-    - Crear categorías.
-    - Consultar categorías.
-    - Editar categorías.
-    - Eliminar categorías.
-    - Diferenciar categorías de ingresos y gastos.
-- Dashboard
-    - Mostrar saldo.
-    - Mostrar ingresos del período.
-    - Mostrar gastos del período.
-    - Mostrar resumen mensual.
-
-Funcionalidades adicionales podrán ser incorporaradas una vez que el MVP se encuentre estable.
-
-### Funcionalidades Extra
-Dependiendo del tiempo disponible se podrán incorporar:
-- Nivel 2
-    - Estadísticas.
-    - Gráficos de ingresos y gastos.
-    - Distribución de gastos por categoría.
-    - Evolución del balance.
-    - Tasa de ahorro.
-    - Categoría con mayor gasto.
-    - Comparación entre períodos.
-- Nivel 3
-    - Presupuestos.
-    - Metas de ahorro.
-    - Gastos recurrentes.
-    - Búsqueda de movimientos.
-    - Comparación entre meses.
-- Nivel 4
-    - Notificaciones.
-    - Gráficos avanzados.
-    - Roles de usuario.
-    - Configuración personalizada.
-    - Importación CSV.
-    - Exportación CSV.
+- **Gitflow / Ramas:** Desarrollo orientado a ramas de características (`feature/nombre-tarea`), integradas mediante Pull Requests a `develop`.
+- **Commits:** Mensajes en español siguiendo la convención de [Conventional Commits](https://www.conventionalcommits.org/es/). Ejemplo: feat: implementa carrito de compras.
+  - `feat: ...` para nuevas funcionalidades.
+  - `fix: ...` para corrección de bugs.
+  - `docs: ...` para cambios en la documentación.
+  - `refactor: ...` para refactorizaciones de código.
+  - `test: ...` para agregado o modificación de pruebas.
