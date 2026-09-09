@@ -21,7 +21,7 @@ Durante el desarrollo se busca aplicar:
 
 ## Integrantes del Proyecto
 
-* **Alessio Cragno:** @
+* **Alessio Cragno:** @alesiocragno
 * **Federico Heinreich** @fedeheinreich
 * **Máximo Messina** @maxemessina
 * **Valentina Vitale** @valenvitale
@@ -309,11 +309,9 @@ FINZO/
 │   │
 │   ├── .env
 │   ├── .env.example
-│   ├── .gitignore
 │   ├── package.json
 │   ├── tsconfig.json
 │   └── vitest.config.ts
-│
 │
 ├── frontend/
 │   │
@@ -431,7 +429,6 @@ FINZO/
 │   │
 │   ├── .env
 │   ├── .env.example
-│   ├── .gitignore
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── vite.config.ts
@@ -444,13 +441,13 @@ FINZO/
 │       └── pull-request.yml
 │
 ├── docs/
-│   ├── DECISIONES.md
-│   ├── API.md
-│   └── arquitectura.md
+│   └── API.md
 │
 ├── .gitignore
 ├── README.md
+├── PROPUESTA.md
 ├── package.json
+├── pnpm-lock.yaml
 └── pnpm-workspace.yaml
 ```
 
