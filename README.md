@@ -244,7 +244,7 @@ El respositorio debe ignorar:
 # ESTRUCTURA DEL PROYECTO
 
 ```text
-FINZO/
+finzo/
 │
 ├── backend/
 │   │
@@ -477,12 +477,11 @@ FINZO/
 │       └── pull-request.yml
 │
 ├── docs/
-│   ├── DECISIONES.md
-│   ├── API.md
-│   └── arquitectura.md
-│
+│   └── API.md
+│ 
 ├── .gitignore
 ├── README.md
+├── PROPUESTA.md
 ├── package.json
 └── pnpm-workspace.yaml
 ```
