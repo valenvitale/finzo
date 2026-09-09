@@ -1,0 +1,8 @@
+{
+  "name": "finzo-root",
+  "private": true,
+  "scripts": {},
+  "devDependencies": {
+    "eslint": "^10.10.0"
+  }
+}

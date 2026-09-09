@@ -3,6 +3,7 @@ node_modules/
 
 # Variables de entorno y secretos locales
 .env
+.env.local
 .env.*
 !.env.example
 
@@ -37,6 +38,10 @@ desktop.ini
 *.swp
 *.swo
 *~
+
+# Caché
+.eslintcache
+*.tsbuildinfo
 
 # Configuración local de VS Code
 .vscode/*
