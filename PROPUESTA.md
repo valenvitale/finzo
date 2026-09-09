@@ -235,12 +235,12 @@ finzo/
 │   │   │   ├── errors.ts
 │   │   │   └── constants.ts
 │   │   │
-│   │   ├── config/
+│   │   ├── config/ 
 │   │   │   ├── env.ts
 │   │   │   └── supabase.ts
 │   │   │
-│   │   ├── app.ts
-│   │   └── server.ts
+│   │   ├── app.ts   
+│   │   └── server.ts 
 │   │
 │   ├── tests/
 │   │   ├── unit/
@@ -270,7 +270,6 @@ finzo/
 │   │
 │   ├── .env
 │   ├── .env.example
-│   ├── .gitignore
 │   ├── package.json
 │   ├── tsconfig.json
 │   └── vitest.config.ts
@@ -392,7 +391,6 @@ finzo/
 │   │
 │   ├── .env
 │   ├── .env.example
-│   ├── .gitignore
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── vite.config.ts

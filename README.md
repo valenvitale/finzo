@@ -342,7 +342,6 @@ finzo/
 │   │
 │   ├── .env
 │   ├── .env.example
-│   ├── .gitignore
 │   ├── package.json
 │   ├── tsconfig.json
 │   └── vitest.config.ts
@@ -464,7 +463,6 @@ finzo/
 │   │
 │   ├── .env
 │   ├── .env.example
-│   ├── .gitignore
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── vite.config.ts
