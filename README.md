@@ -1,19 +1,26 @@
 <div align="center">
 
   <br />
-
-  <!-- Logo principal completo -->
+  
   <a href="https://github.com/valenvitale/finzo">
-    <img src="frontend/public/images/finzo-letras-logo.png" alt="Finzo — Tus finanzas, más claras" width="400" style="max-width: 100%; height: auto;" />
+    <img src="frontend/public/images/finzo-logo.png" alt="Finzo Logo" width="140" style="max-width: 100%; height: auto;" />
   </a>
 
+  <h1 align="center" style="border-bottom: none; margin-top: 12px; margin-bottom: 4px;">
+    Finzo
+  </h1>
+
   <p align="center">
-    <strong>Aplicación web para el registro, categorización y control inteligente de gastos personales.</strong>
+    <strong>Gestión inteligente de finanzas personales</strong>
+  </p>
+
+  <p align="center">
+    <em>Una aplicación web ágil para registrar, categorizar y analizar tus gastos cotidianos.</em>
   </p>
 
   <br />
 
-  <!-- Badges del Stack -->
+  <!-- Badges principales / Stack -->
   <p align="center">
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
     <img src="https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
@@ -38,8 +45,6 @@
   <br />
 
 </div>
-
----
 
 ## 📌 Tabla de Contenidos
 
