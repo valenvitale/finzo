@@ -484,7 +484,7 @@ auth.users 1 ─── M transactions
 categories 1 ─── M transactions
 ```
 
-Si se aprueban funcionalidades posteriores, podrán añadirse `budgets`, `goals` y `recurring_transactions`.
+> [!NOTE]: La creación de registros en la tabla pública profiles se automatizará mediante un Trigger de PostgreSQL que se ejecutará cada vez que un nuevo usuario se registre exitosamente en auth.users.
 
 ### Migraciones y datos iniciales
 

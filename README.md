@@ -24,7 +24,7 @@ _Tecnicatura Universitaria en Programación_
 ## 📌 Tabla de Contenidos
 
 1. [Qué problema resuelve el proyecto](#-qué-problema-resuelve-el-proyecto)
-2. [Integrantes](#-integrantes-del-equipo)
+2. [Integrantes del equipo](#-integrantes-del-equipo)
 3. [Tecnología elegida](#-tecnología-elegida)
 4. [Cómo instalar dependencias](#-cómo-instalar-dependencias)
 5. [Cómo ejecutar el proyecto](#-cómo-ejecutar-el-proyecto)
@@ -32,6 +32,7 @@ _Tecnicatura Universitaria en Programación_
 7. [Arquitectura y diseño](#-arquitectura-y-diseño)
 8. [Estructura del repositorio](#-estructura-del-repositorio)
 9. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
+10. [Metodologia de Trabajo y Convenciones](#-metodología-de-trabajo-y-convenciones)
 
 ---
 
@@ -65,7 +66,7 @@ El proyecto se desarrolla bajo el marco de **Metodología de Sistemas II**, apli
 
 ---
 
-## 👥 Integrantes del Equipo
+## 👥 Integrantes del equipo
 
 **Grupo 1 — Metodología de Sistemas II**
 
@@ -91,22 +92,18 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 | **Vite**         | Build Tool / Bundler | Servidor de desarrollo instantáneo con HMR (_Hot Module Replacement_) y empaquetado optimizado con Rollup/esbuild. |
 | **Tailwind CSS** | Estilos              | Diseño ágil basado en utilidades, consistente para paletas de color, temas oscuros y componentes responsive.       |
 
-### Backend
+### Backend, Base de Datos e Infraestructura
 
-| Herramienta    | Versión / Tipo | Justificación técnica                                                                                    |
-| :------------- | :------------- | :------------------------------------------------------------------------------------------------------- |
-| **Node.js**    | Runtime        | Plataforma asíncrona no bloqueante basada en el motor V8 de JavaScript.                                  |
-| **Express 5**  | Framework HTTP | Minimalista, maduro y flexible para estructurar una API REST desacoplada mediante middlewares y routers. |
-| **TypeScript** | Lenguaje       | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones).  |
-| **tsx**        | Ejecutor dev   | Ejecución en caliente de TypeScript en Node.js sin necesidad de compilación manual previa.               |
-
-### Base de Datos y Autenticación
-
-| Herramienta       | Tipo                   | Justificación técnica                                                                                         |
-| :---------------- | :--------------------- | :------------------------------------------------------------------------------------------------------------ |
-| **PostgreSQL**    | Motor de Base de Datos | Base de datos relacional robusta, con soporte transaccional (ACID), integridad referencial y claves foráneas. |
-| **Supabase**      | Backend as a Service   | Administrador de PostgreSQL cloud, cliente oficial `@supabase/supabase-js` y gestión de tokens/sesiones.      |
-| **Supabase Auth** | Autenticación & JWT    | Manejo seguro de registro, login y sesiones mediante JSON Web Tokens sin reinventar la seguridad crítica.     |
+| Herramienta | Tipo / Rol | Justificación técnica |
+| :--- | :--- | :--- |
+| **Node.js** | Runtime | Plataforma base donde se ejecuta nuestro código. |
+| **Express 5** | Framework HTTP | Estructura nuestra API REST a medida (rutas, controladores y middlewares). |
+| **TypeScript** | Lenguaje | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones). |
+| **tsx** | Ejecutor dev | Ejecución en caliente del código TypeScript durante el desarrollo local, sin necesidad de compilación previa. |
+| **Render** | Hosting de la API | Servicio en la nube (Web Service) encargado exclusivamente de mantener corriendo nuestro servidor Node.js/Express. |
+| **PostgreSQL** | Motor de Base de Datos | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, transacciones y categorías). |
+| **Supabase** | Hosting de la Base de Datos | Plataforma en la nube que aloja y administra nuestra instancia de PostgreSQL. |
+| **Supabase Auth** | Autenticación & JWT | Servicio prearmado que gestiona el registro, login y contraseñas de forma segura en un esquema privado, devolviendo los tokens para la API. |
 
 ### Testing y Calidad de Código
 
@@ -115,15 +112,7 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 | **Vitest**                | Test Runner            | Motor de pruebas ultrarrápido compatible de forma nativa con la configuración de Vite y TypeScript. |
 | **React Testing Library** | Testing de Componentes | Pruebas centradas en el comportamiento del usuario en la interfaz.                                  |
 | **ESLint**                | Linter                 | Detección temprana de errores de sintaxis y aplicación de reglas de estilo consistentes.            |
-
-### Despliegue e Infraestructura (DevOps & Hosting)
-
-| Herramienta        | Tipo                     | Justificación técnica                                                                                                                                                                                           |
-| :----------------- | :----------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Render**         | Cloud PaaS (Web Service) | **Hosting del Backend**: Plataforma para ejecutar y publicar la API de Node.js/Express. Mantiene el proceso activo en la nube con soporte para TypeScript, HTTPS automático y despliegue continuo desde GitHub. |
-| **Vercel**         | Edge Network / Hosting   | **Hosting del Frontend**: Plataforma optimizada para SPAs en React/Vite con distribución global mediante CDN y compilación continua.                                                                            |
-| **GitHub Actions** | CI/CD                    | Automatización de flujos de verificación (linter, comprobación de tipos y tests automáticos en cada pull request).                                                                                              |
-
+                                                                  
 ### Entorno y Gestión de Paquetes
 
 | Herramienta         | Justificación técnica                                                                                                                               |
@@ -265,7 +254,7 @@ pnpm --filter frontend test
 - [x] **Monorepo configurado:** Estructura de espacios de trabajo (`pnpm-workspace.yaml`) integrando los paquetes `frontend` y `backend`.
 - [x] **Arquitectura de directorios:** Estructura en capas en el backend (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `models`, `types`) y arquitectura por módulos y componentes en el frontend.
 - [x] **Configuración de base:** Archivos `tsconfig.json`, `package.json`, `vitest.config.ts`, `.nvmrc` y reglas de `.gitignore` creados.
-- [x] **Definición funcional y técnica:** Propuesta formal del proyecto aprobada y documentada en detalle en [`PROPUESTA.md`](./PROPUESTA.md).
+- [x] **Definición funcional y técnica:** Propuesta formal del proyecto documentada en detalle en [`PROPUESTA.md`](./PROPUESTA.md).
 - [x] **Definición del stack y dependencias:** Dependencias base instaladas (Express 5, React 19, Supabase JS, Tailwind, Vitest).
 
 ### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
@@ -300,7 +289,7 @@ El sistema implementa una arquitectura desacoplada **Cliente-Servidor (SPA + RES
                              │ HTTP / JSON (REST)
                              ▼
 ┌──────────────────────────────────────────────────────────┐
-│      BACKEND (API REST) — Alojado en Render (Web Service) │
+│      BACKEND (API REST) — Alojado en Render (Web Service)│
 │                                                          │
 │   Node.js + Express 5 + TypeScript                       │
 │                                                          │
