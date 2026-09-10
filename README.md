@@ -1,9 +1,9 @@
 <div align="center">
-
+  
   <br />
   
   <a href="https://github.com/valenvitale/finzo">
-    <img src="frontend/public/images/finzo-logo.png" alt="Finzo Logo" width="140" style="max-width: 100%; height: auto;" />
+    <img src="frontend/public/images/finzo-logo.png" alt="Finzo Logo" width="180" style="max-width: 100%; height: auto;" />
   </a>
 
   <h1 align="center" style="border-bottom: none; margin-top: 12px; margin-bottom: 4px;">
@@ -11,7 +11,7 @@
   </h1>
 
   <p align="center">
-    <strong>Gestión inteligente de finanzas personales</strong>
+    <strong>Sistema de gestión finanzas personales</strong>
   </p>
 
   <p align="center">
