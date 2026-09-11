@@ -51,13 +51,12 @@
 1. [Qué problema resuelve el proyecto](#-qué-problema-resuelve-el-proyecto)
 2. [Integrantes del equipo](#-integrantes-del-equipo)
 3. [Tecnología elegida](#-tecnología-elegida)
-4. [Cómo instalar dependencias](#-cómo-instalar-dependencias)
-5. [Cómo ejecutar el proyecto](#-cómo-ejecutar-el-proyecto)
-6. [Estado actual y pendientes conocidos](#-estado-actual-y-pendientes-conocidos)
-7. [Arquitectura y diseño](#-arquitectura-y-diseño)
-8. [Estructura del repositorio](#-estructura-del-repositorio)
-9. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
-10. [Metodologia de Trabajo y Convenciones](#-metodología-de-trabajo-y-convenciones)
+4. [Cómo empezar](#-como-empezar)
+5. [Estado actual y pendientes conocidos](#-estado-actual-y-pendientes-conocidos)
+6. [Arquitectura y diseño](#-arquitectura-y-diseño)
+7. [Estructura del repositorio](#-estructura-del-repositorio)
+8. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
+9. [Metodologia de Trabajo y Convenciones](#-metodología-de-trabajo-y-convenciones)
 
 ---
 
@@ -146,116 +145,71 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 
 ---
 
-## 📦 Cómo Instalar Dependencias
+## 🚀 Cómo empezar
+
+Sigue estos pasos para descargar, configurar y ejecutar el proyecto en tu entorno local.
 
 ### Prerrequisitos
-
-Asegurarse de tener instalado en el entorno local:
-
-- [Node.js](https://nodejs.org/) (versión especificada en el archivo `.nvmrc` — Node 24 o versión LTS v20+). Si utilizas `nvm` (_Node Version Manager_), puedes activar la versión requerida directamente con:
-  ```bash
-  nvm use
-  ```
-- [pnpm](https://pnpm.io/) (versión 9 o superior). Si no lo tienes instalado:
-  ```bash
-  npm install -g pnpm
-  ```
-- [Git](https://git-scm.com/)
+Asegúrate de tener instalado en tu entorno local:
+*   **[Node.js](https://nodejs.org/)** (versión especificada en el archivo `.nvmrc` — Node 24 o versión LTS v20+).
+*   **[pnpm](https://pnpm.io/)** (versión 9 o superior). Si no lo tienes, puedes instalarlo con `npm install -g pnpm`.
+*   **[Git](https://git-scm.com/)**.
 
 ### Paso a paso
 
-1. **Clonar el repositorio:**
+#### 1. Clonar el repositorio
 
-   ```bash
-   git clone https://github.com/valenvitale/finzo.git
-   cd finzo
-   ```
-
-2. **Instalar todas las dependencias del monorepo:**
-   Al utilizar `pnpm-workspace.yaml`, un único comando en la raíz instala las dependencias de la raíz, del frontend y del backend:
-
-   ```bash
-   pnpm install
-   ```
-
-   _(Opcional)_ Si prefieres instalar dependencias en cada paquete por separado:
-
-   ```bash
-   # Para el backend
-   cd backend && pnpm install
-
-   # Para el frontend
-   cd ../frontend && pnpm install
-   ```
-
----
-
-## 🚀 Cómo Ejecutar el Proyecto
-
-### 1. Configurar las Variables de Entorno
-
-Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo:
-
-#### Backend (`backend/.env`):
-
-Crear el archivo `backend/.env` con los valores correspondientes:
-
-```env
-PORT=3000
-NODE_ENV=development
-SUPABASE_URL=https://tu-proyecto.supabase.co
-SUPABASE_ANON_KEY=tu-anon-key
-SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+Descarga el código fuente y posicionate en el directorio:
+```bash
+git clone https://github.com/valenvitale/finzo.git
+cd finzo
 ```
 
-#### Frontend (`frontend/.env`):
+#### 2. Instalar dependencias
 
-Crear el archivo `frontend/.env` con las variables públicas de Vite:
-
-```env
-VITE_API_URL=http://localhost:3000/api
-VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-VITE_SUPABASE_ANON_KEY=tu-anon-key
+Al utilizar espacios de trabajo (`pnpm-workspace.yaml`), un único comando en la raíz instala automáticamente las dependencias compartidas, las del frontend y las del backend:
+```bash
+pnpm install
 ```
 
+#### 3. Configurar variables de entorno**
+
+Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo provistas.
+
+*   **Backend (`backend/.env`):**
+    ```env
+    PORT=3000
+    NODE_ENV=development
+    SUPABASE_URL=https://tu-proyecto.supabase.co
+    SUPABASE_ANON_KEY=tu-anon-key
+    SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+    ```
+*   **Frontend (`frontend/.env`):**
+    ```env
+    VITE_API_URL=http://localhost:3000/api
+    VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+    VITE_SUPABASE_ANON_KEY=tu-anon-key
+    ```
 > [!WARNING]
-> Nunca comitear ni subir archivos `.env` reales al repositorio. Ambos directorios cuentan con reglas en `.gitignore` para salvaguardar claves sensibles.
+> Nunca comitear ni subir archivos `.env` reales al repositorio; asegúrate de que permanezcan en el `.gitignore`.
 
----
+#### 4. Ejecutar el Entorno de Desarrollo
 
-### 2. Ejecutar los Servidores de Desarrollo
-
-Puedes iniciar cada servicio desde la raíz utilizando los filtros de pnpm o posicionándote en su directorio correspondiente:
-
-#### Iniciar el Backend (API):
+Gracias a la configuración del monorepo, podes iniciar tanto el backend como el frontend simultáneamente con un solo comando desde la raíz del proyecto:
 
 ```bash
-# Opción A: Desde la raíz
-pnpm --filter backend dev
-
-# Opción B: Ingresando al directorio
-cd backend
 pnpm dev
 ```
 
-> El servidor backend iniciará en `http://localhost:3000`.
+> **Servicios iniciados:**
+> *   **Frontend:** Disponible en `http://localhost:5173`
+> *   **Backend (API):** Corriendo en `http://localhost:3000`
 
-#### Iniciar el Frontend (Web App):
-
-```bash
-# Opción A: Desde la raíz
-pnpm --filter frontend dev
-
-# Opción B: Ingresando al directorio
-cd frontend
-pnpm dev
-```
-
-> La aplicación estará disponible en `http://localhost:5173` (o el puerto provisto por Vite).
+*(Opcional) Si necesitas realizar debug y prefieres ver los logs por separado, puedes abrir dos terminales e iniciar cada entorno individualmente usando `pnpm --filter backend dev` y `pnpm --filter frontend dev`.*
 
 ---
 
-### 3. Ejecución de Pruebas Automatizadas
+#### 5. Ejecución de Pruebas Automatizadas
 
 Para ejecutar las suites de tests unitarios y de integración con Vitest:
 
