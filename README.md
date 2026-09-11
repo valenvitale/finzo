@@ -335,7 +335,7 @@ Respuesta JSON 201 Created → Renderizado en UI
 A continuación se detalla la distribución de archivos y directorios planificada para el proyecto:
 
 ```text
-FINZO/
+finzo/
 ├── backend/
 │   ├── migrations/             # Scripts SQL de creación y migración de tablas
 │   ├── seeders/                # Datos semilla de prueba y categorías base
@@ -371,6 +371,8 @@ FINZO/
 │   │   ├── utils/              # Funciones auxiliares de formato y fechas
 │   │   ├── App.tsx             # Componente raíz de React
 │   │   └── Main.tsx            # Punto de montaje en el DOM
+│   │
+│   ├── index.html              # Punto de entrada HTML de Vite
 │   ├── .env.example            # Plantilla de variables de entorno para frontend
 │   ├── package.json            # Dependencias y scripts del frontend
 │   ├── tsconfig.json           # Configuración de TypeScript
@@ -382,8 +384,10 @@ FINZO/
 ├── .github/                    # Automatización e integración continua
 │   └── workflows/              # GitHub Actions para CI/CD
 ├── .gitignore                  # Reglas de exclusión de Git
+├── .nvmrc                      # Versión de Node.js requerida
 ├── pnpm-workspace.yaml         # Configuración del monorepo con pnpm
 ├── package.json                # Configuración raíz del monorepo
+├── LICENSE                     # Licencia del proyecto
 ├── PROPUESTA.md                # Documento completo de la propuesta académica
 └── README.md                   # Documentación principal del proyecto
 ```
