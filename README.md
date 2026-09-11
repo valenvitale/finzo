@@ -235,10 +235,10 @@ pnpm --filter frontend test
 - [x] **Configuración de base:** Archivos `tsconfig.json`, `package.json`, `vitest.config.ts`, `.nvmrc` y reglas de `.gitignore` creados.
 - [x] **Definición funcional y técnica:** Propuesta formal del proyecto documentada en detalle en [`PROPUESTA.md`](./PROPUESTA.md).
 - [x] **Definición del stack y dependencias:** Dependencias base instaladas (Express 5, React 19, Supabase JS, Tailwind, Vitest).
+- [x] **Ajuste de scripts en `package.json`:** Definir los comandos `"scripts": { "dev": ..., "build": ..., "test": ... }` correspondientes en los paquetes para unificar el arranque en simultáneo.
 
 ### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
 
-- [ ] **Ajuste de scripts en `package.json`:** Definir los comandos `"scripts": { "dev": ..., "build": ..., "test": ... }` correspondientes en los paquetes para estandarizar el arranque.
 - [ ] **Configuración del proyecto en Supabase:** Creación de la instancia en la nube, obtención de claves API y configuración de clientes.
 - [ ] **Migraciones iniciales de base de datos:** Escribir los scripts SQL en `backend/migrations/` para las tablas principales (`profiles`, `categories`, `transactions`).
 - [ ] **Flujo de autenticación:** Implementar registro, login y middleware de validación de tokens JWT en el backend.
