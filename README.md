@@ -151,7 +151,7 @@ Sigue estos pasos para descargar, configurar y ejecutar el proyecto en tu entorn
 
 ### Prerrequisitos
 Asegúrate de tener instalado en tu entorno local:
-*   **[Node.js](https://nodejs.org/)** (versión especificada en el archivo `.nvmrc` — Node 24 o versión LTS v20+).
+*   **[Node.js](https://nodejs.org/)** (versión especificada en el archivo `.nvmrc` — Node 24).
 *   **[pnpm](https://pnpm.io/)** (versión 9 o superior). Si no lo tienes, puedes instalarlo con `npm install -g pnpm`.
 *   **[Git](https://git-scm.com/)**.
 
