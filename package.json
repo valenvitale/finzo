@@ -2,7 +2,9 @@
   "name": "finzo-root",
   "private": true,
   "scripts": {
-    "dev": "pnpm -r --parallel dev"
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test"
   },
   "devDependencies": {
     "eslint": "^10.10.0"
