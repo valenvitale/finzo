@@ -147,7 +147,7 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 
 ## 🚀 Cómo empezar
 
-Sigue estos pasos para descargar, configurar y ejecutar el proyecto en tu entorno local.
+Seguí estos pasos para descargar, configurar y ejecutar el proyecto en tu entorno local.
 
 ### Prerrequisitos
 Asegúrate de tener instalado en tu entorno local:
@@ -396,26 +396,34 @@ finzo/
 
 ## 🎯 Alcance del MVP y Roadmap
 
-El desarrollo del proyecto se ejecutará de manera incremental y modular:
+El proyecto se va a desarrollar por fases y de manera gradual:
 
 ### Fase 1: MVP (Mínimo Producto Viable) — _Prioridad Alta_
 
 - **Autenticación:** Registro de usuario, inicio de sesión, cierre de sesión y control de accesos mediante JWT.
-- **Gestión de Movimientos:** Crear, listar, editar y eliminar ingresos y gastos (monto, fecha, descripción y categoría).
+- **Gestión de Movimientos:** Crear, editar y eliminar ingresos y gastos (monto, fecha, descripción y categoría).
 - **Gestión de Categorías:** Categorías predeterminadas y personalizadas separadas por tipo (ingreso / gasto).
-- **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de últimos movimientos.
+- **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de movimientos.
 
-### Fase 2: Análisis Financiero — _Prioridad Media_
+### Fase 2: Página de Estadísticas y Análisis Financiero — _Prioridad Media_
 
-- Gráficos de distribución de gastos por categoría (Recharts).
-- Comparativa visual entre meses/períodos.
-- Indicador de tasa de ahorro mensual.
+- Grafico de evolución mensual de gastos e ingresos (ultimos 6 o 12 meses).
+- Gráfico de distribución de gastos por categoría.
+- Promedio de gasto por dia.
+- Indicador de ahorro.
+- Ranking de top 5 gastos más altos del mes.
+- Grafico de barras por días: Indica que días de la semana se gasta más.
+- Proyección a fin de mes: Toma el gasto promedio diario y proyecta con cuánto dinero (o deuda) cerrará el mes el usuario si mantiene ese mismo ritmo.
 
-### Fase 3: Planificación Avanzada — _Prioridad Futura_
+### Fase 3: Página de Metas y Página de Presupuestos — _Prioridad Futura_
 
-- Presupuestos límite por categoría con alertas visuales de exceso.
-- Definición y seguimiento de metas de ahorro.
-- Exportación e importación de reportes en formato CSV.
+- Presupuestos límite por categoría con alertas visuales en caso de exceso.
+- Metas de ahorro (nombre, monto, fecha de vencimiento, prioridad e indicador de progreso).
+
+### Fase 4: Funciones avanzadas - _Prioridad Futura II_
+
+- Exportación e importación de movimientos en formato CSV.
+- Analisis de IA sobre el flujo de caja y generacion de un consejo adecuado al caso.
 
 ---
 
