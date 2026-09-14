@@ -136,8 +136,7 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 | **Vitest**                | Test Runner            | Motor de pruebas ultrarrápido compatible de forma nativa con la configuración de Vite y TypeScript. |
 | **React Testing Library** | Testing de Componentes | Pruebas centradas en el comportamiento del usuario en la interfaz.                                  |
 | **ESLint**                | Linter                 | Detección temprana de errores de sintaxis y aplicación de reglas de estilo consistentes.            |
-| **Prettier** | Formateador de Código | Formateo consistente de estilos (comillas, sangrías, punto y coma) en todo el monorepo. |
-
+| **Prettier**              | Formateador de Código  | Formateo consistente de estilos (comillas, sangrías, punto y coma) en todo el monorepo.             |
 
 ### Entorno y Gestión de Paquetes
 
