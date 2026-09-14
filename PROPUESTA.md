@@ -612,7 +612,7 @@ Una historia incompleta al final del sprint no se contabiliza como terminada; vu
 | Riesgo                       | Impacto                            | Mitigación                                                          |
 | ---------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
 | Ampliar demasiado el alcance | Retrasos y baja calidad            | Congelar el MVP y exigir que los extras pasen por priorización      |
-| Dejar tests para el final    | Regresiones y refactoring riesgoso | Añadir tests dentro de la Definicion de tarea completada                        |
+| Dejar tests para el final    | Regresiones y refactoring riesgoso | Añadir tests dentro de la Definicion de tarea completada            |
 | Sobrediseñar                 | Complejidad innecesaria            | Exigir un problema concreto antes de introducir un patrón           |
 | Integración tardía           | Conflictos y fallos acumulados     | PR pequeños e integración frecuente en `develop`                    |
 | Problemas de autorización    | Exposición de datos                | Tests de aislamiento, middleware y RLS desde el MVP                 |
@@ -635,5 +635,3 @@ El proyecto se considerará exitoso si al cierre:
 - El alcance entregado es coherente con el MVP acordado.
 
 ---
-
-

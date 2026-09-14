@@ -1,7 +1,7 @@
 <div align="center">
-  
+
   <br />
-  
+
   <a href="https://github.com/valenvitale/finzo">
     <img src="frontend/public/images/finzo-logo.png" alt="Finzo Logo" width="180" style="max-width: 100%; height: auto;" />
   </a>
@@ -118,16 +118,16 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 
 ### Backend, Base de Datos e Infraestructura
 
-| Herramienta | Tipo / Rol | Justificación técnica |
-| :--- | :--- | :--- |
-| **Node.js** | Runtime | Plataforma base donde se ejecuta nuestro código. |
-| **Express 5** | Framework HTTP | Estructura nuestra API REST a medida (rutas, controladores y middlewares). |
-| **TypeScript** | Lenguaje | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones). |
-| **tsx** | Ejecutor dev | Ejecución en caliente del código TypeScript durante el desarrollo local, sin necesidad de compilación previa. |
-| **Render** | Hosting de la API | Servicio en la nube (Web Service) encargado exclusivamente de mantener corriendo nuestro servidor Node.js/Express. |
-| **PostgreSQL** | Motor de Base de Datos | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, transacciones y categorías). |
-| **Supabase** | Hosting de la Base de Datos | Plataforma en la nube que aloja y administra nuestra instancia de PostgreSQL. |
-| **Supabase Auth** | Autenticación & JWT | Servicio prearmado que gestiona el registro, login y contraseñas de forma segura en un esquema privado, devolviendo los tokens para la API. |
+| Herramienta       | Tipo / Rol                  | Justificación técnica                                                                                                                       |
+| :---------------- | :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Node.js**       | Runtime                     | Plataforma base donde se ejecuta nuestro código.                                                                                            |
+| **Express 5**     | Framework HTTP              | Estructura nuestra API REST a medida (rutas, controladores y middlewares).                                                                  |
+| **TypeScript**    | Lenguaje                    | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones).                                     |
+| **tsx**           | Ejecutor dev                | Ejecución en caliente del código TypeScript durante el desarrollo local, sin necesidad de compilación previa.                               |
+| **Render**        | Hosting de la API           | Servicio en la nube (Web Service) encargado exclusivamente de mantener corriendo nuestro servidor Node.js/Express.                          |
+| **PostgreSQL**    | Motor de Base de Datos      | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, transacciones y categorías).                          |
+| **Supabase**      | Hosting de la Base de Datos | Plataforma en la nube que aloja y administra nuestra instancia de PostgreSQL.                                                               |
+| **Supabase Auth** | Autenticación & JWT         | Servicio prearmado que gestiona el registro, login y contraseñas de forma segura en un esquema privado, devolviendo los tokens para la API. |
 
 ### Testing y Calidad de Código
 
@@ -136,7 +136,9 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 | **Vitest**                | Test Runner            | Motor de pruebas ultrarrápido compatible de forma nativa con la configuración de Vite y TypeScript. |
 | **React Testing Library** | Testing de Componentes | Pruebas centradas en el comportamiento del usuario en la interfaz.                                  |
 | **ESLint**                | Linter                 | Detección temprana de errores de sintaxis y aplicación de reglas de estilo consistentes.            |
-                                                                  
+| **Prettier** | Formateador de Código | Formateo consistente de estilos (comillas, sangrías, punto y coma) en todo el monorepo. |
+
+
 ### Entorno y Gestión de Paquetes
 
 | Herramienta         | Justificación técnica                                                                                                                               |
@@ -150,16 +152,19 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 Seguí estos pasos para descargar, configurar y ejecutar el proyecto en tu entorno local.
 
 ### Prerrequisitos
+
 Asegúrate de tener instalado en tu entorno local:
-*   **[Node.js](https://nodejs.org/)** (versión especificada en el archivo `.nvmrc` — Node 24).
-*   **[pnpm](https://pnpm.io/)** (versión 9 o superior). Si no lo tienes, puedes instalarlo con `npm install -g pnpm`.
-*   **[Git](https://git-scm.com/)**.
+
+- **[Node.js](https://nodejs.org/)** (versión especificada en el archivo `.nvmrc` — Node 24).
+- **[pnpm](https://pnpm.io/)** (versión 9 o superior). Si no lo tienes, puedes instalarlo con `npm install -g pnpm`.
+- **[Git](https://git-scm.com/)**.
 
 ### Paso a paso
 
 #### 1. Clonar el repositorio
 
 Descarga el código fuente y posicionate en el directorio:
+
 ```bash
 git clone https://github.com/valenvitale/finzo.git
 cd finzo
@@ -168,6 +173,7 @@ cd finzo
 #### 2. Instalar dependencias
 
 Al utilizar espacios de trabajo (`pnpm-workspace.yaml`), un único comando en la raíz instala automáticamente las dependencias compartidas, las del frontend y las del backend:
+
 ```bash
 pnpm install
 ```
@@ -176,20 +182,21 @@ pnpm install
 
 Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo provistas.
 
-*   **Backend (`backend/.env`):**
-    ```env
-    PORT=3000
-    NODE_ENV=development
-    SUPABASE_URL=https://tu-proyecto.supabase.co
-    SUPABASE_ANON_KEY=tu-anon-key
-    SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
-    ```
-*   **Frontend (`frontend/.env`):**
-    ```env
-    VITE_API_URL=http://localhost:3000/api
-    VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-    VITE_SUPABASE_ANON_KEY=tu-anon-key
-    ```
+- **Backend (`backend/.env`):**
+  ```env
+  PORT=3000
+  NODE_ENV=development
+  SUPABASE_URL=https://tu-proyecto.supabase.co
+  SUPABASE_ANON_KEY=tu-anon-key
+  SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+  ```
+- **Frontend (`frontend/.env`):**
+  ```env
+  VITE_API_URL=http://localhost:3000/api
+  VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+  VITE_SUPABASE_ANON_KEY=tu-anon-key
+  ```
+
 > [!WARNING]
 > Nunca comitear ni subir archivos `.env` reales al repositorio; asegúrate de que permanezcan en el `.gitignore`.
 
@@ -202,14 +209,33 @@ pnpm dev
 ```
 
 > **Servicios iniciados:**
-> *   **Frontend:** Disponible en `http://localhost:5173`
-> *   **Backend (API):** Corriendo en `http://localhost:3000`
+>
+> - **Frontend:** Disponible en `http://localhost:5173`
+> - **Backend (API):** Corriendo en `http://localhost:3000`
 
-*(Opcional) Si necesitas realizar debug y prefieres ver los logs por separado, puedes abrir dos terminales e iniciar cada entorno individualmente usando `pnpm --filter backend dev` y `pnpm --filter frontend dev`.*
+_(Opcional) Si necesitas realizar debug y prefieres ver los logs por separado, puedes abrir dos terminales e iniciar cada entorno individualmente usando `pnpm --filter backend dev` y `pnpm --filter frontend dev`._
 
 ---
 
-#### 5. Ejecución de Pruebas Automatizadas
+#### 5. Calidad de Código y Formato
+
+El monorepo cuenta con scripts centralizados en la raíz para verificar la calidad, consistencia de estilo y compilación en ambos proyectos:
+
+```bash
+# Analizar el código con ESLint en busca de posibles errores
+pnpm lint
+
+# Formatear automáticamente todos los archivos con Prettier
+pnpm format
+
+# Verificar el formato sin modificar los archivos
+pnpm format:check
+
+# Compilar ambos proyectos y validar tipos para producción
+pnpm build
+```
+
+#### 6. Ejecución de Pruebas Automatizadas
 
 Para ejecutar las suites de tests unitarios y de integración con Vitest:
 
@@ -370,7 +396,8 @@ finzo/
 │   │   ├── types/              # Tipos compartidos en la interfaz
 │   │   ├── utils/              # Funciones auxiliares de formato y fechas
 │   │   ├── App.tsx             # Componente raíz de React
-│   │   └── Main.tsx            # Punto de montaje en el DOM
+│   │   ├── main.tsx            # Punto de montaje en el DOM
+│   │   └── vite-env.d.ts       # Declaraciones de tipos de variables de entorno Vite
 │   │
 │   ├── index.html              # Punto de entrada HTML de Vite
 │   ├── .env.example            # Plantilla de variables de entorno para frontend
@@ -385,6 +412,8 @@ finzo/
 │   └── workflows/              # GitHub Actions para CI/CD
 ├── .gitignore                  # Reglas de exclusión de Git
 ├── .nvmrc                      # Versión de Node.js requerida
+├── .prettierrc                 # Configuración de formato de código (Prettier)
+├── eslint.config.js            # Configuración de linter (ESLint Flat Config)
 ├── pnpm-workspace.yaml         # Configuración del monorepo con pnpm
 ├── package.json                # Configuración raíz del monorepo
 ├── LICENSE                     # Licencia del proyecto
