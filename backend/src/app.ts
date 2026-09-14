@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import { errorHandler } from './middlewares/errorHandler';
+import { env } from './config/env.js';
+import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: env.CLIENT_URL,
     credentials: true,
   }),
 );
