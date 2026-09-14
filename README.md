@@ -177,7 +177,7 @@ Al utilizar espacios de trabajo (`pnpm-workspace.yaml`), un único comando en la
 pnpm install
 ```
 
-#### 3. Configurar variables de entorno**
+#### 3. Configurar variables de entorno
 
 Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo provistas.
 
@@ -185,6 +185,7 @@ Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a part
   ```env
   PORT=3000
   NODE_ENV=development
+  CLIENT_URL=http://localhost:5173
   SUPABASE_URL=https://tu-proyecto.supabase.co
   SUPABASE_ANON_KEY=tu-anon-key
   SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
