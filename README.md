@@ -430,9 +430,9 @@ El proyecto se va a desarrollar por fases y de manera gradual:
 ### Fase 1: MVP (Mínimo Producto Viable) — _Prioridad Alta_
 
 - **Autenticación:** Registro de usuario, inicio de sesión, cierre de sesión y control de accesos mediante JWT.
-- **Gestión de Movimientos:** Crear, editar y eliminar ingresos y gastos (monto, fecha, descripción y categoría).
+- **Gestión de Movimientos:** Crear, editar y eliminar ingresos y gastos (monto, fecha, descripción, categoría y medio de pago (efectivo, débito, crédito o transferencia)).
 - **Gestión de Categorías:** Categorías predeterminadas y personalizadas separadas por tipo (ingreso / gasto).
-- **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de movimientos.
+- **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de movimientos con filtros (fecha, categoría y medio de pago).
 
 ### Fase 2: Página de Estadísticas y Análisis Financiero — _Prioridad Media_
 
@@ -444,12 +444,12 @@ El proyecto se va a desarrollar por fases y de manera gradual:
 - Grafico de barras por días: Indica que días de la semana se gasta más.
 - Proyección a fin de mes: Toma el gasto promedio diario y proyecta con cuánto dinero (o deuda) cerrará el mes el usuario si mantiene ese mismo ritmo.
 
-### Fase 3: Página de Metas y Página de Presupuestos — _Prioridad Futura_
+### Fase 3: Página de Metas y Página de Presupuestos — _Prioridad Media-Baja_
 
 - Presupuestos límite por categoría con alertas visuales en caso de exceso.
 - Metas de ahorro (nombre, monto, fecha de vencimiento, prioridad e indicador de progreso).
 
-### Fase 4: Funciones avanzadas - _Prioridad Futura II_
+### Fase 4: Funciones avanzadas - _Prioridad Baja_
 
 - Exportación e importación de movimientos en formato CSV.
 - Analisis de IA sobre el flujo de caja y generacion de un consejo adecuado al caso.

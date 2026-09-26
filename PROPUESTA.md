@@ -67,8 +67,8 @@ Personas que buscan controlar sus finanzas cotidianas sin utilizar una herramien
 #### Movimientos
 
 - Crear, editar, eliminar y consultar ingresos y gastos.
-- Informar monto, tipo, categoría, descripción y fecha.
-- Filtrar por fecha, categoría y tipo de movimiento.
+- Informar monto, tipo, categoría, descripción, fecha y medio de pago (efectivo, débito, crédito o transferencia).
+- Filtrar por fecha, categoría, tipo de movimiento y medio de pago.
 
 #### Categorías
 
@@ -128,7 +128,7 @@ El usuario podrá utilizar categorías iniciales y administrar categorías perso
 
 ### RF-05 Consulta y filtros
 
-El historial permitirá filtrar movimientos por intervalo de fechas, categoría y tipo.
+El historial permitirá filtrar movimientos por intervalo de fechas, categoría, tipo y medio de pago.
 
 ### RF-06 Resumen financiero
 
@@ -137,7 +137,8 @@ El dashboard calculará los ingresos, gastos y el balance del mes actual. En el 
 ### Reglas de negocio iniciales
 
 - El monto debe ser mayor que cero.
-- El tipo será `income`(ingreso) o `expense` (gasto).
+- El tipo será `income` (ingreso) o `expense` (gasto).
+- El medio de pago será uno de los valores permitidos: `cash` (efectivo), `debit_card` (débito), `credit_card` (crédito) o `transfer` (transferencia).
 - La categoría debe existir, corresponder al usuario y ser compatible con el tipo de movimiento.
 - La fecha debe tener un formato válido.
 - Un usuario solo podrá consultar o modificar sus propios datos.
@@ -287,6 +288,7 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 - `category_id`
 - `amount`
 - `type` (`income` o `expense`)
+- `payment_method` (`cash`, `debit_card`, `credit_card` o `transfer`)
 - `description`
 - `date`
 - `created_at`
@@ -383,6 +385,7 @@ El cambio solo se considerará valioso si mejora claridad, pruebas, mantenimient
 - Crear un ingreso y un gasto válidos.
 - Rechazar monto cero o negativo.
 - Rechazar fecha o tipo inválidos.
+- Rechazar medio de pago inválido o no reconocido.
 - Rechazar categoría inexistente o incompatible.
 - Impedir leer o modificar datos de otro usuario.
 - Actualizar correctamente el balance tras crear, editar o eliminar.
