@@ -268,7 +268,7 @@ pnpm --filter frontend test
 ### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
 
 - [ ] **Configuración del proyecto en Supabase:** Creación de la instancia en la nube, obtención de claves API y configuración de clientes.
-- [ ] **Migraciones iniciales de base de datos:** Escribir los scripts SQL en `backend/migrations/` para las tablas principales (`profiles`, `categories`, `transactions`).
+- [ ] **Modelado de dominio y persistencia:** Definir los modelos de dominio independientes en `src/models/`, el esquema relacional en `backend/prisma/schema.prisma` y ejecutar la migración inicial hacia Supabase.
 - [ ] **Flujo de autenticación:** Implementar registro, login y middleware de validación de tokens JWT en el backend.
 - [ ] **CRUD de categorías y movimientos:** Desarrollo de endpoints REST y servicios para registrar ingresos/gastos y clasificar por categorías.
 - [ ] **Dashboard inicial en Frontend:** Construcción de vistas de balance actual, historial de movimientos y formulario de carga.

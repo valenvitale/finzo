@@ -306,9 +306,9 @@ categories 1 ─── M transactions
 
 ### Migraciones y datos iniciales
 
-- Las migraciones SQL estarán versionadas y permitirán reproducir la estructura de la base de datos.
-- Los seeders cargarán datos útiles para desarrollo y pruebas, sin ejecutarse automáticamente en producción.
-- Los comandos definitivos se documentarán en el README una vez configurados y validados por el equipo.
+- Las migraciones se gestionarán a través de Prisma Migrate (`prisma/migrations`), versionando el esquema para reproducir la estructura de la base de datos de manera consistente.
+- Los seeds de datos iniciales se implementarán mediante un script en `prisma/seed.ts` para cargar datos útiles en desarrollo y pruebas (categorías base y movimientos de ejemplo), sin ejecutarse en producción.
+- Los comandos definitivos se documentarán en el README una vez validados por el equipo.
 
 ---
 
@@ -489,7 +489,7 @@ La protección de ramas impedirá integrar cambios si fallan los controles oblig
 - Objetivo del proyecto.
 - Requisitos previos.
 - Instalación y variables de entorno.
-- Migraciones y seeders.
+- Migraciones y seeds (Prisma).
 - Ejecución de frontend, backend y tests.
 - Estructura general y enlaces relevantes.
 
