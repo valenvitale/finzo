@@ -175,8 +175,7 @@ El dashboard calculará los ingresos, gastos y el balance del mes actual. En el 
 ```text
 finzo/
 ├── backend/
-│   ├── migrations/             # Scripts SQL de creación y migración de tablas
-│   ├── seeders/                # Datos semilla de prueba y categorías base
+│   ├── prisma/                 # Esquema de Prisma (schema.prisma), migraciones y seeds
 │   ├── src/
 │   │   ├── config/             # Configuración de entorno y clientes externos
 │   │   ├── controllers/        # Controladores que reciben peticiones HTTP
@@ -240,7 +239,7 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 | ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------ |
 | Frontend            | React, TypeScript, Vite, Tailwind CSS | Interfaz, formularios y navegación                                                   |
 | Backend             | Node.js, TypeScript, Express          | API REST y reglas de negocio                                                         |
-| Datos               | Supabase con PostgreSQL               | Persistencia administrada                                                            |
+| Datos               | Supabase con PostgreSQL y Prisma ORM  | Persistencia administrada y mapeo tipado de datos                                    |
 | Autenticación       | Supabase Auth                         | Usuarios y sesiones                                                                  |
 | Testing             | Vitest y Testing Library              | Vitest para tests unitarios, de servicios y de API; Testing Library para componentes |
 | Automatización      | GitHub Actions                        | Lint, typecheck y tests                                                              |
@@ -253,7 +252,7 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 
 - El repositorio utilizará `pnpm` como gestor de paquetes. El archivo `.nvmrc` indicará la versión de Node.js compatible con el proyecto; el README documentará cómo activarla con `nvm use` antes de instalar las dependencias.
 - El backend se implementará con Node.js y Express y se desplegará en Render.
-- Supabase se utilizará para autenticación, PostgreSQL y políticas RLS.
+- Supabase se utilizará para autenticación y base de datos PostgreSQL; Prisma se utilizará como ORM para el modelado de datos, migraciones y consultas tipadas.
 - Vitest será la herramienta común para ejecutar los tests unitarios, de servicios y de API; Testing Library se utilizará para los tests de componentes.
 - Estrategia de borrado de categorías asociadas a movimientos.
 - Moneda única por perfil y tratamiento de decimales.

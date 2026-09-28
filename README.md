@@ -27,6 +27,7 @@
     <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
     <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
     <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+    <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
     <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
     <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
     <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
@@ -126,6 +127,7 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 | **tsx**           | Ejecutor dev                | Ejecución en caliente del código TypeScript durante el desarrollo local, sin necesidad de compilación previa.                               |
 | **Render**        | Hosting de la API           | Servicio en la nube (Web Service) encargado exclusivamente de mantener corriendo nuestro servidor Node.js/Express.                          |
 | **PostgreSQL**    | Motor de Base de Datos      | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, transacciones y categorías).                          |
+| **Prisma**        | ORM                         | Mapeador objeto-relacional tipado (type-safe) para definir modelos, migraciones y consultas a PostgreSQL.                                   |
 | **Supabase**      | Hosting de la Base de Datos | Plataforma en la nube que aloja y administra nuestra instancia de PostgreSQL.                                                               |
 | **Supabase Auth** | Autenticación & JWT         | Servicio prearmado que gestiona el registro, login y contraseñas de forma segura en un esquema privado, devolviendo los tokens para la API. |
 
@@ -346,7 +348,7 @@ Service (`transaction.service.ts`)
        │  Aplica lógica de negocio (validar saldos, reglas)
        ▼
 Repository (`transaction.repository.ts`)
-       │  Ejecuta consulta en base de datos
+       │  Ejecuta consulta a través de Prisma Client
        ▼
 PostgreSQL / Supabase
        │  Almacena y retorna el registro
@@ -363,8 +365,7 @@ A continuación se detalla la distribución de archivos y directorios planificad
 ```text
 finzo/
 ├── backend/
-│   ├── migrations/             # Scripts SQL de creación y migración de tablas
-│   ├── seeders/                # Datos semilla de prueba y categorías base
+│   ├── prisma/                 # Esquema de Prisma (schema.prisma), migraciones y seeds
 │   ├── src/
 │   │   ├── config/             # Configuración de entorno y clientes externos
 │   │   ├── controllers/        # Controladores que reciben peticiones HTTP
