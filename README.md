@@ -1,7 +1,7 @@
 <div align="center">
-  
+
   <br />
-  
+
   <a href="https://github.com/valenvitale/finzo">
     <img src="frontend/public/images/finzo-logo.png" alt="Finzo Logo" width="180" style="max-width: 100%; height: auto;" />
   </a>
@@ -27,6 +27,7 @@
     <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
     <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
     <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+    <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
     <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
     <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
     <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
@@ -51,13 +52,12 @@
 1. [Qué problema resuelve el proyecto](#-qué-problema-resuelve-el-proyecto)
 2. [Integrantes del equipo](#-integrantes-del-equipo)
 3. [Tecnología elegida](#-tecnología-elegida)
-4. [Cómo instalar dependencias](#-cómo-instalar-dependencias)
-5. [Cómo ejecutar el proyecto](#-cómo-ejecutar-el-proyecto)
-6. [Estado actual y pendientes conocidos](#-estado-actual-y-pendientes-conocidos)
-7. [Arquitectura y diseño](#-arquitectura-y-diseño)
-8. [Estructura del repositorio](#-estructura-del-repositorio)
-9. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
-10. [Metodologia de Trabajo y Convenciones](#-metodología-de-trabajo-y-convenciones)
+4. [Cómo empezar](#-como-empezar)
+5. [Estado actual y pendientes conocidos](#-estado-actual-y-pendientes-conocidos)
+6. [Arquitectura y diseño](#-arquitectura-y-diseño)
+7. [Estructura del repositorio](#-estructura-del-repositorio)
+8. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
+9. [Metodologia de Trabajo y Convenciones](#-metodología-de-trabajo-y-convenciones)
 
 ---
 
@@ -119,16 +119,17 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 
 ### Backend, Base de Datos e Infraestructura
 
-| Herramienta | Tipo / Rol | Justificación técnica |
-| :--- | :--- | :--- |
-| **Node.js** | Runtime | Plataforma base donde se ejecuta nuestro código. |
-| **Express 5** | Framework HTTP | Estructura nuestra API REST a medida (rutas, controladores y middlewares). |
-| **TypeScript** | Lenguaje | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones). |
-| **tsx** | Ejecutor dev | Ejecución en caliente del código TypeScript durante el desarrollo local, sin necesidad de compilación previa. |
-| **Render** | Hosting de la API | Servicio en la nube (Web Service) encargado exclusivamente de mantener corriendo nuestro servidor Node.js/Express. |
-| **PostgreSQL** | Motor de Base de Datos | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, transacciones y categorías). |
-| **Supabase** | Hosting de la Base de Datos | Plataforma en la nube que aloja y administra nuestra instancia de PostgreSQL. |
-| **Supabase Auth** | Autenticación & JWT | Servicio prearmado que gestiona el registro, login y contraseñas de forma segura en un esquema privado, devolviendo los tokens para la API. |
+| Herramienta       | Tipo / Rol                  | Justificación técnica                                                                                                                       |
+| :---------------- | :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Node.js**       | Runtime                     | Plataforma base donde se ejecuta nuestro código.                                                                                            |
+| **Express 5**     | Framework HTTP              | Estructura nuestra API REST a medida (rutas, controladores y middlewares).                                                                  |
+| **TypeScript**    | Lenguaje                    | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones).                                     |
+| **tsx**           | Ejecutor dev                | Ejecución en caliente del código TypeScript durante el desarrollo local, sin necesidad de compilación previa.                               |
+| **Render**        | Hosting de la API           | Servicio en la nube (Web Service) encargado exclusivamente de mantener corriendo nuestro servidor Node.js/Express.                          |
+| **PostgreSQL**    | Motor de Base de Datos      | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, transacciones y categorías).                          |
+| **Prisma**        | ORM                         | Mapeador objeto-relacional tipado (type-safe) para definir modelos, migraciones y consultas a PostgreSQL.                                   |
+| **Supabase**      | Hosting de la Base de Datos | Plataforma en la nube que aloja y administra nuestra instancia de PostgreSQL.                                                               |
+| **Supabase Auth** | Autenticación & JWT         | Servicio prearmado que gestiona el registro, login y contraseñas de forma segura en un esquema privado, devolviendo los tokens para la API. |
 
 ### Testing y Calidad de Código
 
@@ -137,7 +138,8 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 | **Vitest**                | Test Runner            | Motor de pruebas ultrarrápido compatible de forma nativa con la configuración de Vite y TypeScript. |
 | **React Testing Library** | Testing de Componentes | Pruebas centradas en el comportamiento del usuario en la interfaz.                                  |
 | **ESLint**                | Linter                 | Detección temprana de errores de sintaxis y aplicación de reglas de estilo consistentes.            |
-                                                                  
+| **Prettier**              | Formateador de Código  | Formateo consistente de estilos (comillas, sangrías, punto y coma) en todo el monorepo.             |
+
 ### Entorno y Gestión de Paquetes
 
 | Herramienta         | Justificación técnica                                                                                                                               |
@@ -146,116 +148,96 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 
 ---
 
-## 📦 Cómo Instalar Dependencias
+## 🚀 Cómo empezar
+
+Seguí estos pasos para descargar, configurar y ejecutar el proyecto en tu entorno local.
 
 ### Prerrequisitos
 
-Asegurarse de tener instalado en el entorno local:
+Asegúrate de tener instalado en tu entorno local:
 
-- [Node.js](https://nodejs.org/) (versión especificada en el archivo `.nvmrc` — Node 24 o versión LTS v20+). Si utilizas `nvm` (_Node Version Manager_), puedes activar la versión requerida directamente con:
-  ```bash
-  nvm use
-  ```
-- [pnpm](https://pnpm.io/) (versión 9 o superior). Si no lo tienes instalado:
-  ```bash
-  npm install -g pnpm
-  ```
-- [Git](https://git-scm.com/)
+- **[Node.js](https://nodejs.org/)** (versión especificada en el archivo `.nvmrc` — Node 24).
+- **[pnpm](https://pnpm.io/)** (versión 9 o superior). Si no lo tienes, puedes instalarlo con `npm install -g pnpm`.
+- **[Git](https://git-scm.com/)**.
 
 ### Paso a paso
 
-1. **Clonar el repositorio:**
+#### 1. Clonar el repositorio
 
-   ```bash
-   git clone https://github.com/valenvitale/finzo.git
-   cd finzo
-   ```
+Descarga el código fuente y posicionate en el directorio:
 
-2. **Instalar todas las dependencias del monorepo:**
-   Al utilizar `pnpm-workspace.yaml`, un único comando en la raíz instala las dependencias de la raíz, del frontend y del backend:
-
-   ```bash
-   pnpm install
-   ```
-
-   _(Opcional)_ Si prefieres instalar dependencias en cada paquete por separado:
-
-   ```bash
-   # Para el backend
-   cd backend && pnpm install
-
-   # Para el frontend
-   cd ../frontend && pnpm install
-   ```
-
----
-
-## 🚀 Cómo Ejecutar el Proyecto
-
-### 1. Configurar las Variables de Entorno
-
-Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo:
-
-#### Backend (`backend/.env`):
-
-Crear el archivo `backend/.env` con los valores correspondientes:
-
-```env
-PORT=3000
-NODE_ENV=development
-SUPABASE_URL=https://tu-proyecto.supabase.co
-SUPABASE_ANON_KEY=tu-anon-key
-SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+```bash
+git clone https://github.com/valenvitale/finzo.git
+cd finzo
 ```
 
-#### Frontend (`frontend/.env`):
+#### 2. Instalar dependencias
 
-Crear el archivo `frontend/.env` con las variables públicas de Vite:
+Al utilizar espacios de trabajo (`pnpm-workspace.yaml`), un único comando en la raíz instala automáticamente las dependencias compartidas, las del frontend y las del backend:
 
-```env
-VITE_API_URL=http://localhost:3000/api
-VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-VITE_SUPABASE_ANON_KEY=tu-anon-key
+```bash
+pnpm install
 ```
+
+#### 3. Configurar variables de entorno
+
+Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo provistas.
+
+- **Backend (`backend/.env`):**
+  ```env
+  PORT=3000
+  NODE_ENV=development
+  CLIENT_URL=http://localhost:5173
+  SUPABASE_URL=https://tu-proyecto.supabase.co
+  SUPABASE_ANON_KEY=tu-anon-key
+  SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+  ```
+- **Frontend (`frontend/.env`):**
+  ```env
+  VITE_API_URL=http://localhost:3000/api
+  VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+  VITE_SUPABASE_ANON_KEY=tu-anon-key
+  ```
 
 > [!WARNING]
-> Nunca comitear ni subir archivos `.env` reales al repositorio. Ambos directorios cuentan con reglas en `.gitignore` para salvaguardar claves sensibles.
+> Nunca comitear ni subir archivos `.env` reales al repositorio; asegúrate de que permanezcan en el `.gitignore`.
 
----
+#### 4. Ejecutar el Entorno de Desarrollo
 
-### 2. Ejecutar los Servidores de Desarrollo
-
-Puedes iniciar cada servicio desde la raíz utilizando los filtros de pnpm o posicionándote en su directorio correspondiente:
-
-#### Iniciar el Backend (API):
+Gracias a la configuración del monorepo, podes iniciar tanto el backend como el frontend simultáneamente con un solo comando desde la raíz del proyecto:
 
 ```bash
-# Opción A: Desde la raíz
-pnpm --filter backend dev
-
-# Opción B: Ingresando al directorio
-cd backend
 pnpm dev
 ```
 
-> El servidor backend iniciará en `http://localhost:3000`.
+> **Servicios iniciados:**
+>
+> - **Frontend:** Disponible en `http://localhost:5173`
+> - **Backend (API):** Corriendo en `http://localhost:3000`
 
-#### Iniciar el Frontend (Web App):
-
-```bash
-# Opción A: Desde la raíz
-pnpm --filter frontend dev
-
-# Opción B: Ingresando al directorio
-cd frontend
-pnpm dev
-```
-
-> La aplicación estará disponible en `http://localhost:5173` (o el puerto provisto por Vite).
+_(Opcional) Si necesitas realizar debug y prefieres ver los logs por separado, puedes abrir dos terminales e iniciar cada entorno individualmente usando `pnpm --filter backend dev` y `pnpm --filter frontend dev`._
 
 ---
 
-### 3. Ejecución de Pruebas Automatizadas
+#### 5. Calidad de Código y Formato
+
+El monorepo cuenta con scripts centralizados en la raíz para verificar la calidad, consistencia de estilo y compilación en ambos proyectos:
+
+```bash
+# Analizar el código con ESLint en busca de posibles errores
+pnpm lint
+
+# Formatear automáticamente todos los archivos con Prettier
+pnpm format
+
+# Verificar el formato sin modificar los archivos
+pnpm format:check
+
+# Compilar ambos proyectos y validar tipos para producción
+pnpm build
+```
+
+#### 6. Ejecución de Pruebas Automatizadas
 
 Para ejecutar las suites de tests unitarios y de integración con Vitest:
 
@@ -281,12 +263,12 @@ pnpm --filter frontend test
 - [x] **Configuración de base:** Archivos `tsconfig.json`, `package.json`, `vitest.config.ts`, `.nvmrc` y reglas de `.gitignore` creados.
 - [x] **Definición funcional y técnica:** Propuesta formal del proyecto documentada en detalle en [`PROPUESTA.md`](./PROPUESTA.md).
 - [x] **Definición del stack y dependencias:** Dependencias base instaladas (Express 5, React 19, Supabase JS, Tailwind, Vitest).
+- [x] **Ajuste de scripts en `package.json`:** Definir los comandos `"scripts": { "dev": ..., "build": ..., "test": ... }` correspondientes en los paquetes para unificar el arranque en simultáneo.
 
 ### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
 
-- [ ] **Ajuste de scripts en `package.json`:** Definir los comandos `"scripts": { "dev": ..., "build": ..., "test": ... }` correspondientes en los paquetes para estandarizar el arranque.
 - [ ] **Configuración del proyecto en Supabase:** Creación de la instancia en la nube, obtención de claves API y configuración de clientes.
-- [ ] **Migraciones iniciales de base de datos:** Escribir los scripts SQL en `backend/migrations/` para las tablas principales (`profiles`, `categories`, `transactions`).
+- [ ] **Modelado de dominio y persistencia:** Definir los modelos de dominio independientes en `src/models/`, el esquema relacional en `backend/prisma/schema.prisma` y ejecutar la migración inicial hacia Supabase.
 - [ ] **Flujo de autenticación:** Implementar registro, login y middleware de validación de tokens JWT en el backend.
 - [ ] **CRUD de categorías y movimientos:** Desarrollo de endpoints REST y servicios para registrar ingresos/gastos y clasificar por categorías.
 - [ ] **Dashboard inicial en Frontend:** Construcción de vistas de balance actual, historial de movimientos y formulario de carga.
@@ -366,7 +348,7 @@ Service (`transaction.service.ts`)
        │  Aplica lógica de negocio (validar saldos, reglas)
        ▼
 Repository (`transaction.repository.ts`)
-       │  Ejecuta consulta en base de datos
+       │  Ejecuta consulta a través de Prisma Client
        ▼
 PostgreSQL / Supabase
        │  Almacena y retorna el registro
@@ -381,10 +363,9 @@ Respuesta JSON 201 Created → Renderizado en UI
 A continuación se detalla la distribución de archivos y directorios planificada para el proyecto:
 
 ```text
-FINZO/
+finzo/
 ├── backend/
-│   ├── migrations/             # Scripts SQL de creación y migración de tablas
-│   ├── seeders/                # Datos semilla de prueba y categorías base
+│   ├── prisma/                 # Esquema de Prisma (schema.prisma), migraciones y seeds
 │   ├── src/
 │   │   ├── config/             # Configuración de entorno y clientes externos
 │   │   ├── controllers/        # Controladores que reciben peticiones HTTP
@@ -416,7 +397,10 @@ FINZO/
 │   │   ├── types/              # Tipos compartidos en la interfaz
 │   │   ├── utils/              # Funciones auxiliares de formato y fechas
 │   │   ├── App.tsx             # Componente raíz de React
-│   │   └── Main.tsx            # Punto de montaje en el DOM
+│   │   ├── main.tsx            # Punto de montaje en el DOM
+│   │   └── vite-env.d.ts       # Declaraciones de tipos de variables de entorno Vite
+│   │
+│   ├── index.html              # Punto de entrada HTML de Vite
 │   ├── .env.example            # Plantilla de variables de entorno para frontend
 │   ├── package.json            # Dependencias y scripts del frontend
 │   ├── tsconfig.json           # Configuración de TypeScript
@@ -428,8 +412,12 @@ FINZO/
 ├── .github/                    # Automatización e integración continua
 │   └── workflows/              # GitHub Actions para CI/CD
 ├── .gitignore                  # Reglas de exclusión de Git
+├── .nvmrc                      # Versión de Node.js requerida
+├── .prettierrc                 # Configuración de formato de código (Prettier)
+├── eslint.config.js            # Configuración de linter (ESLint Flat Config)
 ├── pnpm-workspace.yaml         # Configuración del monorepo con pnpm
 ├── package.json                # Configuración raíz del monorepo
+├── LICENSE                     # Licencia del proyecto
 ├── PROPUESTA.md                # Documento completo de la propuesta académica
 └── README.md                   # Documentación principal del proyecto
 ```
@@ -438,26 +426,34 @@ FINZO/
 
 ## 🎯 Alcance del MVP y Roadmap
 
-El desarrollo del proyecto se ejecutará de manera incremental y modular:
+El proyecto se va a desarrollar por fases y de manera gradual:
 
 ### Fase 1: MVP (Mínimo Producto Viable) — _Prioridad Alta_
 
 - **Autenticación:** Registro de usuario, inicio de sesión, cierre de sesión y control de accesos mediante JWT.
-- **Gestión de Movimientos:** Crear, listar, editar y eliminar ingresos y gastos (monto, fecha, descripción y categoría).
+- **Gestión de Movimientos:** Crear, editar y eliminar ingresos y gastos (monto, fecha, descripción, categoría y medio de pago (efectivo, débito, crédito o transferencia)).
 - **Gestión de Categorías:** Categorías predeterminadas y personalizadas separadas por tipo (ingreso / gasto).
-- **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de últimos movimientos.
+- **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de movimientos con filtros (fecha, categoría y medio de pago).
 
-### Fase 2: Análisis Financiero — _Prioridad Media_
+### Fase 2: Página de Estadísticas y Análisis Financiero — _Prioridad Media_
 
-- Gráficos de distribución de gastos por categoría (Recharts).
-- Comparativa visual entre meses/períodos.
-- Indicador de tasa de ahorro mensual.
+- Grafico de evolución mensual de gastos e ingresos (ultimos 6 o 12 meses).
+- Gráfico de distribución de gastos por categoría.
+- Promedio de gasto por dia.
+- Indicador de ahorro.
+- Ranking de top 5 gastos más altos del mes.
+- Grafico de barras por días: Indica que días de la semana se gasta más.
+- Proyección a fin de mes: Toma el gasto promedio diario y proyecta con cuánto dinero (o deuda) cerrará el mes el usuario si mantiene ese mismo ritmo.
 
-### Fase 3: Planificación Avanzada — _Prioridad Futura_
+### Fase 3: Página de Metas y Página de Presupuestos — _Prioridad Media-Baja_
 
-- Presupuestos límite por categoría con alertas visuales de exceso.
-- Definición y seguimiento de metas de ahorro.
-- Exportación e importación de reportes en formato CSV.
+- Presupuestos límite por categoría con alertas visuales en caso de exceso.
+- Metas de ahorro (nombre, monto, fecha de vencimiento, prioridad e indicador de progreso).
+
+### Fase 4: Funciones avanzadas - _Prioridad Baja_
+
+- Exportación e importación de movimientos en formato CSV.
+- Analisis de IA sobre el flujo de caja y generacion de un consejo adecuado al caso.
 
 ---
 

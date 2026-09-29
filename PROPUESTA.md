@@ -67,8 +67,8 @@ Personas que buscan controlar sus finanzas cotidianas sin utilizar una herramien
 #### Movimientos
 
 - Crear, editar, eliminar y consultar ingresos y gastos.
-- Informar monto, tipo, categoría, descripción y fecha.
-- Filtrar por fecha, categoría y tipo de movimiento.
+- Informar monto, tipo, categoría, descripción, fecha y medio de pago (efectivo, débito, crédito o transferencia).
+- Filtrar por fecha, categoría, tipo de movimiento y medio de pago.
 
 #### Categorías
 
@@ -128,7 +128,7 @@ El usuario podrá utilizar categorías iniciales y administrar categorías perso
 
 ### RF-05 Consulta y filtros
 
-El historial permitirá filtrar movimientos por intervalo de fechas, categoría y tipo.
+El historial permitirá filtrar movimientos por intervalo de fechas, categoría, tipo y medio de pago.
 
 ### RF-06 Resumen financiero
 
@@ -137,7 +137,8 @@ El dashboard calculará los ingresos, gastos y el balance del mes actual. En el 
 ### Reglas de negocio iniciales
 
 - El monto debe ser mayor que cero.
-- El tipo será `income`(ingreso) o `expense` (gasto).
+- El tipo será `income` (ingreso) o `expense` (gasto).
+- El medio de pago será uno de los valores permitidos: `cash` (efectivo), `debit_card` (débito), `credit_card` (crédito) o `transfer` (transferencia).
 - La categoría debe existir, corresponder al usuario y ser compatible con el tipo de movimiento.
 - La fecha debe tener un formato válido.
 - Un usuario solo podrá consultar o modificar sus propios datos.
@@ -169,247 +170,63 @@ El dashboard calculará los ingresos, gastos y el balance del mes actual. En el 
 └──────────────────────────────┘
 ```
 
-### Estructura orientativa
+### Estructura definida
 
 ```text
 finzo/
-│
 ├── backend/
-│   │
+│   ├── prisma/                 # Esquema de Prisma (schema.prisma), migraciones y seeds
 │   ├── src/
-│   │   ├── controllers/
-│   │   │   ├── auth.controller.ts
-│   │   │   ├── transaction.controller.ts
-│   │   │   ├── category.controller.ts
-│   │   │   ├── profile.controller.ts
-│   │   │   ├── budget.controller.ts
-│   │   │   └── goal.controller.ts
-│   │   │
-│   │   ├── services/
-│   │   │   ├── auth.service.ts
-│   │   │   ├── transaction.service.ts
-│   │   │   ├── category.service.ts
-│   │   │   ├── profile.service.ts
-│   │   │   ├── budget.service.ts
-│   │   │   ├── goal.service.ts
-│   │   │   └── report.service.ts
-│   │   │
-│   │   ├── repositories/
-│   │   │   ├── transaction.repository.ts
-│   │   │   ├── category.repository.ts
-│   │   │   ├── profile.repository.ts
-│   │   │   ├── budget.repository.ts
-│   │   │   └── goal.repository.ts
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── auth.routes.ts
-│   │   │   ├── transaction.routes.ts
-│   │   │   ├── category.routes.ts
-│   │   │   ├── profile.routes.ts
-│   │   │   ├── budget.routes.ts
-│   │   │   ├── goal.routes.ts
-│   │   │   └── report.routes.ts
-│   │   │
-│   │   ├── middlewares/
-│   │   │   ├── auth.middleware.ts
-│   │   │   ├── error.middleware.ts
-│   │   │   └── validation.middleware.ts
-│   │   │
-│   │   ├── models/
-│   │   │   ├── transaction.model.ts
-│   │   │   ├── category.model.ts
-│   │   │   ├── profile.model.ts
-│   │   │   ├── budget.model.ts
-│   │   │   └── goal.model.ts
-│   │   │
-│   │   ├── types/
-│   │   │   ├── auth.types.ts
-│   │   │   ├── transaction.types.ts
-│   │   │   ├── category.types.ts
-│   │   │   ├── profile.types.ts
-│   │   │   ├── budget.types.ts
-│   │   │   └── goal.types.ts
-│   │   │
-│   │   ├── utils/
-│   │   │   ├── calculations.ts
-│   │   │   ├── errors.ts
-│   │   │   └── constants.ts
-│   │   │
-│   │   ├── config/ 
-│   │   │   ├── env.ts
-│   │   │   └── supabase.ts
-│   │   │
-│   │   ├── app.ts   
-│   │   └── server.ts 
-│   │
-│   ├── tests/
-│   │   ├── unit/
-│   │   │   ├── calculations.test.ts
-│   │   │   ├── transaction.service.test.ts
-│   │   │   └── category.service.test.ts
-│   │   │
-│   │   ├── integration/
-│   │   │   ├── auth.test.ts
-│   │   │   ├── transactions.test.ts
-│   │   │   └── categories.test.ts
-│   │   │
-│   │   └── setup.ts
-│   │
-│   ├── migrations/
-│   │   ├── 001_create_profiles.sql
-│   │   ├── 002_create_categories.sql
-│   │   ├── 003_create_transactions.sql
-│   │   ├── 004_create_budgets.sql
-│   │   └── 005_create_goals.sql
-│   │
-│   ├── seeders/
-│   │   ├── seed.ts
-│   │   └── data/
-│   │       ├── categories.ts
-│   │       └── demo-data.ts
-│   │
-│   ├── .env
-│   ├── .env.example
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vitest.config.ts
-│
+│   │   ├── config/             # Configuración de entorno y clientes externos
+│   │   ├── controllers/        # Controladores que reciben peticiones HTTP
+│   │   ├── middlewares/        # Middlewares de autenticación, validación y error
+│   │   ├── models/             # Interfaces y modelos de dominio
+│   │   ├── repositories/       # Abstracción y acceso a la base de datos
+│   │   ├── routes/             # Definición de endpoints REST
+│   │   ├── services/           # Lógica y reglas de negocio del sistema
+│   │   ├── types/              # Declaraciones de tipos TypeScript y DTOs
+│   │   ├── utils/              # Funciones auxiliares de cálculo y formato
+│   │   ├── app.ts              # Configuración de la aplicación Express
+│   │   └── server.ts           # Punto de entrada y levantamiento del servidor
+│   ├── tests/                  # Tests unitarios y de integración (Vitest)
+│   ├── .env.example            # Plantilla de variables de entorno para backend
+│   ├── package.json            # Dependencias y scripts del backend
+│   ├── tsconfig.json           # Configuración de TypeScript
+│   └── vitest.config.ts        # Configuración de Vitest para backend
 │
 ├── frontend/
-│   │
+│   ├── public/                 # Archivos estáticos públicos (logos, favicons)
 │   ├── src/
-│   │   │
-│   │   ├── components/
-│   │   │   ├── common/
-│   │   │   │   ├── Button.tsx
-│   │   │   │   ├── Input.tsx
-│   │   │   │   ├── Modal.tsx
-│   │   │   │   ├── Card.tsx
-│   │   │   │   ├── Select.tsx
-│   │   │   │   └── Loading.tsx
-│   │   │   │
-│   │   │   ├── layout/
-│   │   │   │   ├── Navbar.tsx
-│   │   │   │   ├── Sidebar.tsx
-│   │   │   │   ├── Header.tsx
-│   │   │   │   └── PageContainer.tsx
-│   │   │   │
-│   │   │   ├── dashboard/
-│   │   │   │   ├── BalanceCard.tsx
-│   │   │   │   ├── IncomeCard.tsx
-│   │   │   │   ├── ExpenseCard.tsx
-│   │   │   │   └── RecentTransactions.tsx
-│   │   │   │
-│   │   │   ├── transactions/
-│   │   │   │   ├── TransactionForm.tsx
-│   │   │   │   ├── TransactionTable.tsx
-│   │   │   │   ├── TransactionFilters.tsx
-│   │   │   │   └── TransactionCard.tsx
-│   │   │   │
-│   │   │   ├── categories/
-│   │   │   │   ├── CategoryForm.tsx
-│   │   │   │   ├── CategoryList.tsx
-│   │   │   │   └── CategoryCard.tsx
-│   │   │   │
-│   │   │   ├── budgets/
-│   │   │   │   ├── BudgetCard.tsx
-│   │   │   │   ├── BudgetForm.tsx
-│   │   │   │   └── BudgetProgress.tsx
-│   │   │   │
-│   │   │   ├── goals/
-│   │   │   │   ├── GoalCard.tsx
-│   │   │   │   ├── GoalForm.tsx
-│   │   │   │   └── GoalProgress.tsx
-│   │   │   │
-│   │   │   └── reports/
-│   │   │       ├── IncomeExpenseChart.tsx
-│   │   │       ├── CategoryChart.tsx
-│   │   │       └── SavingsRate.tsx
-│   │   │
-│   │   ├── pages/
-│   │   │   ├── auth/
-│   │   │   │   ├── Login.tsx
-│   │   │   │   └── Register.tsx
-│   │   │   │
-│   │   │   ├── Dashboard.tsx
-│   │   │   ├── Transactions.tsx
-│   │   │   ├── Categories.tsx
-│   │   │   ├── Budgets.tsx
-│   │   │   ├── Goals.tsx
-│   │   │   ├── Reports.tsx
-│   │   │   ├── Profile.tsx
-│   │   │   └── Settings.tsx
-│   │   │
-│   │   ├── services/
-│   │   │   ├── api.ts
-│   │   │   ├── auth.service.ts
-│   │   │   ├── transaction.service.ts
-│   │   │   ├── category.service.ts
-│   │   │   ├── profile.service.ts
-│   │   │   ├── budget.service.ts
-│   │   │   ├── goal.service.ts
-│   │   │   └── report.service.ts
-│   │   │
-│   │   ├── hooks/
-│   │   │   ├── useAuth.ts
-│   │   │   ├── useTransactions.ts
-│   │   │   ├── useCategories.ts
-│   │   │   ├── useBudgets.ts
-│   │   │   └── useGoals.ts
-│   │   │
-│   │   ├── context/
-│   │   │   └── AuthContext.tsx
-│   │   │
-│   │   ├── types/
-│   │   │   ├── transaction.types.ts
-│   │   │   ├── category.types.ts
-│   │   │   ├── profile.types.ts
-│   │   │   ├── budget.types.ts
-│   │   │   └── goal.types.ts
-│   │   │
-│   │   ├── routes/
-│   │   │   ├── AppRoutes.tsx
-│   │   │   ├── ProtectedRoute.tsx
-│   │   │   └── PublicRoute.tsx
-│   │   │
-│   │   ├── utils/
-│   │   │   ├── formatCurrency.ts
-│   │   │   ├── formatDate.ts
-│   │   │   └── validations.ts
-│   │   │
-│   │   ├── styles/
-│   │   │   ├── globals.css
-│   │   │   └── variables.css
-│   │   │
-│   │   ├── App.tsx
-│   │   └── main.tsx
+│   │   ├── components/         # Componentes reutilizables (UI, layout, dashboard)
+│   │   ├── context/            # Contextos globales de React (AuthContext)
+│   │   ├── hooks/              # Custom hooks para lógica desacoplada
+│   │   ├── pages/              # Vistas principales (Dashboard, Movimientos, Login)
+│   │   ├── routes/             # Enrutamiento de la aplicación (protegidas/públicas)
+│   │   ├── services/           # Clientes HTTP y llamadas al backend
+│   │   ├── styles/             # Estilos globales y configuración de estilos
+│   │   ├── types/              # Tipos compartidos en la interfaz
+│   │   ├── utils/              # Funciones auxiliares de formato y fechas
+│   │   ├── App.tsx             # Componente raíz de React
+│   │   └── Main.tsx            # Punto de montaje en el DOM
 │   │
-│   ├── public/
-│   │   ├── logo.svg
-│   │   ├── favicon.svg
-│   │   └── images/
-│   │
-│   ├── .env
-│   ├── .env.example
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vite.config.ts
-│   └── vitest.config.ts
+│   ├── index.html              # Punto de entrada HTML de Vite
+│   ├── .env.example            # Plantilla de variables de entorno para frontend
+│   ├── package.json            # Dependencias y scripts del frontend
+│   ├── tsconfig.json           # Configuración de TypeScript
+│   ├── vite.config.ts          # Configuración del bundler Vite
+│   └── vitest.config.ts        # Configuración de pruebas para frontend
 │
-│
-├── .github/
-│   └── workflows/
-│       ├── ci.yml
-│       └── pull-request.yml
-│
-├── docs/
+├── docs/                       # Documentación complementaria (API, diagramas)
 │   └── API.md
-│
-├── .gitignore
-├── README.md
-├── PROPUESTA.md
-├── package.json
-└── pnpm-workspace.yaml
+├── .github/                    # Automatización e integración continua
+│   └── workflows/              # GitHub Actions para CI/CD
+├── .gitignore                  # Reglas de exclusión de Git
+├── .nvmrc                      # Versión de Node.js requerida
+├── pnpm-workspace.yaml         # Configuración del monorepo con pnpm
+├── package.json                # Configuración raíz del monorepo
+├── LICENSE                     # Licencia del proyecto
+├── PROPUESTA.md                # Documento completo de la propuesta académica
+└── README.md                   # Documentación principal del proyecto
 ```
 
 Esta estructura es una guía inicial. Podrá cambiar mediante una decisión documentada si el equipo detecta una alternativa más simple o adecuada.
@@ -422,7 +239,7 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 | ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------ |
 | Frontend            | React, TypeScript, Vite, Tailwind CSS | Interfaz, formularios y navegación                                                   |
 | Backend             | Node.js, TypeScript, Express          | API REST y reglas de negocio                                                         |
-| Datos               | Supabase con PostgreSQL               | Persistencia administrada                                                            |
+| Datos               | Supabase con PostgreSQL y Prisma ORM  | Persistencia administrada y mapeo tipado de datos                                    |
 | Autenticación       | Supabase Auth                         | Usuarios y sesiones                                                                  |
 | Testing             | Vitest y Testing Library              | Vitest para tests unitarios, de servicios y de API; Testing Library para componentes |
 | Automatización      | GitHub Actions                        | Lint, typecheck y tests                                                              |
@@ -435,7 +252,7 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 
 - El repositorio utilizará `pnpm` como gestor de paquetes. El archivo `.nvmrc` indicará la versión de Node.js compatible con el proyecto; el README documentará cómo activarla con `nvm use` antes de instalar las dependencias.
 - El backend se implementará con Node.js y Express y se desplegará en Render.
-- Supabase se utilizará para autenticación, PostgreSQL y políticas RLS.
+- Supabase se utilizará para autenticación y base de datos PostgreSQL; Prisma se utilizará como ORM para el modelado de datos, migraciones y consultas tipadas.
 - Vitest será la herramienta común para ejecutar los tests unitarios, de servicios y de API; Testing Library se utilizará para los tests de componentes.
 - Estrategia de borrado de categorías asociadas a movimientos.
 - Moneda única por perfil y tratamiento de decimales.
@@ -470,6 +287,7 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 - `category_id`
 - `amount`
 - `type` (`income` o `expense`)
+- `payment_method` (`cash`, `debit_card`, `credit_card` o `transfer`)
 - `description`
 - `date`
 - `created_at`
@@ -488,9 +306,9 @@ categories 1 ─── M transactions
 
 ### Migraciones y datos iniciales
 
-- Las migraciones SQL estarán versionadas y permitirán reproducir la estructura de la base de datos.
-- Los seeders cargarán datos útiles para desarrollo y pruebas, sin ejecutarse automáticamente en producción.
-- Los comandos definitivos se documentarán en el README una vez configurados y validados por el equipo.
+- Las migraciones se gestionarán a través de Prisma Migrate (`prisma/migrations`), versionando el esquema para reproducir la estructura de la base de datos de manera consistente.
+- Los seeds de datos iniciales se implementarán mediante un script en `prisma/seed.ts` para cargar datos útiles en desarrollo y pruebas (categorías base y movimientos de ejemplo), sin ejecutarse en producción.
+- Los comandos definitivos se documentarán en el README una vez validados por el equipo.
 
 ---
 
@@ -566,6 +384,7 @@ El cambio solo se considerará valioso si mejora claridad, pruebas, mantenimient
 - Crear un ingreso y un gasto válidos.
 - Rechazar monto cero o negativo.
 - Rechazar fecha o tipo inválidos.
+- Rechazar medio de pago inválido o no reconocido.
 - Rechazar categoría inexistente o incompatible.
 - Impedir leer o modificar datos de otro usuario.
 - Actualizar correctamente el balance tras crear, editar o eliminar.
@@ -670,7 +489,7 @@ La protección de ramas impedirá integrar cambios si fallan los controles oblig
 - Objetivo del proyecto.
 - Requisitos previos.
 - Instalación y variables de entorno.
-- Migraciones y seeders.
+- Migraciones y seeds (Prisma).
 - Ejecución de frontend, backend y tests.
 - Estructura general y enlaces relevantes.
 
@@ -795,7 +614,7 @@ Una historia incompleta al final del sprint no se contabiliza como terminada; vu
 | Riesgo                       | Impacto                            | Mitigación                                                          |
 | ---------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
 | Ampliar demasiado el alcance | Retrasos y baja calidad            | Congelar el MVP y exigir que los extras pasen por priorización      |
-| Dejar tests para el final    | Regresiones y refactoring riesgoso | Añadir tests dentro de la Definicion de tarea completada                        |
+| Dejar tests para el final    | Regresiones y refactoring riesgoso | Añadir tests dentro de la Definicion de tarea completada            |
 | Sobrediseñar                 | Complejidad innecesaria            | Exigir un problema concreto antes de introducir un patrón           |
 | Integración tardía           | Conflictos y fallos acumulados     | PR pequeños e integración frecuente en `develop`                    |
 | Problemas de autorización    | Exposición de datos                | Tests de aislamiento, middleware y RLS desde el MVP                 |
@@ -818,5 +637,3 @@ El proyecto se considerará exitoso si al cierre:
 - El alcance entregado es coherente con el MVP acordado.
 
 ---
-
-
