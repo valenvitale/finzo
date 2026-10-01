@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+{"dependencies":{"@supabase/ssr":"^0.12.7","@supabase/supabase-js":"^2.116.0","react":"^19.2.8","react-dom":"^19.2.8"},"devDependencies":{"@testing-library/react":"^16.3.3","@types/react":"^19.2.18","@types/react-dom":"^19.2.7","@vitejs/plugin-react":"^6.1.1","autoprefixer":"^10.5.5","tailwindcss":"^4.3.3","typescript":"^7.0.2","vite":"^8.2.2","vitest":"^5.0.0"}}
+=======
 {
   "name": "frontend",
   "type": "module",
@@ -28,3 +31,4 @@
     "vitest": "^5.0.0"
   }
 }
+>>>>>>> cb01044726b4e92376e9d1f2af2fef631e4f8237
