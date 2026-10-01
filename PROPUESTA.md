@@ -2,8 +2,8 @@
 
 # Finzo: Sistema web de gestión de finanzas personales
 
-**Documento actualizado:** 08/09/2026  
-**Versión:** 4.0  
+**Documento actualizado:** 01/10/2026  
+**Versión:** 5.0  
 **Equipo:** Federico Heinrich, Valentina Vitale, Alesio Cragno, Maximo Messina.
 
 ---
@@ -18,8 +18,6 @@
 
 El problema que busca resolver es cotidiano: muchas personas conocen su saldo, pero no identifican con claridad cuánto gastan, en qué categorías ni cómo cambia su situación financiera con el tiempo. Finzo busca centralizar esa información y convertirla en información útil para tomar decisiones.
 
-La propuesta está pensada para **Metodología de Sistemas II**: tendrá un alcance controlado, una primera versión funcional y espacio suficiente para demostrar diseño, trabajo colaborativo, separación de responsabilidades, SOLID, refactoring, testing, documentación e integración continua.
-
 > **Criterio principal:** priorizar un producto funcional, seguro, escalable y defendible antes que una gran cantidad de funcionalidades.
 
 ---
@@ -28,7 +26,7 @@ La propuesta está pensada para **Metodología de Sistemas II**: tendrá un alca
 
 ### Objetivo general
 
-Desarrollar una aplicación web mantenible y segura que permita a cada usuario registrar, consultar y analizar sus ingresos y gastos personales.
+Diseñar e implementar un sistema web seguro y mantenible que centralice la información económica del usuario y le brinde visibilidad clara sobre su balance cotidiano y hábitos de consumo.
 
 ### Usuario objetivo
 
@@ -74,15 +72,13 @@ Personas que buscan controlar sus finanzas cotidianas sin utilizar una herramien
 
 - Consultar categorías de ingreso y gasto.
 - Crear, editar y eliminar categorías personalizadas.
-- Impedir el uso de categorías inexistentes o pertenecientes a otro usuario.
 
 #### Dashboard
 
-- Saldo actual.
-- Total de ingresos del mes.
-- Total de gastos del mes.
-- Balance mensual.
-- Accesos rápidos a movimientos, categorías y perfil.
+- Total de ingresos del mes actual.
+- Total de gastos del mes actual.
+- Balance neto del mes actual (ingresos menos gastos).
+- Listado de movimientos recientes con detalle básico (fecha, categoría, monto y tipo).
 
 ### 3.2 Funcionalidades posteriores al MVP
 
@@ -104,6 +100,7 @@ Se incorporarán únicamente si la base está estable y cumple la definición de
 **Prioridad 4: Mejoras complementarias**
 
 - Importación y exportación CSV.
+- Analisis de IA sobre el flujo de caja y generacion de un consejo adecuado al caso.
 - Modo oscuro.
 
 ---
@@ -116,7 +113,7 @@ El sistema permitirá registrar usuarios, iniciar sesión, cerrar sesión y mant
 
 ### RF-02 Perfil
 
-El usuario podrá consultar y modificar su nombre, moneda y preferencias habilitadas.
+El usuario podrá consultar y modificar su correo electronico y moneda.
 
 ### RF-03 Gestión de movimientos
 
@@ -128,7 +125,7 @@ El usuario podrá utilizar categorías iniciales y administrar categorías perso
 
 ### RF-05 Consulta y filtros
 
-El historial permitirá filtrar movimientos por intervalo de fechas, categoría, tipo y medio de pago.
+El historial permitirá filtrar movimientos por descripción, periodo(mes/año), categoria, tipo de movimiento (Ingreso/gasto) y medio de pago.
 
 ### RF-06 Resumen financiero
 
@@ -137,8 +134,8 @@ El dashboard calculará los ingresos, gastos y el balance del mes actual. En el 
 ### Reglas de negocio iniciales
 
 - El monto debe ser mayor que cero.
-- El tipo será `income` (ingreso) o `expense` (gasto).
-- El medio de pago será uno de los valores permitidos: `cash` (efectivo), `debit_card` (débito), `credit_card` (crédito) o `transfer` (transferencia).
+- El tipo será `ingreso` (ingreso) o `gasto` (gasto).
+- El medio de pago será uno de los valores permitidos: `efectivo`, `debito`, `credito` o `transferencia`.
 - La categoría debe existir, corresponder al usuario y ser compatible con el tipo de movimiento.
 - La fecha debe tener un formato válido.
 - Un usuario solo podrá consultar o modificar sus propios datos.
@@ -151,23 +148,23 @@ El dashboard calculará los ingresos, gastos y el balance del mes actual. En el 
 ## 4. Arquitectura propuesta
 
 ```text
-┌──────────────────────────────┐
-│ Frontend                     │
-│ React + TypeScript + Vite    │
-└──────────────┬───────────────┘
-               │ HTTP / REST
-               ▼
-┌──────────────────────────────┐
-│ Backend                      │
-│ Node.js + TypeScript +       │
-│ Express                      │
-└──────────────┬───────────────┘
-               │
-               ▼
-┌──────────────────────────────┐
-│ Supabase                     │
-│ Auth + PostgreSQL + RLS      │
-└──────────────────────────────┘
+┌────────────────────────────────────────┐
+│ Frontend (Vercel)                      │
+│ React + TypeScript + Vite + Tailwind   │
+└──────────────────┬─────────────────────┘
+                   │ HTTP / REST (JSON + JWT)
+                   ▼
+┌────────────────────────────────────────┐
+│ Backend API (Render)                   │
+│ Node.js + TypeScript + Express         │
+└──────────────────┬─────────────────────┘
+                   │ Prisma ORM (TCP / SSL)
+                   │ Supabase Auth SDK
+                   ▼
+┌────────────────────────────────────────┐
+│ Base de Datos & Auth (Supabase)        │
+│ PostgreSQL + Auth Service              │
+└────────────────────────────────────────┘
 ```
 
 ### Estructura definida
@@ -255,79 +252,111 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 - Supabase se utilizará para autenticación y base de datos PostgreSQL; Prisma se utilizará como ORM para el modelado de datos, migraciones y consultas tipadas.
 - Vitest será la herramienta común para ejecutar los tests unitarios, de servicios y de API; Testing Library se utilizará para los tests de componentes.
 - Estrategia de borrado de categorías asociadas a movimientos.
-- Moneda única por perfil y tratamiento de decimales.
-
+-  Una moneda principal obligatoria y hasta una secundaria opcional por perfil (máximo 2, ej. ARS y USD), manejando todos los importes con tipo decimal de dos posiciones para garantizar precisión financiera y evitar errores de redondeo
 ---
 
 ## 6. Modelo inicial de datos
 
-### `profiles`
+![Modelo Entidad-Relación y Relacional](./frontend/public/images/BD-finzo-MER%20+%20MR.drawio.png)
+
+### `monedas`
 
 - `id`
-- `user_id` (único, referencia al usuario autenticado)
-- `name`
-- `currency`
-- `preferences`
+- `nombre` (ej: Peso Argentino, Dólar Estadounidense)
+- `codigo` (ej: ARS, USD)
+- `simbolo` (ej: $, U$S)
+
+### `perfiles`
+
+- `id`
+- `id_usuario` (referencia 1 a 1 a `auth.users` de Supabase)
+- `nombre`
+- `apellido`
+- `foto_perfil` (URL o path del avatar)
 - `created_at`
 - `updated_at`
 
-### `categories`
+### `perfiles_monedas`
+
+- `id_perfil` (FK a `perfiles`)
+- `id_moneda` (FK a `monedas`)
+- `es_principal` (booleano: indica la moneda por defecto del dashboard)
+
+### `categorias`
 
 - `id`
-- `user_id`
-- `name`
-- `type` (`income` o `expense`)
+- `id_perfil` (FK nullable: NULL para categorías predeterminadas del sistema)
+- `nombre`
+- `tipo` (`ingreso` o `gasto`)
+- `color` (identificador o código de color para UI)
+- `es_predeterminada` (booleano)
 - `created_at`
 - `updated_at`
 
-### `transactions`
+### `movimientos`
 
 - `id`
-- `user_id`
-- `category_id`
-- `amount`
-- `type` (`income` o `expense`)
-- `payment_method` (`cash`, `debit_card`, `credit_card` o `transfer`)
-- `description`
-- `date`
+- `id_perfil` (FK a `perfiles`)
+- `id_categoria` (FK a `categorias`)
+- `id_moneda` (FK a `monedas`)
+- `monto` (tipo Decimal con precisión de dos decimales)
+- `tipo` (`ingreso` o `gasto`)
+- `descripcion`
+- `medio_de_pago` (`efectivo`, `debito`, `credito` o `transferencia`)
+- `fecha`
 - `created_at`
 - `updated_at`
 
 ### Relaciones
 
 ```text
-auth.users 1 ─── 1 profiles
-auth.users 1 ─── M categories
-auth.users 1 ─── M transactions
-categories 1 ─── M transactions
+auth.users 1 ─── 1 perfiles
+perfiles 1 ─── M perfiles_monedas
+monedas 1 ─── M perfiles_monedas
+perfiles 0..1 ─── M categorias
+perfiles 1 ─── M movimientos
+categorias 1 ─── M movimientos
+monedas 1 ─── M movimientos
 ```
 
-> [!NOTE]: La creación de registros en la tabla pública profiles se automatizará mediante un Trigger de PostgreSQL que se ejecutará cada vez que un nuevo usuario se registre exitosamente en auth.users.
+> [!NOTE]
+> La creación de registros en la tabla pública `perfiles` se automatizará mediante un Trigger de PostgreSQL que se ejecutará cada vez que un nuevo usuario se registre exitosamente en `auth.users`.
+
+### Reglas de negocio del modelo de datos
+
+- **Monedas por perfil:** Un perfil debe poseer como mínimo 1 moneda y como máximo 2, teniendo siempre una única moneda configurada como principal (`es_principal = true`).
+- **Categorías predeterminadas:** Pertenecen al sistema (`es_predeterminada = true` e `id_perfil = NULL`), disponibles de solo lectura para todos los usuarios.
+- **Categorías personalizadas:** Pertenecen exclusivamente al perfil autenticado (`es_predeterminada = false`), con un límite máximo de 8 categorías personalizadas por usuario.
+- **Integridad de movimientos:** Cada movimiento debe asociarse a una categoría válida y a una de las monedas activas en el perfil del usuario.
 
 ### Migraciones y datos iniciales
 
 - Las migraciones se gestionarán a través de Prisma Migrate (`prisma/migrations`), versionando el esquema para reproducir la estructura de la base de datos de manera consistente.
-- Los seeds de datos iniciales se implementarán mediante un script en `prisma/seed.ts` para cargar datos útiles en desarrollo y pruebas (categorías base y movimientos de ejemplo), sin ejecutarse en producción.
+- Los seeds de datos iniciales se implementarán mediante un script en `prisma/seed.ts` para cargar datos útiles en desarrollo y pruebas (monedas base, categorías del sistema y movimientos de ejemplo), sin ejecutarse en producción.
 - Los comandos definitivos se documentarán en el README una vez validados por el equipo.
 
 ---
 
 ## 7. API inicial orientativa
 
-| Método | Ruta                | Descripción                                       |
-| ------ | ------------------- | ------------------------------------------------- |
-| GET    | `/profile`          | Consultar perfil propio                           |
-| PATCH  | `/profile`          | Editar perfil propio                              |
-| GET    | `/transactions`     | Listar y filtrar movimientos                      |
-| POST   | `/transactions`     | Crear movimiento                                  |
-| GET    | `/transactions/:id` | Consultar un movimiento propio                    |
-| PATCH  | `/transactions/:id` | Editar un movimiento propio                       |
-| DELETE | `/transactions/:id` | Eliminar un movimiento propio                     |
-| GET    | `/categories`       | Listar categorías                                 |
-| POST   | `/categories`       | Crear categoría                                   |
-| PATCH  | `/categories/:id`   | Editar categoría propia                           |
-| DELETE | `/categories/:id`   | Eliminar categoría propia                         |
-| GET    | `/summary`          | Obtener ingresos, gastos y balance del mes actual |
+| Método | Ruta                     | Descripción                                                                                  |
+| ------ | ------------------------ | -------------------------------------------------------------------------------------------- |
+| GET    | `/perfil`                | Consultar perfil propio del usuario autenticado                                              |
+| PATCH  | `/perfil`                | Editar datos del perfil propio (nombre, apellido, foto)                                      |
+| GET    | `/monedas`               | Listar catálogo de monedas disponibles en el sistema                                         |
+| GET    | `/perfil/monedas`        | Consultar monedas configuradas del perfil y cuál es la principal                             |
+| POST   | `/perfil/monedas`        | Asignar moneda al perfil o actualizar la moneda principal (máximo 2)                         |
+| DELETE | `/perfil/monedas/:id`    | Desvincular moneda secundaria del perfil                                                     |
+| GET    | `/movimientos`           | Listar y filtrar movimientos (búsqueda por texto, período mes/año, tipo, categoría, medio de pago) |
+| POST   | `/movimientos`           | Registrar nuevo movimiento                                                                   |
+| GET    | `/movimientos/:id`       | Consultar un movimiento propio                                                               |
+| PATCH  | `/movimientos/:id`       | Editar un movimiento propio                                                                  |
+| DELETE | `/movimientos/:id`       | Eliminar un movimiento propio                                                                |
+| GET    | `/categorias`            | Listar categorías disponibles (predeterminadas del sistema y personalizadas propias)         |
+| POST   | `/categorias`            | Crear categoría personalizada propia (máx. 8 por perfil)                                     |
+| PATCH  | `/categorias/:id`        | Editar categoría propia (nombre, tipo, color)                                                |
+| DELETE | `/categorias/:id`        | Eliminar categoría propia                                                                    |
+| GET    | `/resumen`               | Obtener ingresos, gastos y balance neto del mes actual                                       |
 
 La API de autenticación dependerá de la integración definida con Supabase Auth. Los contratos de entrada, salida y error deberán documentarse antes de implementar cada endpoint.
 
