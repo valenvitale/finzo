@@ -2,8 +2,8 @@
 
 # Finzo: Sistema web de gestión de finanzas personales
 
-**Documento actualizado:** 01/10/2026  
-**Versión:** 5.0  
+**Documento actualizado:** 04/10/2026  
+**Versión:** 6.0  
 **Equipo:** Federico Heinrich, Valentina Vitale, Alesio Cragno, Maximo Messina.
 
 ---
@@ -65,7 +65,7 @@ Personas que buscan controlar sus finanzas cotidianas sin utilizar una herramien
 #### Movimientos
 
 - Crear, editar, eliminar y consultar ingresos y gastos.
-- Informar monto, tipo, categoría, descripción, fecha y medio de pago (efectivo, débito, crédito o transferencia).
+- Informar monto, categoría, descripción, fecha y medio de pago. El tipo de movimiento (ingreso o gasto) se determina automáticamente por la categoría seleccionada.
 - Filtrar por fecha, categoría, tipo de movimiento y medio de pago.
 
 #### Categorías
@@ -123,6 +123,10 @@ El usuario podrá crear, consultar, editar y eliminar movimientos propios.
 
 El usuario podrá utilizar categorías iniciales y administrar categorías personalizadas separadas por tipo: ingreso o gasto.
 
+### RF-04b Gestión de medios de pago
+
+El usuario podrá utilizar medios de pago predeterminados del sistema y administrar medios de pago personalizados.
+
 ### RF-05 Consulta y filtros
 
 El historial permitirá filtrar movimientos por descripción, periodo(mes/año), categoria, tipo de movimiento (Ingreso/gasto) y medio de pago.
@@ -134,8 +138,8 @@ El dashboard calculará los ingresos, gastos y el balance del mes actual. En el 
 ### Reglas de negocio iniciales
 
 - El monto debe ser mayor que cero.
-- El tipo será `ingreso` (ingreso) o `gasto` (gasto).
-- El medio de pago será uno de los valores permitidos: `efectivo`, `debito`, `credito` o `transferencia`.
+- El tipo de movimiento se determina por la categoría asociada: cada categoría es de tipo `ingreso` o `gasto`.
+- El medio de pago debe existir y ser accesible para el usuario (predeterminado del sistema o personalizado propio).
 - La categoría debe existir, corresponder al usuario y ser compatible con el tipo de movimiento.
 - La fecha debe tener un formato válido.
 - Un usuario solo podrá consultar o modificar sus propios datos.
@@ -252,12 +256,16 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 - Supabase se utilizará para autenticación y base de datos PostgreSQL; Prisma se utilizará como ORM para el modelado de datos, migraciones y consultas tipadas.
 - Vitest será la herramienta común para ejecutar los tests unitarios, de servicios y de API; Testing Library se utilizará para los tests de componentes.
 - Estrategia de borrado de categorías asociadas a movimientos.
--  Una moneda principal obligatoria y hasta una secundaria opcional por perfil (máximo 2, ej. ARS y USD), manejando todos los importes con tipo decimal de dos posiciones para garantizar precisión financiera y evitar errores de redondeo
+- Una moneda principal obligatoria y hasta una secundaria opcional por perfil (máximo 2, ej. ARS y USD), manejando todos los importes con tipo decimal de dos posiciones para garantizar precisión financiera y evitar errores de redondeo.
+- Normalización del medio de pago como entidad independiente (`medios_pago`) para cumplir 3FN y habilitar personalización por usuario.
+- Eliminación del campo `tipo` en movimientos: se infiere de la categoría asociada.
+- Eliminación del campo `es_predeterminada` en categorías: se infiere de `id_perfil IS NULL` (3FN).
+
 ---
 
 ## 6. Modelo inicial de datos
 
-![Modelo Entidad-Relación y Relacional](./frontend/public/images/BD-finzo-MER%20+%20MR.drawio.png)
+![Modelo Entidad-Relación y Relacional](./frontend/public/images/BD-Finzo.svg)
 
 ### `monedas`
 
@@ -268,28 +276,35 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 
 ### `perfiles`
 
-- `id`
-- `id_usuario` (referencia 1 a 1 a `auth.users` de Supabase)
+- `id` (referencia 1 a 1 a `auth.users.id` de Supabase — funciona como PK y FK simultáneamente)
 - `nombre`
 - `apellido`
 - `foto_perfil` (URL o path del avatar)
 - `created_at`
 - `updated_at`
 
-### `perfiles_monedas`
+### `perfil_monedas`
 
-- `id_perfil` (FK a `perfiles`)
-- `id_moneda` (FK a `monedas`)
+- `id_perfil` (FK a `perfiles`, parte de PK compuesta)
+- `id_moneda` (FK a `monedas`, parte de PK compuesta)
 - `es_principal` (booleano: indica la moneda por defecto del dashboard)
 
 ### `categorias`
 
 - `id`
-- `id_perfil` (FK nullable: NULL para categorías predeterminadas del sistema)
+- `id_perfil` (FK nullable: NULL para categorías del sistema)
 - `nombre`
 - `tipo` (`ingreso` o `gasto`)
 - `color` (identificador o código de color para UI)
-- `es_predeterminada` (booleano)
+- `created_at`
+- `updated_at`
+
+### `medios_pago`
+
+- `id`
+- `id_perfil` (FK nullable: NULL para medios de pago del sistema)
+- `nombre` (ej: Efectivo, Débito, Crédito, Transferencia)
+- `icono` (identificador de icono para UI)
 - `created_at`
 - `updated_at`
 
@@ -299,10 +314,9 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 - `id_perfil` (FK a `perfiles`)
 - `id_categoria` (FK a `categorias`)
 - `id_moneda` (FK a `monedas`)
+- `id_medio_pago` (FK a `medios_pago`)
 - `monto` (tipo Decimal con precisión de dos decimales)
-- `tipo` (`ingreso` o `gasto`)
 - `descripcion`
-- `medio_de_pago` (`efectivo`, `debito`, `credito` o `transferencia`)
 - `fecha`
 - `created_at`
 - `updated_at`
@@ -311,12 +325,14 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 
 ```text
 auth.users 1 ─── 1 perfiles
-perfiles 1 ─── M perfiles_monedas
-monedas 1 ─── M perfiles_monedas
+perfiles 1 ─── M perfil_monedas
+monedas 1 ─── M perfil_monedas
 perfiles 0..1 ─── M categorias
+perfiles 0..1 ─── M medios_pago
 perfiles 1 ─── M movimientos
 categorias 1 ─── M movimientos
 monedas 1 ─── M movimientos
+medios_pago 1 ─── M movimientos
 ```
 
 > [!NOTE]
@@ -325,9 +341,12 @@ monedas 1 ─── M movimientos
 ### Reglas de negocio del modelo de datos
 
 - **Monedas por perfil:** Un perfil debe poseer como mínimo 1 moneda y como máximo 2, teniendo siempre una única moneda configurada como principal (`es_principal = true`).
-- **Categorías predeterminadas:** Pertenecen al sistema (`es_predeterminada = true` e `id_perfil = NULL`), disponibles de solo lectura para todos los usuarios.
-- **Categorías personalizadas:** Pertenecen exclusivamente al perfil autenticado (`es_predeterminada = false`), con un límite máximo de 8 categorías personalizadas por usuario.
-- **Integridad de movimientos:** Cada movimiento debe asociarse a una categoría válida y a una de las monedas activas en el perfil del usuario.
+- **Categorías del sistema:** Pertenecen al sistema (`id_perfil = NULL`), disponibles de solo lectura para todos los usuarios. Su naturaleza se infiere de la ausencia de perfil asociado, sin necesidad de un atributo booleano redundante (3FN).
+- **Categorías personalizadas:** Pertenecen exclusivamente al perfil autenticado (`id_perfil IS NOT NULL`), con un límite máximo de 8 categorías personalizadas por usuario.
+- **Medios de pago del sistema:** Pertenecen al sistema (`id_perfil = NULL`), disponibles de solo lectura para todos los usuarios.
+- **Medios de pago personalizados:** Pertenecen exclusivamente al perfil autenticado (`id_perfil IS NOT NULL`).
+- **Tipo de movimiento:** Se determina por el tipo de la categoría asociada (`ingreso` o `gasto`), eliminando redundancia de datos en la tabla de movimientos.
+- **Integridad de movimientos:** Cada movimiento debe asociarse a una categoría válida, a una de las monedas activas en el perfil del usuario y a un medio de pago válido.
 
 ### Migraciones y datos iniciales
 
@@ -356,6 +375,10 @@ monedas 1 ─── M movimientos
 | POST   | `/categorias`            | Crear categoría personalizada propia (máx. 8 por perfil)                                     |
 | PATCH  | `/categorias/:id`        | Editar categoría propia (nombre, tipo, color)                                                |
 | DELETE | `/categorias/:id`        | Eliminar categoría propia                                                                    |
+| GET    | `/medios-pago`           | Listar medios de pago disponibles (del sistema y personalizados propios)                     |
+| POST   | `/medios-pago`           | Crear medio de pago personalizado propio                                                     |
+| PATCH  | `/medios-pago/:id`       | Editar medio de pago propio (nombre, icono)                                                  |
+| DELETE | `/medios-pago/:id`       | Eliminar medio de pago propio                                                                |
 | GET    | `/resumen`               | Obtener ingresos, gastos y balance neto del mes actual                                       |
 
 La API de autenticación dependerá de la integración definida con Supabase Auth. Los contratos de entrada, salida y error deberán documentarse antes de implementar cada endpoint.
@@ -413,7 +436,7 @@ El cambio solo se considerará valioso si mejora claridad, pruebas, mantenimient
 - Crear un ingreso y un gasto válidos.
 - Rechazar monto cero o negativo.
 - Rechazar fecha o tipo inválidos.
-- Rechazar medio de pago inválido o no reconocido.
+- Rechazar medio de pago inexistente o no accesible para el usuario.
 - Rechazar categoría inexistente o incompatible.
 - Impedir leer o modificar datos de otro usuario.
 - Actualizar correctamente el balance tras crear, editar o eliminar.

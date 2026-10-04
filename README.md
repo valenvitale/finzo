@@ -126,7 +126,7 @@ La selección de tecnologías responde a la búsqueda de un stack moderno, fuert
 | **TypeScript**    | Lenguaje                    | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones).                                     |
 | **tsx**           | Ejecutor dev                | Ejecución en caliente del código TypeScript durante el desarrollo local, sin necesidad de compilación previa.                               |
 | **Render**        | Hosting de la API           | Servicio en la nube (Web Service) encargado exclusivamente de mantener corriendo nuestro servidor Node.js/Express.                          |
-| **PostgreSQL**    | Motor de Base de Datos      | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, transacciones y categorías).                          |
+| **PostgreSQL**    | Motor de Base de Datos      | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, movimientos, categorías y medios de pago).            |
 | **Prisma**        | ORM                         | Mapeador objeto-relacional tipado (type-safe) para definir modelos, migraciones y consultas a PostgreSQL.                                   |
 | **Supabase**      | Hosting de la Base de Datos | Plataforma en la nube que aloja y administra nuestra instancia de PostgreSQL.                                                               |
 | **Supabase Auth** | Autenticación & JWT         | Servicio prearmado que gestiona el registro, login y contraseñas de forma segura en un esquema privado, devolviendo los tokens para la API. |
@@ -333,21 +333,21 @@ Usuario en Frontend
        │  (Envía formulario de movimiento)
        ▼
 Cliente HTTP (Fetch / Axios / Service)
-       │  POST /api/transactions
+       │  POST /api/movimientos
        ▼
-Express Route (`transaction.routes.ts`)
+Express Route (`movimiento.routes.ts`)
        │
        ▼
-Middlewares (`auth.middleware.ts`, `validation.middleware.ts`)
+Middlewares (`auth.middleware.ts`, `validacion.middleware.ts`)
        │  Valida sesión y esquema de datos
        ▼
-Controller (`transaction.controller.ts`)
+Controller (`movimiento.controller.ts`)
        │  Extrae parámetros y delega
        ▼
-Service (`transaction.service.ts`)
-       │  Aplica lógica de negocio (validar saldos, reglas)
+Service (`movimiento.service.ts`)
+       │  Aplica lógica de negocio (validar montos, reglas)
        ▼
-Repository (`transaction.repository.ts`)
+Repository (`movimiento.repository.ts`)
        │  Ejecuta consulta a través de Prisma Client
        ▼
 PostgreSQL / Supabase
@@ -431,7 +431,7 @@ El proyecto se va a desarrollar por fases y de manera gradual:
 ### Fase 1: MVP (Mínimo Producto Viable) — _Prioridad Alta_
 
 - **Autenticación:** Registro de usuario, inicio de sesión, cierre de sesión y control de accesos mediante JWT.
-- **Gestión de Movimientos:** Crear, editar y eliminar ingresos y gastos (monto, fecha, descripción, categoría y medio de pago (efectivo, débito, crédito o transferencia)).
+- **Gestión de Movimientos:** Crear, editar y eliminar ingresos y gastos (monto, fecha, descripción, categoría y medio de pago). El tipo de movimiento se determina por la categoría seleccionada.
 - **Gestión de Categorías:** Categorías predeterminadas y personalizadas separadas por tipo (ingreso / gasto).
 - **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de movimientos con filtros (fecha, categoría y medio de pago).
 
