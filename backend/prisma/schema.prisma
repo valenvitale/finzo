@@ -3,9 +3,117 @@ generator client {
     provider = "prisma-client-js"
 }
 
-// Conexion a la base de datos
 datasource db {
-    provider = "postgresql"
-    url = env("DATABASE_URL")
+  provider = "postgresql"
 }
+
+// tipo de dato que solo admite los valores especificados
+enum TipoMovimiento {
+    INGRESO
+    GASTO
+}
+
+model Moneda {
+    id String @id @default(uuid())
+    nombre String @db.VarChar(30)
+    codigo String @unique @db.VarChar(3)
+    simbolo String @db.VarChar(5)
+
+    perfiles_monedas PerfilMoneda[]
+    movimientos Movimiento[]
+
+    @@map("monedas")
+}
+
+model Perfil {
+  id String @id // El id viene desde supabase mediante el trigger que se ejecuta al registrarse un usuario
+  nombre String @db.VarChar(30)
+  apellido String @db.VarChar(30)
+  foto_perfil String? 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt 
+
+  categorias Categoria[]
+  monedas PerfilMoneda[]
+  medios_de_pago MedioPago[]
+  movimientos Movimiento[]
+
+  @@map("perfiles")
+}
+
+model Categoria {
+  id String @id @default(uuid())
+  nombre String @db.VarChar(30)
+  color String @db.VarChar(7)
+  tipo TipoMovimiento
+  // Nullable ya que las categorias globales no tienen un perfil asociado
+  id_perfil String? // Columna en la BD
+  // 
+  perfil Perfil? @relation(fields: [id_perfil], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  movimientos Movimiento[]
+
+  @@index([id_perfil])
+  @@map("categorias")
+}
+
+model PerfilMoneda {
+  
+  id_perfil String
+  perfil Perfil @relation(fields: [id_perfil], references: [id], onDelete: Cascade)
+  
+  id_moneda String 
+  // onDelete: Restrict impide que se borre una Moneda si al menos un usuario la está usando
+  moneda Moneda @relation(fields: [id_moneda], references: [id], onDelete: Restrict) 
+  
+  es_principal Boolean @default(false)
+  // Clave Compuesta
+  @@id([id_perfil, id_moneda])
+
+  @@map("perfiles_monedas") 
+}
+
+model MedioPago {
+  id String @id @default(uuid())
+  nombre String @db.VarChar(40)
+  icono String @db.VarChar(20)
+  id_perfil String? 
+  perfil Perfil? @relation(fields:[id_perfil], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  movimientos Movimiento[]
+
+  @@index([id_perfil])
+  @@map("medios_de_pago")
+}
+
+model Movimiento {
+  id String @id @default(uuid())
+  monto Decimal @db.Decimal(12,2)
+  fecha DateTime @default(now())
+  descripcion String? @db.VarChar(100)
+
+  id_perfil String
+  perfil Perfil @relation(fields: [id_perfil], references: [id], onDelete: Cascade)
+  id_moneda String
+  moneda Moneda @relation(fields: [id_moneda], references: [id], onDelete: Restrict)
+  id_categoria String
+  categoria Categoria @relation(fields: [id_categoria], references: [id], onDelete: Restrict)
+  id_medio_pago String
+  medio_de_pago MedioPago @relation(fields: [id_medio_pago], references: [id], onDelete: Restrict)
+  
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([id_perfil])
+  @@index([fecha])
+  @@index([id_perfil, fecha])
+  @@index([id_categoria])
+  @@index([id_medio_pago])
+
+  @@map("movimientos")
+}
+
 
