@@ -2,8 +2,8 @@
 
 # Finzo: Sistema web de gestión de finanzas personales
 
-**Documento actualizado:** 04/10/2026  
-**Versión:** 6.0  
+**Documento actualizado:** 05/10/2026  
+**Versión:** 7.0  
 **Equipo:** Federico Heinrich, Valentina Vitale, Alesio Cragno, Maximo Messina.
 
 ---
@@ -59,8 +59,8 @@ Personas que buscan controlar sus finanzas cotidianas sin utilizar una herramien
 #### Autenticación y perfil
 
 - Registro, inicio y cierre de sesión.
-- Acceso exclusivo a la información del usuario autenticado.
-- Consulta y edición de nombre, moneda y preferencias básicas.
+- Privacidad y aislamiento de datos: cada usuario solo puede consultar y gestionar su propia información financiera (movimientos, categorías y configuraciones), sin acceso a los datos de otros usuarios.
+- Consulta y edición de nombre, apellido, correo, contraseña, monedas y moneda principal.
 
 #### Movimientos
 
@@ -113,7 +113,7 @@ El sistema permitirá registrar usuarios, iniciar sesión, cerrar sesión y mant
 
 ### RF-02 Perfil
 
-El usuario podrá consultar y modificar su correo electronico y moneda.
+El usuario podrá consultar y modificar todos sus datos personales (nombre, apellido, correo electrónico y contraseña), así como sus monedas y la selección de su moneda principal.
 
 ### RF-03 Gestión de movimientos
 
@@ -192,6 +192,7 @@ finzo/
 │   ├── tests/                  # Tests unitarios y de integración (Vitest)
 │   ├── .env.example            # Plantilla de variables de entorno para backend
 │   ├── package.json            # Dependencias y scripts del backend
+│   ├── prisma.config.ts        # Configuración de Prisma
 │   ├── tsconfig.json           # Configuración de TypeScript
 │   └── vitest.config.ts        # Configuración de Vitest para backend
 │
@@ -208,7 +209,8 @@ finzo/
 │   │   ├── types/              # Tipos compartidos en la interfaz
 │   │   ├── utils/              # Funciones auxiliares de formato y fechas
 │   │   ├── App.tsx             # Componente raíz de React
-│   │   └── Main.tsx            # Punto de montaje en el DOM
+│   │   ├── main.tsx            # Punto de montaje en el DOM
+│   │   └── vite-env.d.ts       # Declaraciones de tipos de variables de entorno Vite
 │   │
 │   ├── index.html              # Punto de entrada HTML de Vite
 │   ├── .env.example            # Plantilla de variables de entorno para frontend
@@ -223,6 +225,8 @@ finzo/
 │   └── workflows/              # GitHub Actions para CI/CD
 ├── .gitignore                  # Reglas de exclusión de Git
 ├── .nvmrc                      # Versión de Node.js requerida
+├── .prettierrc                 # Configuración de formato de código (Prettier)
+├── eslint.config.js            # Configuración de linter (ESLint Flat Config)
 ├── pnpm-workspace.yaml         # Configuración del monorepo con pnpm
 ├── package.json                # Configuración raíz del monorepo
 ├── LICENSE                     # Licencia del proyecto
@@ -551,39 +555,45 @@ La protección de ramas impedirá integrar cambios si fallan los controles oblig
 
 ---
 
-## 12. Organización del equipo
+## 12. Organización del equipo y modalidad de trabajo
 
-Los roles son responsabilidades principales, no áreas exclusivas.
+El equipo adopta un enfoque de desarrollo **Full-Stack vertical por módulos y flujos de valor**, en lugar de dividir roles por capas tecnológicas aisladas (solo frontend o solo backend). Cada integrante se responsabiliza de implementar flujos completos de punta a punta (modelado, repositorios, servicios con reglas de negocio, endpoints REST, interfaces de usuario y tests automatizados), garantizando que todos dominen la arquitectura integral del sistema y puedan defenderla técnicamente.
 
-### Integrante 1: backend y autenticación
+### Integrante 1: Federico Heinrich — Persistencia base y flujo completo de Movimientos (Full-Stack)
 
-- Configuración de API y autenticación.
-- Sesiones, autorización y variables de entorno.
-- Apoyo en documentación de API.
+- **Modelado y persistencia transversal:** Diseño y mantenimiento del schema de Prisma, ejecución de migraciones en Supabase y generación de seeds iniciales (monedas, categorías del sistema y medios de pago).
+- **Backend de Movimientos:** Tipos/DTOs, `MovimientoRepository` (Prisma), `MovimientoService` con reglas de negocio y validación Zod, `MovimientoController` y endpoints REST.
+- **Frontend de Movimientos:** Servicio HTTP (`movimientoService`), hook reactivo `useMovimientos`, componentes visuales (`ListaMovimientos`, `FiltrosMovimiento`, modal `FormularioMovimiento`) y página interactiva `Movimientos.tsx`.
+- **Testing y calidad:** Tests unitarios de servicios de negocio y pruebas de integración/componentes de movimientos con Vitest.
 
-### Integrante 2: backend y negocio
+### Integrante 2: Valentina Vitale — Autenticación, Resumen, Dashboard y Despliegues (Full-Stack)
 
-- Movimientos, categorías, perfil y resumen financiero.
-- Services, repositories y reglas de negocio.
+- **Seguridad y backend transversal:** Triggers de base de datos en Supabase, middleware de autenticación JWT (`auth.middleware.ts`), y servicio y controlador de cálculo del Resumen financiero mensual (`ResumenService`, `ResumenController`).
+- **Frontend de sesión y métricas:** Cliente HTTP base (`apiClient`), `AuthContext`, páginas de Login y Registro, guardias de navegación (`RutaProtegida`, `RutaPublica`), y Dashboard principal con tarjetas de métricas (ingresos, gastos, balance) y widget de transacciones recientes.
+- **Infraestructura y despliegue cloud:** Configuración de políticas de seguridad en base de datos (RLS) en Supabase, y administración de entornos y despliegues en producción en Vercel (Frontend), Render (Backend Web Service) y variables de entorno coordinadas.
+- **Testing y calidad:** Tests automatizados del middleware de autenticación y de las reglas de cálculo del resumen financiero.
 
-### Integrante 3: frontend de operaciones
+### Integrante 3: Alessio Cragno — Módulo de Categorías, Catálogo de Medios de Pago y Layout General (Full-Stack)
 
-- Rutas, login, registro, movimientos y categorías.
-- Formularios, validaciones de experiencia y estados de interfaz.
+- **Backend de Categorías y Medios de Pago:** Modelos de dominio compartidos desacoplados de Prisma, `CategoriaRepository`, `CategoriaService` (lógica de límites de categorías personalizadas y restricciones de borrado), `CategoriaController`, rutas REST protegidas, y persistencia/servicio para el catálogo de Medios de Pago.
+- **Frontend y estructura visual:** Componentes estructurales de la aplicación (Sidebar, Header, Navbar mobile, PageContainer), vistas y componentes de administración de Categorías (`Categorias.tsx`, listado, chips de colores y formulario modal), y catálogo de medios de pago para formularios.
+- **Testing y calidad:** Tests unitarios de servicios de categorías y pruebas de integración de endpoints.
 
-### Integrante 4: frontend, calidad y automatización
+### Integrante 4: Máximo Messina — Perfil y Monedas, Calidad, Validación, UI Común y CI/CD (Full-Stack)
 
-- Dashboard, análisis si se aprueba y coherencia visual.
-- Integración continua y apoyo en testing.
+- **Backend de Perfil y Monedas:** Tipos/DTOs, `PerfilRepository`, `PerfilService` (consulta y actualización de datos personales), `MonedaRepository`, `MonedaService` (catálogo y asignación de moneda principal/secundaria), controladores y endpoints REST.
+- **Frontend de Perfil y Monedas:** Servicios HTTP (`perfilService`, `monedaService`) y página interactiva de gestión de Perfil (`Perfil.tsx`: edición de nombre, apellido, correo, contraseña, monedas y selección de moneda principal).
+- **Arquitectura transversal y UI Design System:** Sistema tipado de excepciones (`AppError`, `errorHandler`), middleware genérico de validación Zod (`validacion.middleware.ts`), catálogo de componentes comunes reutilizables (`Boton`, `Modal`, `Tarjeta`, `InputTexto`, etc.), sistema global de notificaciones (Toasts), utilidades (`Intl`) y hook `useApi`.
+- **Automatización y documentación:** Configuración del pipeline de Integración Continua (CI) con GitHub Actions (lint, typecheck, tests y build), branch protection y especificación de la API REST en `docs/API.md`.
+- **Testing y calidad:** Tests de servicios de perfil y monedas, middleware de validación, errorHandler y pruebas de componentes comunes.
 
 ### Responsabilidades compartidas
 
-- Revisar pull requests.
-- Escribir y mantener tests.
-- Participar en decisiones técnicas.
-- Actualizar documentación.
-- Conocer el flujo completo del sistema.
-- Rotar o emparejar tareas para evitar conocimiento concentrado.
+- **Revisión de código:** Todos los integrantes revisan y aprueban Pull Requests de sus compañeros antes del merge a ramas principales.
+- **Testing continuo:** Cada funcionalidad nueva debe incluir sus correspondientes pruebas unitarias y de integración.
+- **Decisiones arquitectónicas y de diseño:** Consenso grupal en la aplicación de patrones (Repository, Middleware Chain, Strategy, Factory) y principios SOLID.
+- **Mantenimiento de documentación:** Mantener actualizados `README.md`, `PROPUESTA.md`, tableros de Jira y especificaciones de API.
+- **Dominio integral del producto:** Rotación y asistencia cruzada (pair programming o soporte mutuo) para evitar concentración de conocimiento y asegurar que todos los miembros puedan justificar cualquier módulo en la defensa académica.
 
 ---
 
