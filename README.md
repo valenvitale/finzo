@@ -11,7 +11,7 @@
   </h1>
 
   <p align="center">
-    <strong>Sistema de gestión finanzas personales</strong>
+    <strong>Sistema de gestión de finanzas personales</strong>
   </p>
 
   <p align="center">
@@ -52,12 +52,12 @@
 1. [Qué problema resuelve el proyecto](#-qué-problema-resuelve-el-proyecto)
 2. [Integrantes del equipo](#-integrantes-del-equipo)
 3. [Tecnología elegida](#-tecnología-elegida)
-4. [Cómo empezar](#-como-empezar)
+4. [Cómo empezar](#-cómo-empezar)
 5. [Estado actual y pendientes conocidos](#-estado-actual-y-pendientes-conocidos)
 6. [Arquitectura y diseño](#-arquitectura-y-diseño)
 7. [Estructura del repositorio](#-estructura-del-repositorio)
 8. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
-9. [Metodologia de Trabajo y Convenciones](#-metodología-de-trabajo-y-convenciones)
+9. [Metodología de trabajo y convenciones](#-metodología-de-trabajo-y-convenciones)
 
 ---
 
@@ -191,6 +191,10 @@ Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a part
   SUPABASE_URL=https://tu-proyecto.supabase.co
   SUPABASE_ANON_KEY=tu-anon-key
   SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+  # Conectar a Postgres a través del pooler compartido en modo transacción (solo IPv4)
+  DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
+  # Conectar a Postgres a través del pooler compartido en modo sesión (usado para migraciones)
+  DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
   ```
 - **Frontend (`frontend/.env`):**
   ```env
@@ -204,7 +208,7 @@ Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a part
 
 #### 4. Ejecutar el Entorno de Desarrollo
 
-Gracias a la configuración del monorepo, podes iniciar tanto el backend como el frontend simultáneamente con un solo comando desde la raíz del proyecto:
+Gracias a la configuración del monorepo, podés iniciar tanto el backend como el frontend simultáneamente con un solo comando desde la raíz del proyecto:
 
 ```bash
 pnpm dev
@@ -263,14 +267,15 @@ pnpm --filter frontend test
 - [x] **Configuración de base:** Archivos `tsconfig.json`, `package.json`, `vitest.config.ts`, `.nvmrc` y reglas de `.gitignore` creados.
 - [x] **Definición funcional y técnica:** Propuesta formal del proyecto documentada en detalle en [`PROPUESTA.md`](./PROPUESTA.md).
 - [x] **Definición del stack y dependencias:** Dependencias base instaladas (Express 5, React 19, Supabase JS, Tailwind, Vitest).
-- [x] **Ajuste de scripts en `package.json`:** Definir los comandos `"scripts": { "dev": ..., "build": ..., "test": ... }` correspondientes en los paquetes para unificar el arranque en simultáneo.
+- [x] **Ajuste de scripts en `package.json`:** Comandos unificados en la raíz para ejecutar dev, build, lint, format y tests de ambos paquetes simultáneamente.
+- [x] **Configuración del proyecto en Supabase:** Creación de la instancia PostgreSQL en la nube, obtención de credenciales API y cadenas de conexión del pooler configuradas.
+- [x] **Persistencia relacional con Prisma:** Esquema relacional completo en `backend/prisma/schema.prisma`, migración inicial hacia Supabase ejecutada y seed de datos base (`seed.ts`).
 
 ### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
 
-- [ ] **Configuración del proyecto en Supabase:** Creación de la instancia en la nube, obtención de claves API y configuración de clientes.
-- [ ] **Modelado de dominio y persistencia:** Definir los modelos de dominio independientes en `src/models/`, el esquema relacional en `backend/prisma/schema.prisma` y ejecutar la migración inicial hacia Supabase.
+- [ ] **Modelos de dominio independientes:** Definir las interfaces y modelos de dominio en `backend/src/models/`.
 - [ ] **Flujo de autenticación:** Implementar registro, login y middleware de validación de tokens JWT en el backend.
-- [ ] **CRUD de categorías y movimientos:** Desarrollo de endpoints REST y servicios para registrar ingresos/gastos y clasificar por categorías.
+- [ ] **CRUD de categorías y movimientos:** Desarrollo de endpoints REST, repositorios y servicios con reglas de negocio para transacciones y categorías.
 - [ ] **Dashboard inicial en Frontend:** Construcción de vistas de balance actual, historial de movimientos y formulario de carga.
 - [ ] **Pipeline de CI:** Configurar flujos de trabajo en `.github/workflows/` para ejecución automática de linter y tests en cada Pull Request.
 - [ ] **Despliegue a producción:** Configurar servicio en **Render** para la API del backend y proyecto en **Vercel** para la SPA del frontend.
@@ -381,6 +386,7 @@ finzo/
 │   ├── tests/                  # Tests unitarios y de integración (Vitest)
 │   ├── .env.example            # Plantilla de variables de entorno para backend
 │   ├── package.json            # Dependencias y scripts del backend
+│   ├── prisma.config.ts        # Configuración de Prisma
 │   ├── tsconfig.json           # Configuración de TypeScript
 │   └── vitest.config.ts        # Configuración de Vitest para backend
 │
@@ -437,49 +443,49 @@ El proyecto se va a desarrollar por fases y de manera gradual:
 
 ### Fase 2: Página de Estadísticas y Análisis Financiero — _Prioridad Media_
 
-- Grafico de evolución mensual de gastos e ingresos (ultimos 6 o 12 meses).
+- Gráfico de evolución mensual de gastos e ingresos (últimos 6 o 12 meses).
 - Gráfico de distribución de gastos por categoría.
-- Promedio de gasto por dia.
+- Promedio de gasto por día.
 - Indicador de ahorro.
 - Ranking de top 5 gastos más altos del mes.
-- Grafico de barras por días: Indica que días de la semana se gasta más.
-- Proyección a fin de mes: Toma el gasto promedio diario y proyecta con cuánto dinero (o deuda) cerrará el mes el usuario si mantiene ese mismo ritmo.
+- Gráfico de barras por días: indica qué días de la semana se gasta más.
+- Proyección a fin de mes: toma el gasto promedio diario y proyecta con cuánto dinero (o deuda) cerrará el mes el usuario si mantiene ese mismo ritmo.
 
 ### Fase 3: Página de Metas y Página de Presupuestos — _Prioridad Media-Baja_
 
 - Presupuestos límite por categoría con alertas visuales en caso de exceso.
 - Metas de ahorro (nombre, monto, fecha de vencimiento, prioridad e indicador de progreso).
 
-### Fase 4: Funciones avanzadas - _Prioridad Baja_
+### Fase 4: Funciones avanzadas — _Prioridad Baja_
 
 - Exportación e importación de movimientos en formato CSV.
-- Analisis de IA sobre el flujo de caja y generacion de un consejo adecuado al caso.
+- Análisis de IA sobre el flujo de caja y generación de un consejo adecuado al caso.
 
 ---
 
 ## 📜 Metodología de Trabajo y Convenciones
 
-Para mantener el repositorio organizado entre los cuatro, usamos la estrategia Git Flow orientada a ramas de características y los estandares de contribucion detallados a continuacion.
+Para mantener el repositorio organizado entre los cuatro, usamos la estrategia Git Flow orientada a ramas de características y los estándares de contribución detallados a continuación.
 
 ### Estrategia de Ramificación Git Flow
 
-- main: Código en su version estable y completa (V1.0).
+- `main`: Código en su versión estable y completa (V1.0).
 
-- release/x.0 : Preparacion de una nueva version. Se crea cuando develop tiene suficientes funcionalidades para una entrega, sirve para corregir errores menores durante la revision, ajustar numeros de version, actualizar documentacion y **IMPORTANTE: no agregar funcionalidades nuevas**.
-  > \*Se crea desde **develop\***, y una vez que se completa el trabajo en dicha rama (obtenemos la version estable) se realiza el merge a develop y a main para actualizar el codigo en ambas ramas.
-- develop: rama de desarrollo.
+- `release/x.0`: Preparación de una nueva versión. Se crea cuando develop tiene suficientes funcionalidades para una entrega; sirve para corregir errores menores durante la revisión, ajustar números de versión, actualizar documentación e **IMPORTANTE: no agregar funcionalidades nuevas**.
+  > Se crea desde **develop**, y una vez que se completa el trabajo en dicha rama (obtenemos la versión estable) se realiza el merge a develop y a main para actualizar el código en ambas ramas.
 
-- feature/nombre-de-la-funcionalidad: Para crear nuevas funcionalidades.
+- `develop`: Rama de desarrollo.
 
-  > \*Se crea desde **develop\*** para trabajar en una nueva funcion a implementar. Una vez completada la funcionalidad, se hace el merge a develop y se elimina la rama.
+- `feature/nombre-de-la-funcionalidad`: Para crear nuevas funcionalidades.
+  > Se crea desde **develop** para trabajar en una nueva función a implementar. Una vez completada la funcionalidad, se hace el merge a develop y se elimina la rama.
 
-- hotfix: Correcion urgente de un error que se encuentra en main.
-  > Cuando encontramos un error importante en la version estable, \*se crea desde **main\*** para trabajar en la correcion del error y solucionarlo lo antes posible. Una vez corregido el bug, se hace el merge a main y a develop.
+- `hotfix`: Corrección urgente de un error que se encuentra en main.
+  > Cuando encontramos un error importante en la versión estable, se crea desde **main** para trabajar en la corrección del error y solucionarlo lo antes posible. Una vez corregido el bug, se hace el merge a main y a develop.
 
-### Estandares de contribución
+### Estándares de contribución
 
-- **Commits**: Utilizar titulos descriptivos con el formato `tipo: descripción`.
+- **Commits**: Utilizar títulos descriptivos con el formato `tipo: descripción`.
 
   > Ejemplo: `feat: implementación de login` o `fix: corrección de ruta API`.
 
-- **Revisiones de Pull Requests (PR)**: Al menos un compañero de equipo debe revisar una solicitud de incorporacion de cambios antes de fusionarla (merge) con develop.
+- **Revisiones de Pull Requests (PR)**: Al menos un compañero de equipo debe revisar una solicitud de incorporación de cambios antes de fusionarla (merge) con develop.
