@@ -7,8 +7,8 @@ export interface MovimientoProps {
   monedaId: string;
   categoriaId: string;
   medioPagoId: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class Movimiento {
@@ -20,8 +20,8 @@ export class Movimiento {
   monedaId: string;
   categoriaId: string;
   medioPagoId: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 
   constructor(props: MovimientoProps) {
     this.id = props.id;
