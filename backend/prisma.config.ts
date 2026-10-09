@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { defineConfig, env } from "prisma/config";
+import { defineConfig, env } from 'prisma/config';
 
 try {
   process.loadEnvFile();
@@ -8,12 +8,12 @@ try {
 }
 
 export default defineConfig({
-    schema: "prisma/schema.prisma",
-    migrations: {
-        path:"prisma/migrations",
-        seed: "tsx prisma/seed.ts",
-    },
-    datasource: {
-        url: env("DIRECT_URL"),
-    },
+  schema: 'prisma/schema.prisma',
+  migrations: {
+    path: 'prisma/migrations',
+    seed: 'tsx prisma/seed.ts',
+  },
+  datasource: {
+    url: env('DIRECT_URL'),
+  },
 });
