@@ -472,11 +472,13 @@ Para mantener el repositorio organizado entre los cuatro, usamos la estrategia G
 - `main`: Código en su versión estable y completa (V1.0).
 
 - `release/x.0`: Preparación de una nueva versión. Se crea cuando develop tiene suficientes funcionalidades para una entrega; sirve para corregir errores menores durante la revisión, ajustar números de versión, actualizar documentación e **IMPORTANTE: no agregar funcionalidades nuevas**.
+
   > Se crea desde **develop**, y una vez que se completa el trabajo en dicha rama (obtenemos la versión estable) se realiza el merge a develop y a main para actualizar el código en ambas ramas.
 
 - `develop`: Rama de desarrollo.
 
 - `feature/nombre-de-la-funcionalidad`: Para crear nuevas funcionalidades.
+
   > Se crea desde **develop** para trabajar en una nueva función a implementar. Una vez completada la funcionalidad, se hace el merge a develop y se elimina la rama.
 
 - `hotfix`: Corrección urgente de un error que se encuentra en main.

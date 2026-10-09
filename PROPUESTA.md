@@ -362,28 +362,28 @@ medios_pago 1 ─── M movimientos
 
 ## 7. API inicial orientativa
 
-| Método | Ruta                     | Descripción                                                                                  |
-| ------ | ------------------------ | -------------------------------------------------------------------------------------------- |
-| GET    | `/perfil`                | Consultar perfil propio del usuario autenticado                                              |
-| PATCH  | `/perfil`                | Editar datos del perfil propio (nombre, apellido, foto)                                      |
-| GET    | `/monedas`               | Listar catálogo de monedas disponibles en el sistema                                         |
-| GET    | `/perfil/monedas`        | Consultar monedas configuradas del perfil y cuál es la principal                             |
-| POST   | `/perfil/monedas`        | Asignar moneda al perfil o actualizar la moneda principal (máximo 2)                         |
-| DELETE | `/perfil/monedas/:id`    | Desvincular moneda secundaria del perfil                                                     |
-| GET    | `/movimientos`           | Listar y filtrar movimientos (búsqueda por texto, período mes/año, tipo, categoría, medio de pago) |
-| POST   | `/movimientos`           | Registrar nuevo movimiento                                                                   |
-| GET    | `/movimientos/:id`       | Consultar un movimiento propio                                                               |
-| PATCH  | `/movimientos/:id`       | Editar un movimiento propio                                                                  |
-| DELETE | `/movimientos/:id`       | Eliminar un movimiento propio                                                                |
-| GET    | `/categorias`            | Listar categorías disponibles (predeterminadas del sistema y personalizadas propias)         |
-| POST   | `/categorias`            | Crear categoría personalizada propia (máx. 8 por perfil)                                     |
-| PATCH  | `/categorias/:id`        | Editar categoría propia (nombre, tipo, color)                                                |
-| DELETE | `/categorias/:id`        | Eliminar categoría propia                                                                    |
-| GET    | `/medios-pago`           | Listar medios de pago disponibles (del sistema y personalizados propios)                     |
-| POST   | `/medios-pago`           | Crear medio de pago personalizado propio                                                     |
-| PATCH  | `/medios-pago/:id`       | Editar medio de pago propio (nombre, icono)                                                  |
-| DELETE | `/medios-pago/:id`       | Eliminar medio de pago propio                                                                |
-| GET    | `/resumen`               | Obtener ingresos, gastos y balance neto del mes actual                                       |
+| Método | Ruta                  | Descripción                                                                                        |
+| ------ | --------------------- | -------------------------------------------------------------------------------------------------- |
+| GET    | `/perfil`             | Consultar perfil propio del usuario autenticado                                                    |
+| PATCH  | `/perfil`             | Editar datos del perfil propio (nombre, apellido, foto)                                            |
+| GET    | `/monedas`            | Listar catálogo de monedas disponibles en el sistema                                               |
+| GET    | `/perfil/monedas`     | Consultar monedas configuradas del perfil y cuál es la principal                                   |
+| POST   | `/perfil/monedas`     | Asignar moneda al perfil o actualizar la moneda principal (máximo 2)                               |
+| DELETE | `/perfil/monedas/:id` | Desvincular moneda secundaria del perfil                                                           |
+| GET    | `/movimientos`        | Listar y filtrar movimientos (búsqueda por texto, período mes/año, tipo, categoría, medio de pago) |
+| POST   | `/movimientos`        | Registrar nuevo movimiento                                                                         |
+| GET    | `/movimientos/:id`    | Consultar un movimiento propio                                                                     |
+| PATCH  | `/movimientos/:id`    | Editar un movimiento propio                                                                        |
+| DELETE | `/movimientos/:id`    | Eliminar un movimiento propio                                                                      |
+| GET    | `/categorias`         | Listar categorías disponibles (predeterminadas del sistema y personalizadas propias)               |
+| POST   | `/categorias`         | Crear categoría personalizada propia (máx. 8 por perfil)                                           |
+| PATCH  | `/categorias/:id`     | Editar categoría propia (nombre, tipo, color)                                                      |
+| DELETE | `/categorias/:id`     | Eliminar categoría propia                                                                          |
+| GET    | `/medios-pago`        | Listar medios de pago disponibles (del sistema y personalizados propios)                           |
+| POST   | `/medios-pago`        | Crear medio de pago personalizado propio                                                           |
+| PATCH  | `/medios-pago/:id`    | Editar medio de pago propio (nombre, icono)                                                        |
+| DELETE | `/medios-pago/:id`    | Eliminar medio de pago propio                                                                      |
+| GET    | `/resumen`            | Obtener ingresos, gastos y balance neto del mes actual                                             |
 
 La API de autenticación dependerá de la integración definida con Supabase Auth. Los contratos de entrada, salida y error deberán documentarse antes de implementar cada endpoint.
 
