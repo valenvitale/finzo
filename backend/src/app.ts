@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import { env } from './config/env.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-import movimientoRoutes from './routes/movimiento.routes.js';
 import apiRouter from './routes/index.js';
 
 const app = express();
@@ -20,9 +19,6 @@ app.use('/api', apiRouter);
 app.get('/', (req, res) => {
   res.send('¡Finzo Backend funcionando! 🚀');
 });
-
-// Rutas
-app.use('/api/movimientos', movimientoRoutes);
 
 // Registrar el middleware de errores SIEMPRE al final
 app.use(errorHandler);
