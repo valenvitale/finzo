@@ -2,7 +2,7 @@ import { IMovimientoRepository } from '../repositories/movimiento.repository.js'
 // import { ICategoriaRepository } from "../repositories/categoria.repository.js";
 // import { IMedioPagoRepository } from "../repositories/medioPago.repository.js";
 import { CrearMovimientoDTO, ActualizarMovimientoDTO, FiltrosMovimientoDTO } from '../types/movimiento.types.js';
-import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../errors/errors.js';
+import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../utils/errores.js';
 
 export class MovimientoService {
   private readonly movimientoRepository: IMovimientoRepository;
