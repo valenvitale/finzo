@@ -19,7 +19,6 @@ export interface ActualizarMovimientoDTO {
 }
 
 export interface FiltrosMovimientoDTO {
-  descripcion?: string;
   fechaDesde?: Date;
   fechaHasta?: Date;
   mes?: number;
