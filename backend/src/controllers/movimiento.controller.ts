@@ -37,7 +37,7 @@ export class MovimientoController {
 
     //Actualiza un movimiento existente
     // PATCH /api/movimientos/:id
-    actualizar = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    actualizar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
         try{
         const perfilId = req.user!.id;
         const movimientoId = req.params.id as string;
@@ -51,7 +51,7 @@ export class MovimientoController {
 
     //Elimina un movimiento existente
     // DELETE /api/movimientos/:id
-    eliminar = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => { 
+    eliminar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => { 
         try {
         const perfilId = req.user!.id;
         const movimientoId = req.params.id as string;
@@ -64,7 +64,7 @@ export class MovimientoController {
 
     //Lista todos los movimientos de un perfil con filtros opcionales
     // GET /api/movimientos
-    listar = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    listar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
         try {
         const perfilId = req.user!.id;
         const filtros = filtrosMovimientoSchema.parse(req.query);
