@@ -1,10 +1,7 @@
+import AppRouter from './routes/AppRouter';
+
 function App() {
-  return (
-    <div>
-      <h1>Finzo</h1>
-      <p>¡Frontend de Finzo funcionando! 🚀</p>
-    </div>
-  );
+  return <AppRouter />;
 }
 
 export default App;
