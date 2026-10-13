@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { actualizarCategoriaSchema, crearCategoriaSchema } from '../../src/types/schemas/categoria.schema.js';
-import { actualizarPerfilSchema, crearPerfilSchema } from '../../src/types/schemas/perfil.schema.js';
+import { actualizarCategoriaSchema, crearCategoriaSchema } from '../../src/validation/categoria.schema.js';
+import { actualizarPerfilSchema, crearPerfilSchema } from '../../src/validation/perfil.schema.js';
 import {
   asignarMonedaSchema,
   actualizarMonedaSchema,
   crearMonedaSchema,
-} from '../../src/types/schemas/moneda.schema.js';
-import { actualizarMedioPagoSchema, crearMedioPagoSchema } from '../../src/types/schemas/medio-pago.schema.js';
+} from '../../src/validation/moneda.schema.js';
+import { actualizarMedioPagoSchema, crearMedioPagoSchema } from '../../src/validation/medio-pago.schema.js';
+import {
+  crearMovimientoSchema,
+  actualizarMovimientoSchema,
+  movimientoIdParamsSchema,
+} from '../../src/validation/movimiento.schema.js';
 
 describe('Schemas del sistema', () => {
   it('valida categorías según los límites del modelo', () => {
@@ -49,5 +54,30 @@ describe('Schemas del sistema', () => {
     expect(crearMedioPagoSchema.safeParse({ nombre: 'Tarjeta', icono: 'credit-card' }).success).toBe(true);
     expect(crearMedioPagoSchema.safeParse({ nombre: '', icono: 'cash' }).success).toBe(false);
     expect(actualizarMedioPagoSchema.safeParse({ icono: 'cash' }).success).toBe(true);
+  });
+
+  it('valida movimientos y su parámetro id', () => {
+    expect(movimientoIdParamsSchema.safeParse({ id: '123e4567-e89b-12d3-a456-426614174000' }).success).toBe(true);
+    expect(movimientoIdParamsSchema.safeParse({ id: 'id-invalido' }).success).toBe(false);
+    expect(
+      crearMovimientoSchema.safeParse({
+        fecha: '2026-10-12',
+        monto: 1500,
+        monedaId: '123e4567-e89b-12d3-a456-426614174000',
+        categoriaId: '123e4567-e89b-12d3-a456-426614174001',
+        medioPagoId: '123e4567-e89b-12d3-a456-426614174002',
+      }).success
+    ).toBe(true);
+    expect(
+      crearMovimientoSchema.safeParse({
+        fecha: 'fecha-invalida',
+        monto: -50,
+        monedaId: 'invalido',
+        categoriaId: 'invalido',
+        medioPagoId: 'invalido',
+      }).success
+    ).toBe(false);
+    expect(actualizarMovimientoSchema.safeParse({}).success).toBe(false);
+    expect(actualizarMovimientoSchema.safeParse({ monto: 200 }).success).toBe(true);
   });
 });

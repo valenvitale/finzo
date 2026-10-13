@@ -1,9 +1,3 @@
-/**
-* 
-* Se cambio la ubicación de los esquemas de validacion de datos que se sugirio en el plan de trabajo (backend/src/types/schemas/...)
-* por una ubicación mas clara y adecuada que es esta (backend/src/validation/...)
-* 
-**/
 
 import { z } from 'zod';
 
@@ -36,6 +30,12 @@ export const filtrosMovimientoSchema = z.object({
     tipo: z.enum(['INGRESO', 'GASTO'], 'El tipo de movimiento debe ser INGRESO o GASTO').optional(),
 })
 
+// Esquema de validacion para el id de movimiento en parámetros de ruta
+export const movimientoIdParamsSchema = z.strictObject({
+    id: z.uuid('El identificador del movimiento debe ser un UUID válido'),
+});
+
 export type CrearMovimiento = z.infer<typeof crearMovimientoSchema>;
 export type ActualizarMovimiento = z.infer<typeof actualizarMovimientoSchema>;
 export type FiltrosMovimiento = z.infer<typeof filtrosMovimientoSchema>;
+export type MovimientoIdParams = z.infer<typeof movimientoIdParamsSchema>;
