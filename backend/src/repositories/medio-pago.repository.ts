@@ -4,6 +4,7 @@ import { MedioPago } from '../models/medio-pago.model.js';
 
 export interface IMedioPagoRepository {
   listarPorPerfil(idPerfil: string): Promise<MedioPago[]>;
+  obtenerPorId(id: string): Promise<MedioPago | null>;
 }
 
 export class MedioPagoRepository implements IMedioPagoRepository {
@@ -15,6 +16,12 @@ export class MedioPagoRepository implements IMedioPagoRepository {
         OR: [{ id_perfil: null }, { id_perfil: idPerfil }],
       },
       orderBy: { nombre: 'asc' },
+    });
+  }
+
+  async obtenerPorId(id: string): Promise<MedioPago | null> {
+    return this.prisma.medioPago.findUnique({
+      where: { id },
     });
   }
 }

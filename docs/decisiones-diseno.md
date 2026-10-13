@@ -147,9 +147,10 @@ La efectividad de las decisiones tomadas se verifica directamente en la suite de
         *   [`backend/tests/unit/categoria.repository.test.ts`](../backend/tests/unit/categoria.repository.test.ts) (8 tests): Comprueba el mapeo a DTO, altas, bajas, conteo de personalizadas y persistencia.
         *   [`backend/tests/unit/categoria.service.test.ts`](../backend/tests/unit/categoria.service.test.ts) (10 tests): Valida reglas de negocio puras (límite de 8 categorías, permisos sobre categorías del sistema o de terceros, y bloqueo de borrado si existen movimientos asociados) usando dobles de prueba (`vi.fn()`) sin tocar la base de datos.
         *   [`backend/tests/unit/categoria.controller.test.ts`](../backend/tests/unit/categoria.controller.test.ts) (6 tests): Valida respuestas HTTP (200, 201, 204), manejo de usuario autenticado y delegación adecuada al middleware de error.
-    *   El total del backend cuenta con **63 tests unitarios pasando exitosamente** en Vitest.
+        *   [`backend/tests/unit/movimiento.service.test.ts`](../backend/tests/unit/movimiento.service.test.ts) (12 tests): Valida que los movimientos verifiquen la existencia y permisos de categorías y medios de pago inyectados antes de persistir.
+    *   El total del backend cuenta con **75 tests unitarios pasando exitosamente** en Vitest (12 archivos de prueba).
 2.  **Integración limpia entre módulos:**
-    *   En [`backend/src/services/movimiento.service.ts`](../backend/src/services/movimiento.service.ts), `MovimientoService` puede inyectar `ICategoriaRepository` para validar que la categoría indicada exista y pertenezca al usuario antes de registrar un movimiento, colaborando a través de contratos claros.
+    *   En [`backend/src/services/movimiento.service.ts`](../backend/src/services/movimiento.service.ts), `MovimientoService` inyecta tanto `ICategoriaRepository` como `IMedioPagoRepository` para validar que la categoría y el medio de pago indicados existan y pertenezcan al usuario (o sean globales del sistema) antes de registrar o modificar un movimiento, colaborando a través de contratos claros.
 3.  **Salud del código:**
     *   El proyecto compila sin errores de tipos en TypeScript estricto (`tsc`) y supera todas las reglas de ESLint y Prettier.
 
@@ -157,7 +158,7 @@ La efectividad de las decisiones tomadas se verifica directamente en la suite de
 
 *   **Estabilidad y escalabilidad del servidor:** Al compartir el Singleton de Prisma Client respaldado por un único `pg.Pool`, se eliminó el riesgo de agotar las conexiones disponibles de PostgreSQL (*connection exhaustion*), asegurando un uso predecible de memoria y CPU.
 *   **Facilidad de mantenimiento y coherencia cognoscitiva:** Quien comprende el flujo de Movimientos entiende de inmediato Categorías o Medios de Pago. La arquitectura homogénea reduce el tiempo de desarrollo de nuevas funcionalidades.
-*   **Pruebas rápidas y confiables:** Al no depender de la base de datos para probar la lógica de controladores y servicios, las 63 pruebas unitarias se ejecutan en milisegundos en cualquier entorno de integración.
+*   **Pruebas rápidas y confiables:** Al no depender de la base de datos para probar la lógica de controladores y servicios, las 75 pruebas unitarias se ejecutan en milisegundos en cualquier entorno de integración.
 *   **Detección temprana de errores (*Fail-Fast*):** Parámetros inválidos o cuerpos de petición incompletos son rechazados de inmediato en la capa de rutas mediante middlewares Zod con HTTP 400, evitando llamadas infructuosas a la base de datos.
 
 ### 5.3 Costos y Compromisos Asumidos (Trade-offs)

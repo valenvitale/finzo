@@ -3,6 +3,7 @@ import { MovimientoController } from '../controllers/movimiento.controller.js';
 import { MovimientoService } from '../services/movimiento.service.js';
 import { MovimientoRepository } from '../repositories/movimiento.repository.js';
 import { CategoriaRepository } from '../repositories/categoria.repository.js';
+import { MedioPagoRepository } from '../repositories/medio-pago.repository.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { validarCuerpo, validarParametros, validarQuery } from '../middlewares/validacion.middleware.js';
 import {
@@ -15,7 +16,8 @@ import {
 // --- Composición de dependencias ---
 const repository = new MovimientoRepository();
 const categoriaRepository = new CategoriaRepository();
-const service = new MovimientoService(repository, categoriaRepository);
+const medioPagoRepository = new MedioPagoRepository();
+const service = new MovimientoService(repository, categoriaRepository, medioPagoRepository);
 const controller = new MovimientoController(service);
 
 const router = Router();

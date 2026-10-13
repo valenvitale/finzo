@@ -1,6 +1,6 @@
 import { IMovimientoRepository } from '../repositories/movimiento.repository.js';
 import { ICategoriaRepository } from '../repositories/categoria.repository.js';
-// import { IMedioPagoRepository } from "../repositories/medioPago.repository.js";
+import { IMedioPagoRepository } from '../repositories/medio-pago.repository.js';
 import {
   CrearMovimientoDTO,
   ActualizarMovimientoDTO,
@@ -12,14 +12,21 @@ import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../errors/
 export class MovimientoService {
   private readonly movimientoRepository: IMovimientoRepository;
   private readonly categoriaRepository?: ICategoriaRepository;
+  private readonly medioPagoRepository?: IMedioPagoRepository;
 
   /**
    * @param movimientoRepository - Repositorio de movimientos para interactuar con la base de datos.
    * @param categoriaRepository - Repositorio de categorías para validar existencia y pertenencia.
+   * @param medioPagoRepository - Repositorio de medios de pago para validar existencia y pertenencia.
    */
-  constructor(movimientoRepository: IMovimientoRepository, categoriaRepository?: ICategoriaRepository) {
+  constructor(
+    movimientoRepository: IMovimientoRepository,
+    categoriaRepository?: ICategoriaRepository,
+    medioPagoRepository?: IMedioPagoRepository
+  ) {
     this.movimientoRepository = movimientoRepository;
     this.categoriaRepository = categoriaRepository;
+    this.medioPagoRepository = medioPagoRepository;
   }
 
   /**
@@ -49,6 +56,16 @@ export class MovimientoService {
       }
       if (categoria.perfilId !== null && perfilId && categoria.perfilId !== perfilId) {
         throw new ErrorProhibido('No tienes permiso para utilizar esta categoría');
+      }
+    }
+
+    if (this.medioPagoRepository && datosMovimiento.medioPagoId) {
+      const medioPago = await this.medioPagoRepository.obtenerPorId(datosMovimiento.medioPagoId);
+      if (!medioPago) {
+        throw new ErrorDeValidacion('El medio de pago especificado no existe');
+      }
+      if (medioPago.id_perfil !== null && perfilId && medioPago.id_perfil !== perfilId) {
+        throw new ErrorProhibido('No tienes permiso para utilizar este medio de pago');
       }
     }
   }

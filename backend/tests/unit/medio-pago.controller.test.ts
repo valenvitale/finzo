@@ -7,12 +7,13 @@ import { ErrorNoAutorizado } from '../../src/errors/errores.js';
 
 function preparar() {
   const listarPorPerfil = vi.fn().mockResolvedValue([]);
-  const controller = new MedioPagoController(new MedioPagoService({ listarPorPerfil }));
+  const obtenerPorId = vi.fn().mockResolvedValue(null);
+  const controller = new MedioPagoController(new MedioPagoService({ listarPorPerfil, obtenerPorId }));
   const json = vi.fn();
   const status = vi.fn().mockReturnValue({ json });
   const res = { status } as unknown as Response;
   const next = vi.fn();
-  return { controller, listarPorPerfil, json, status, res, next };
+  return { controller, listarPorPerfil, obtenerPorId, json, status, res, next };
 }
 
 describe('MedioPagoController', () => {
