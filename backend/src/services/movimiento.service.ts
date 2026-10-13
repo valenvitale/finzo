@@ -2,7 +2,7 @@ import { IMovimientoRepository } from '../repositories/movimiento.repository.js'
 // import { ICategoriaRepository } from "../repositories/categoria.repository.js";
 // import { IMedioPagoRepository } from "../repositories/medioPago.repository.js";
 import { CrearMovimientoDTO, ActualizarMovimientoDTO, FiltrosMovimientoDTO } from '../types/movimiento.types.js';
-import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../utils/errores.js';
+import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
 
 export class MovimientoService {
   private readonly movimientoRepository: IMovimientoRepository;
@@ -34,7 +34,7 @@ export class MovimientoService {
     }
   }
 
-  private validarRelaciones(datosMovimiento: CrearMovimientoDTO | ActualizarMovimientoDTO) {
+  private validarRelaciones(_datosMovimiento: CrearMovimientoDTO | ActualizarMovimientoDTO) {
     // Validar que la categoria exista
     // pendiente de la implementacion de la interfaz ICategoriaRepository (KAN-94) de alessio
     // validar que el medio de pago exista
@@ -49,8 +49,10 @@ export class MovimientoService {
     }
 
     if (movimiento.perfilId !== perfilId) {
-      throw new ErrorProhibido('No tienes permiso para modificar este movimiento');
+      throw new ErrorProhibido('No tienes permiso para acceder a este movimiento');
     }
+
+    return movimiento;
   }
 
   crear(perfilId: string, datosMovimiento: CrearMovimientoDTO) {
@@ -59,8 +61,7 @@ export class MovimientoService {
     return this.movimientoRepository.crear(perfilId, datosMovimiento);
   }
   async obtenerPorId(id: string, perfilId: string) {
-    await this.validarPertenenciaUsuario(id, perfilId);
-    return this.movimientoRepository.obtenerPorId(id);
+    return this.validarPertenenciaUsuario(id, perfilId);
   }
   async actualizar(id: string, perfilId: string, datosActualizacion: ActualizarMovimientoDTO) {
     await this.validarPertenenciaUsuario(id, perfilId);
