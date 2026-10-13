@@ -1,4 +1,4 @@
-import { AppError, ErrorNoAutorizado } from '../utils/errores.js';
+import { AppError, ErrorNoAutorizado } from '../errors/errores.js';
 import { supabase, supabasePublic } from '../config/supabase.js';
 
 export interface IPerfilAuthService {

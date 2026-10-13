@@ -3,7 +3,7 @@ import type { Server } from 'node:http';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import express from 'express';
 import { errorHandler } from '../../src/middlewares/errorHandler.js';
-import { AppError, ErrorDeValidacion, ErrorNoEncontrado } from '../../src/utils/errores.js';
+import { AppError, ErrorDeValidacion, ErrorNoEncontrado } from '../../src/errors/errores.js';
 
 const app = express();
 

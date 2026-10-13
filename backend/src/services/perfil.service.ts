@@ -1,4 +1,4 @@
-import { ErrorNoAutorizado, ErrorNoEncontrado } from '../utils/errores.js';
+import { ErrorNoAutorizado, ErrorNoEncontrado } from '../errors/errores.js';
 import { ActualizarPerfilDTO, PerfilResponseDTO } from '../types/perfil.types.js';
 import { IPerfilRepository } from '../repositories/perfil.repository.js';
 import { IPerfilAuthService } from './perfil-auth.service.js';

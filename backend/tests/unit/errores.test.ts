@@ -6,7 +6,7 @@ import {
   ErrorNoAutorizado,
   ErrorNoEncontrado,
   ErrorProhibido,
-} from '../../src/utils/errores.js';
+} from '../../src/errors/errores.js';
 
 describe('Jerarquía de errores de la aplicación', () => {
   it.each([

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import type { ZodType } from 'zod';
-import { ErrorDeValidacion } from '../utils/errores.js';
+import { ErrorDeValidacion } from '../errors/errores.js';
 
 type PropiedadValidada = 'body' | 'params' | 'query';
 

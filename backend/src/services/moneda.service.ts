@@ -1,4 +1,4 @@
-import { ErrorNoEncontrado } from '../utils/errores.js';
+import { ErrorNoEncontrado } from '../errors/errores.js';
 import { AsignarMonedaDTO, MonedaPerfilResponseDTO, MonedaResponseDTO } from '../types/moneda.types.js';
 import { IMonedaRepository } from '../repositories/moneda.repository.js';
 

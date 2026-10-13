@@ -2,7 +2,7 @@ import type { Response } from 'express';
 import { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
 import { MonedaRepository } from '../repositories/moneda.repository.js';
 import { MonedaService } from '../services/moneda.service.js';
-import { ErrorNoAutorizado } from '../utils/errores.js';
+import { ErrorNoAutorizado } from '../errors/errores.js';
 
 const monedaService = new MonedaService(new MonedaRepository());
 

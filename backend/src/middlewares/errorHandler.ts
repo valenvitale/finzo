@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { AppError, ErrorDeValidacion } from '../utils/errores.js';
+import { AppError, ErrorDeValidacion } from '../errors/errores.js';
 
 export const errorHandler = (err: unknown, _req: Request, res: Response, next: NextFunction): void => {
   console.error('Error capturado por el middleware global:', err);

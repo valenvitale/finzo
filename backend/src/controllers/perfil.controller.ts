@@ -3,7 +3,7 @@ import { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
 import { PerfilRepository } from '../repositories/perfil.repository.js';
 import { PerfilAuthService } from '../services/perfil-auth.service.js';
 import { PerfilService } from '../services/perfil.service.js';
-import { ErrorNoAutorizado } from '../utils/errores.js';
+import { ErrorNoAutorizado } from '../errors/errores.js';
 
 const perfilService = new PerfilService(new PerfilRepository(), new PerfilAuthService());
 

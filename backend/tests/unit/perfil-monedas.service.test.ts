@@ -6,7 +6,7 @@ import { IPerfilRepository } from '../../src/repositories/perfil.repository.js';
 import { IPerfilAuthService } from '../../src/services/perfil-auth.service.js';
 import { MonedaService } from '../../src/services/moneda.service.js';
 import { PerfilService } from '../../src/services/perfil.service.js';
-import { ErrorNoEncontrado } from '../../src/utils/errores.js';
+import { ErrorNoEncontrado } from '../../src/errors/errores.js';
 import { MonedaPerfilResponseDTO, MonedaResponseDTO } from '../../src/types/moneda.types.js';
 
 const perfil = new Perfil({
