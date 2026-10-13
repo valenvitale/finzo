@@ -9,7 +9,7 @@ import {
   validarParametros,
   validarQuery,
 } from '../../src/middlewares/validacion.middleware.js';
-import { crearCategoriaSchema } from '../../src/types/schemas/categoria.schema.js';
+import { crearCategoriaSchema } from '../../src/validation/categoria.schema.js';
 
 const app = express();
 const parametrosSchema = z.strictObject({ id: z.uuid('El identificador debe ser un UUID válido') });

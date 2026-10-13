@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { actualizarPerfil, obtenerPerfil } from '../controllers/perfil.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { validarCuerpo } from '../middlewares/validacion.middleware.js';
-import { actualizarPerfilSchema } from '../types/schemas/perfil.schema.js';
+import { actualizarPerfilSchema } from '../validation/perfil.schema.js';
 
 const perfilRouter = Router();
 

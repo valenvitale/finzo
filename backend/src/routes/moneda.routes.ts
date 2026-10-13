@@ -7,7 +7,7 @@ import {
 } from '../controllers/moneda.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { validarCuerpo, validarParametros } from '../middlewares/validacion.middleware.js';
-import { asignarMonedaSchema, monedaIdParamsSchema } from '../types/schemas/moneda.schema.js';
+import { asignarMonedaSchema, monedaIdParamsSchema } from '../validation/moneda.schema.js';
 
 const monedasRouter = Router();
 const perfilMonedasRouter = Router();
