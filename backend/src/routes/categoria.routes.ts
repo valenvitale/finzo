@@ -1,35 +1,34 @@
 import { Router } from 'express';
-import {
-  listarCategorias,
-  crearCategoria,
-  actualizarCategoria,
-  eliminarCategoria,
-} from '../controllers/categoria.controller.js';
+import { CategoriaController } from '../controllers/categoria.controller.js';
+import { CategoriaService } from '../services/categoria.service.js';
+import { CategoriaRepository } from '../repositories/categoria.repository.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
-import { validarCuerpo } from '../middlewares/validacion.middleware.js';
+import { validarCuerpo, validarParametros } from '../middlewares/validacion.middleware.js';
 import {
   crearCategoriaSchema,
   actualizarCategoriaSchema,
+  categoriaIdParamsSchema,
 } from '../validation/categoria.schema.js';
 
-const categoriaRouter = Router();
+// --- Composición de dependencias ---
+const repository = new CategoriaRepository();
+const service = new CategoriaService(repository);
+const controller = new CategoriaController(service);
 
-categoriaRouter.use(authMiddleware);
+const router = Router();
 
-categoriaRouter.get('/', listarCategorias);
+// Todas las rutas de categorías requieren autenticación
+router.use(authMiddleware);
 
-categoriaRouter.post(
-  '/',
-  validarCuerpo(crearCategoriaSchema),
-  crearCategoria,
-);
-
-categoriaRouter.patch(
+router.post('/', validarCuerpo(crearCategoriaSchema), controller.crear);
+router.get('/', controller.listar);
+router.get('/:id', validarParametros(categoriaIdParamsSchema), controller.obtenerPorId);
+router.patch(
   '/:id',
+  validarParametros(categoriaIdParamsSchema),
   validarCuerpo(actualizarCategoriaSchema),
-  actualizarCategoria,
+  controller.actualizar
 );
+router.delete('/:id', validarParametros(categoriaIdParamsSchema), controller.eliminar);
 
-categoriaRouter.delete('/:id', eliminarCategoria);
-
-export default categoriaRouter;
+export default router;

@@ -1,77 +1,87 @@
-import type { ICategoriaRepository, CrearCategoriaDatos, ActualizarCategoriaDatos } from '../repositories/categoria.repository.ts';
-
-import { ErrorDeConflicto, ErrorProhibido, ErrorNoEncontrado } from '../errors/errores.js';
+import { ICategoriaRepository } from '../repositories/categoria.repository.js';
+import { CrearCategoriaDTO, ActualizarCategoriaDTO, CategoriaResponseDTO } from '../types/categoria.types.js';
+import { ErrorDeConflicto, ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
 
 export class CategoriaService {
-    constructor(
-        private categoriaRepository: ICategoriaRepository,
-    ) {}
+  private readonly categoriaRepository: ICategoriaRepository;
 
-    async listar(idPerfil: string) {
-        return this.categoriaRepository.listar(idPerfil);
+  constructor(categoriaRepository: ICategoriaRepository) {
+    this.categoriaRepository = categoriaRepository;
+  }
+
+  private async validarCategoriaEditable(id: string, perfilId: string): Promise<CategoriaResponseDTO> {
+    const categoria = await this.categoriaRepository.obtenerPorId(id);
+
+    if (!categoria) {
+      throw new ErrorNoEncontrado('La categoría no existe');
     }
 
-    async crear(idPerfil: string, datos: CrearCategoriaDatos) {
-        const cantidad = await this.categoriaRepository.contarPersonalizadasPorUsuario(idPerfil);
-
-        if (cantidad >= 8) {
-            throw new ErrorDeConflicto(
-                'Podés tener hasta 8 categorías personalizadas',
-            );
-        }
-
-        return this.categoriaRepository.crear(idPerfil, datos);
+    if (categoria.perfilId === null) {
+      throw new ErrorProhibido('No podés modificar ni eliminar categorías predeterminadas');
     }
 
-    async actualizar(idPerfil: string, id: string, datos: ActualizarCategoriaDatos){
-        const categoria = await this.buscarCategoriaEditable(idPerfil, id);
-
-        if (datos.tipo !== undefined && datos.tipo !== categoria.tipo){
-            const cantidadMovimientos = await this.categoriaRepository.contarMovimientosAsociados(id);
-
-            if (cantidadMovimientos > 0) {
-                throw new ErrorDeConflicto(
-                    'No podés cambiar el tipo de una categoría con movimientos asociados',
-                );
-            }
-        }
-
-        return this.categoriaRepository.actualizar(id, datos);
+    if (categoria.perfilId !== perfilId) {
+      throw new ErrorProhibido('No podés modificar ni eliminar categorías de otro perfil');
     }
 
-    async eliminar(idPerfil: string, id: string): Promise<void> {
-        await this.buscarCategoriaEditable(idPerfil, id);
+    return categoria;
+  }
 
-        const cantidadMovimientos = await this.categoriaRepository.contarMovimientosAsociados(id);
+  async crear(perfilId: string, datosCategoria: CrearCategoriaDTO): Promise<CategoriaResponseDTO> {
+    const cantidad = await this.categoriaRepository.contarPersonalizadasPorPerfil(perfilId);
 
-        if (cantidadMovimientos > 0) {
-            throw new ErrorDeConflicto(
-                'No podés eliminar una categoría con movimientos asociados',
-            );
-        }
-
-        await this.categoriaRepository.eliminar(id);
+    if (cantidad >= 8) {
+      throw new ErrorDeConflicto('Podés tener hasta 8 categorías personalizadas');
     }
 
-    private async buscarCategoriaEditable(idPerfil: string, id: string){
-        const categoria = await this.categoriaRepository.buscarPorId(id);
+    return this.categoriaRepository.crear(perfilId, datosCategoria);
+  }
 
-        if (!categoria) {
-            throw new ErrorNoEncontrado('La categoría no existe');
-        }
+  async obtenerPorId(id: string, perfilId: string): Promise<CategoriaResponseDTO> {
+    const categoria = await this.categoriaRepository.obtenerPorId(id);
 
-        if (categoria.id_perfil === null) {
-            throw new ErrorProhibido(
-                'No podés modificar ni eliminar categorías predeterminadas',
-            );
-        }
-
-        if (categoria.id_perfil !== idPerfil) {
-            throw new ErrorProhibido(
-                'No podés modificar ni eliminar categorías de otro perfil',
-            );
-        }
-
-        return categoria;
+    if (!categoria) {
+      throw new ErrorNoEncontrado('La categoría no existe');
     }
+
+    if (categoria.perfilId !== null && categoria.perfilId !== perfilId) {
+      throw new ErrorProhibido('No tienes permiso para acceder a esta categoría');
+    }
+
+    return categoria;
+  }
+
+  async actualizar(
+    id: string,
+    perfilId: string,
+    datosActualizacion: ActualizarCategoriaDTO
+  ): Promise<CategoriaResponseDTO> {
+    const categoria = await this.validarCategoriaEditable(id, perfilId);
+
+    if (datosActualizacion.tipo !== undefined && datosActualizacion.tipo !== categoria.tipo) {
+      const cantidadMovimientos = await this.categoriaRepository.contarMovimientosAsociados(id);
+
+      if (cantidadMovimientos > 0) {
+        throw new ErrorDeConflicto('No podés cambiar el tipo de una categoría con movimientos asociados');
+      }
+    }
+
+    return this.categoriaRepository.actualizar(id, datosActualizacion);
+  }
+
+  async eliminar(id: string, perfilId: string): Promise<void> {
+    await this.validarCategoriaEditable(id, perfilId);
+
+    const cantidadMovimientos = await this.categoriaRepository.contarMovimientosAsociados(id);
+
+    if (cantidadMovimientos > 0) {
+      throw new ErrorDeConflicto('No podés eliminar una categoría con movimientos asociados');
+    }
+
+    await this.categoriaRepository.eliminar(id);
+  }
+
+  async listarPorPerfil(perfilId: string): Promise<CategoriaResponseDTO[]> {
+    return this.categoriaRepository.listarPorPerfil(perfilId);
+  }
 }

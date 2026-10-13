@@ -1,66 +1,107 @@
-import type { PrismaClient } from '@prisma/client';
-import type { Categoria, TipoMovimiento } from '../models/categoria.model.js';
-
-export interface CrearCategoriaDatos {
-    nombre: string;
-    color: string;
-    tipo: TipoMovimiento;
-}
-
-export interface ActualizarCategoriaDatos {
-    nombre?: string;
-    color?: string;
-    tipo?: TipoMovimiento;
-}
+import { PrismaClient, Prisma } from '@prisma/client';
+import { prisma as prismaSingleton } from '../config/prisma.js';
+import { CrearCategoriaDTO, ActualizarCategoriaDTO, CategoriaResponseDTO } from '../types/categoria.types.js';
 
 export interface ICategoriaRepository {
-    listar(idPerfil: string): Promise<Categoria[]>;
-    buscarPorId(id: string): Promise<Categoria | null>;
-    contarPersonalizadasPorUsuario(idPerfil: string): Promise<number>;
-    contarMovimientosAsociados(idCategoria: string): Promise<number>;
-    crear(idPerfil: string, datos: CrearCategoriaDatos): Promise<Categoria>;
-    actualizar(id: string, datos: ActualizarCategoriaDatos): Promise<Categoria>;
-    eliminar(id: string): Promise<void>;
+  crear(perfilId: string, datosCategoria: CrearCategoriaDTO): Promise<CategoriaResponseDTO>;
+  actualizar(id: string, datosActualizacion: ActualizarCategoriaDTO): Promise<CategoriaResponseDTO>;
+  eliminar(id: string): Promise<void>;
+  obtenerPorId(id: string): Promise<CategoriaResponseDTO | null>;
+  listarPorPerfil(perfilId: string): Promise<CategoriaResponseDTO[]>;
+  contarPersonalizadasPorPerfil(perfilId: string): Promise<number>;
+  contarMovimientosAsociados(categoriaId: string): Promise<number>;
 }
 
+type CategoriaPrisma = Prisma.CategoriaGetPayload<Record<string, never>>;
+
 export class CategoriaRepository implements ICategoriaRepository {
-    constructor(private prisma: PrismaClient) {}
+  private prisma: PrismaClient;
 
-    listar(idPerfil: string): Promise<Categoria[]> {
-        return this.prisma.categoria.findMany({
-            where: {
-                OR: [{id_perfil: null}, {id_perfil: idPerfil}],
-            },
-            orderBy: [{nombre: 'asc'}, {id: 'asc'}],
-        });
-    }
+  constructor(prismaClient: PrismaClient = prismaSingleton) {
+    this.prisma = prismaClient;
+  }
 
-    buscarPorId(id: string): Promise<Categoria | null> {
-        return this.prisma.categoria.findUnique({where: {id}});
-    }
+  // Mapper reutilizable para todos los metodos CRUD de Categorías
+  private mapearADto(categoria: CategoriaPrisma): CategoriaResponseDTO {
+    return {
+      id: categoria.id,
+      nombre: categoria.nombre,
+      color: categoria.color,
+      tipo: categoria.tipo,
+      perfilId: categoria.id_perfil,
+      createdAt: categoria.created_at,
+      updatedAt: categoria.updated_at,
+    };
+  }
 
-    contarPersonalizadasPorUsuario(idPerfil: string): Promise<number> {
-        return this.prisma.categoria.count({where: {id_perfil: idPerfil}});
-    }
+  // Crea una categoria en BD y devuelve la creacion como DTO
+  async crear(perfilId: string, datosCategoria: CrearCategoriaDTO): Promise<CategoriaResponseDTO> {
+    const nuevaCategoria = await this.prisma.categoria.create({
+      data: {
+        id_perfil: perfilId,
+        nombre: datosCategoria.nombre,
+        color: datosCategoria.color,
+        tipo: datosCategoria.tipo,
+      },
+    });
 
-    contarMovimientosAsociados(idCategoria: string): Promise<number> {
-        return this.prisma.movimiento.count({where: {id_categoria: idCategoria}});
-    }
+    return this.mapearADto(nuevaCategoria);
+  }
 
-    crear(idPerfil: string, datos: CrearCategoriaDatos): Promise<Categoria> {
-        return this.prisma.categoria.create({
-            data: {nombre: datos.nombre, color: datos.color, tipo: datos.tipo, id_perfil: idPerfil}
-        });
-    }
+  // Actualiza una categoria existente
+  async actualizar(id: string, datosActualizacion: ActualizarCategoriaDTO): Promise<CategoriaResponseDTO> {
+    const categoriaActualizada = await this.prisma.categoria.update({
+      where: { id },
+      data: {
+        nombre: datosActualizacion.nombre,
+        color: datosActualizacion.color,
+        tipo: datosActualizacion.tipo,
+      },
+    });
 
-    actualizar(id: string, datos: ActualizarCategoriaDatos): Promise<Categoria> {
-        return this.prisma.categoria.update({
-            where: {id},
-            data: {nombre: datos.nombre, color: datos.color, tipo: datos.tipo},
-        });
-    }
+    return this.mapearADto(categoriaActualizada);
+  }
 
-    async eliminar(id: string): Promise<void> {
-        await this.prisma.categoria.delete({where: {id}});
+  // Elimina una categoria
+  async eliminar(id: string): Promise<void> {
+    await this.prisma.categoria.delete({
+      where: { id },
+    });
+  }
+
+  // Obtener toda la informacion de la categoria por id de categoria
+  async obtenerPorId(id: string): Promise<CategoriaResponseDTO | null> {
+    const categoriaSolicitada = await this.prisma.categoria.findUnique({
+      where: { id },
+    });
+    if (!categoriaSolicitada) {
+      return null;
     }
+    return this.mapearADto(categoriaSolicitada);
+  }
+
+  // Lista categorias globales y personalizadas del perfil
+  async listarPorPerfil(perfilId: string): Promise<CategoriaResponseDTO[]> {
+    const categorias = await this.prisma.categoria.findMany({
+      where: {
+        OR: [{ id_perfil: null }, { id_perfil: perfilId }],
+      },
+      orderBy: [{ nombre: 'asc' }, { id: 'asc' }],
+    });
+    return categorias.map((c) => this.mapearADto(c));
+  }
+
+  // Cuenta la cantidad de categorias personalizadas creadas por un perfil
+  async contarPersonalizadasPorPerfil(perfilId: string): Promise<number> {
+    return this.prisma.categoria.count({
+      where: { id_perfil: perfilId },
+    });
+  }
+
+  // Cuenta la cantidad de movimientos asociados a una categoria
+  async contarMovimientosAsociados(categoriaId: string): Promise<number> {
+    return this.prisma.movimiento.count({
+      where: { id_categoria: categoriaId },
+    });
+  }
 }

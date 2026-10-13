@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { actualizarCategoriaSchema, crearCategoriaSchema } from '../../src/validation/categoria.schema.js';
-import { actualizarPerfilSchema, crearPerfilSchema } from '../../src/validation/perfil.schema.js';
 import {
-  asignarMonedaSchema,
-  actualizarMonedaSchema,
-  crearMonedaSchema,
-} from '../../src/validation/moneda.schema.js';
+  actualizarCategoriaSchema,
+  categoriaIdParamsSchema,
+  crearCategoriaSchema,
+} from '../../src/validation/categoria.schema.js';
+import { actualizarPerfilSchema, crearPerfilSchema } from '../../src/validation/perfil.schema.js';
+import { asignarMonedaSchema, actualizarMonedaSchema, crearMonedaSchema } from '../../src/validation/moneda.schema.js';
 import { actualizarMedioPagoSchema, crearMedioPagoSchema } from '../../src/validation/medio-pago.schema.js';
 import {
   crearMovimientoSchema,
@@ -21,6 +21,9 @@ describe('Schemas del sistema', () => {
       crearCategoriaSchema.safeParse({ nombre: 'Hogar', color: '#A1B2C3', tipo: 'GASTO', extra: true }).success
     ).toBe(false);
     expect(actualizarCategoriaSchema.safeParse({ color: '#A1B2C3' }).success).toBe(true);
+    expect(actualizarCategoriaSchema.safeParse({}).success).toBe(false);
+    expect(categoriaIdParamsSchema.safeParse({ id: '123e4567-e89b-12d3-a456-426614174000' }).success).toBe(true);
+    expect(categoriaIdParamsSchema.safeParse({ id: 'id-invalido' }).success).toBe(false);
   });
 
   it('valida perfiles y permite quitar la foto de perfil', () => {
