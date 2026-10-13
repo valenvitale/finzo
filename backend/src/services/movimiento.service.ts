@@ -1,7 +1,12 @@
 import { IMovimientoRepository } from '../repositories/movimiento.repository.js';
 // import { ICategoriaRepository } from "../repositories/categoria.repository.js";
 // import { IMedioPagoRepository } from "../repositories/medioPago.repository.js";
-import { CrearMovimientoDTO, ActualizarMovimientoDTO, FiltrosMovimientoDTO } from '../types/movimiento.types.js';
+import {
+  CrearMovimientoDTO,
+  ActualizarMovimientoDTO,
+  FiltrosMovimientoDTO,
+  MovimientoResponseDTO,
+} from '../types/movimiento.types.js';
 import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
 
 export class MovimientoService {
@@ -55,26 +60,33 @@ export class MovimientoService {
     return movimiento;
   }
 
-  crear(perfilId: string, datosMovimiento: CrearMovimientoDTO) {
+  async crear(perfilId: string, datosMovimiento: CrearMovimientoDTO): Promise<MovimientoResponseDTO> {
     this.validarDatosBasicos(datosMovimiento);
     this.validarRelaciones(datosMovimiento);
     return this.movimientoRepository.crear(perfilId, datosMovimiento);
   }
-  async obtenerPorId(id: string, perfilId: string) {
+
+  async obtenerPorId(id: string, perfilId: string): Promise<MovimientoResponseDTO> {
     return this.validarPertenenciaUsuario(id, perfilId);
   }
-  async actualizar(id: string, perfilId: string, datosActualizacion: ActualizarMovimientoDTO) {
+
+  async actualizar(
+    id: string,
+    perfilId: string,
+    datosActualizacion: ActualizarMovimientoDTO
+  ): Promise<MovimientoResponseDTO> {
     await this.validarPertenenciaUsuario(id, perfilId);
     this.validarDatosBasicos(datosActualizacion);
     this.validarRelaciones(datosActualizacion);
     return this.movimientoRepository.actualizar(id, datosActualizacion);
   }
-  async eliminar(id: string, perfilId: string) {
+
+  async eliminar(id: string, perfilId: string): Promise<void> {
     await this.validarPertenenciaUsuario(id, perfilId);
     return this.movimientoRepository.eliminar(id);
   }
 
-  listarPorPerfil(perfilId: string, filtros?: FiltrosMovimientoDTO) {
+  async listarPorPerfil(perfilId: string, filtros?: FiltrosMovimientoDTO): Promise<MovimientoResponseDTO[]> {
     return this.movimientoRepository.listarPorPerfil(perfilId, filtros);
   }
 }
