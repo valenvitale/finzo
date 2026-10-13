@@ -79,5 +79,15 @@ describe('Schemas del sistema', () => {
     ).toBe(false);
     expect(actualizarMovimientoSchema.safeParse({}).success).toBe(false);
     expect(actualizarMovimientoSchema.safeParse({ monto: 200 }).success).toBe(true);
+    expect(
+      crearMovimientoSchema.safeParse({
+        fecha: '2026-10-12',
+        monto: 1500,
+        monedaId: '123e4567-e89b-12d3-a456-426614174000',
+        categoriaId: '123e4567-e89b-12d3-a456-426614174001',
+        medioPagoId: '123e4567-e89b-12d3-a456-426614174002',
+        campoInesperado: 'hack',
+      }).success
+    ).toBe(false);
   });
 });

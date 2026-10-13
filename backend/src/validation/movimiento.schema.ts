@@ -2,14 +2,14 @@
 import { z } from 'zod';
 
 // Esquema de validación para crear un movimiento
-export const crearMovimientoSchema = z.object({
+export const crearMovimientoSchema = z.strictObject({
     fecha: z.coerce.date('La fecha no es válida'),
     monto: z.number('El monto debe ser un número').positive('El monto debe ser un número positivo'),
     descripcion: z.string().max(100, 'La descripción no puede superar los 100 caracteres').optional().nullable(),
     monedaId: z.uuid('El ID de la moneda no es válido'),
     categoriaId: z.uuid('El ID de la categoría no es válido'),
     medioPagoId: z.uuid('El ID del medio de pago no es válido'),
-})
+});
 
 // Esquema de validacion para actualizar un movimiento
 export const actualizarMovimientoSchema = crearMovimientoSchema.partial().refine((data) => Object.keys(data).length > 0, {
