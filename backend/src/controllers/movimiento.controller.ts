@@ -16,7 +16,7 @@ export class MovimientoController {
         const perfilId = req.user!.id;
         const datosMovimiento = crearMovimientoSchema.parse(req.body);
         const nuevoMovimiento = await this.movimientoService.crear(perfilId, datosMovimiento);
-        res.status(201).json(nuevoMovimiento);
+        res.status(201).json({ exito: true, datos: nuevoMovimiento });
         } catch (error) {
         next(error);
         }
@@ -29,7 +29,7 @@ export class MovimientoController {
         const perfilId = req.user!.id;
         const movimientoId = req.params.id as string;
         const movimiento = await this.movimientoService.obtenerPorId(movimientoId, perfilId);
-        res.status(200).json(movimiento);
+        res.status(200).json({ exito: true, datos: movimiento });
         } catch (error) {
         next(error);
         }
@@ -43,7 +43,7 @@ export class MovimientoController {
         const movimientoId = req.params.id as string;
         const datosActualizacion = actualizarMovimientoSchema.parse(req.body);
         const movimientoActualizado = await this.movimientoService.actualizar(movimientoId, perfilId, datosActualizacion);
-        res.status(200).json(movimientoActualizado);
+        res.status(200).json({ exito: true, datos: movimientoActualizado });
         } catch (error) {
         next(error);
         }
@@ -69,7 +69,7 @@ export class MovimientoController {
         const perfilId = req.user!.id;
         const filtros = filtrosMovimientoSchema.parse(req.query);
         const movimientos = await this.movimientoService.listarPorPerfil(perfilId, filtros);
-        res.status(200).json(movimientos);
+        res.status(200).json({ exito: true, datos: movimientos });
         } catch (error) {
         next(error);
         }
