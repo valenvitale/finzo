@@ -163,4 +163,29 @@ describe('MovimientoRepository', () => {
     expect(resultado).toHaveLength(1);
     expect(resultado[0].perfilId).toBe('perfil-1');
   });
+
+  it('lista movimientos filtrando por tipo y rango de montos', async () => {
+    const mockPrisma = {
+      movimiento: {
+        findMany: vi.fn().mockResolvedValue([mockPrismaMovimiento]),
+      },
+    } as unknown as PrismaClient;
+
+    const repository = new MovimientoRepository(mockPrisma);
+    await repository.listarPorPerfil('perfil-1', {
+      tipo: 'GASTO',
+      montoMinimo: 1000,
+      montoMaximo: 5000,
+    });
+
+    expect(mockPrisma.movimiento.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          id_perfil: 'perfil-1',
+          categoria: { tipo: 'GASTO' },
+          monto: { gte: 1000, lte: 5000 },
+        }),
+      })
+    );
+  });
 });

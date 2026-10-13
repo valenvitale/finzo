@@ -105,38 +105,46 @@ export class MovimientoRepository implements IMovimientoRepository {
   }
 
   async listarPorPerfil(perfilId: string, filtros?: FiltrosMovimientoDTO): Promise<MovimientoResponseDTO[]> {
-    
-    let filtroFecha: {gte?: Date; lte?: Date} | undefined;
+    let filtroFecha: { gte?: Date; lte?: Date } | undefined;
     if (filtros?.fechaDesde || filtros?.fechaHasta) {
       filtroFecha = {
         gte: filtros.fechaDesde,
-        lte: filtros.fechaHasta
+        lte: filtros.fechaHasta,
       };
     } else if (filtros?.mes && filtros?.anio) {
-        const inicio = new Date(filtros.anio, filtros.mes - 1, 1, 0, 0, 0, 0);
-        const fin = new Date(filtros.anio, filtros.mes, 0, 23, 59, 59, 999);
-        filtroFecha = {
-          gte: inicio,
-          lte: fin
-        };
+      const inicio = new Date(filtros.anio, filtros.mes - 1, 1, 0, 0, 0, 0);
+      const fin = new Date(filtros.anio, filtros.mes, 0, 23, 59, 59, 999);
+      filtroFecha = {
+        gte: inicio,
+        lte: fin,
+      };
     }
+
+    let filtroMonto: { gte?: number; lte?: number } | undefined;
+    if (filtros?.montoMinimo !== undefined || filtros?.montoMaximo !== undefined) {
+      filtroMonto = {
+        gte: filtros.montoMinimo,
+        lte: filtros.montoMaximo,
+      };
+    }
+
     const movimientos = await this.prisma.movimiento.findMany({
       where: {
         id_perfil: perfilId,
         id_categoria: filtros?.categoriaId,
         id_medio_pago: filtros?.medioPagoId,
         id_moneda: filtros?.monedaId,
-        fecha: filtroFecha
+        fecha: filtroFecha,
+        monto: filtroMonto,
+        categoria: filtros?.tipo ? { tipo: filtros.tipo } : undefined,
       },
       include: {
         categoria: true,
       },
       orderBy: {
-        fecha: 'desc'
-      }
-    }
-    );
-    const movimientosDtos = movimientos.map((m) => this.mapearADto(m));
-    return movimientosDtos;
+        fecha: 'desc',
+      },
+    });
+    return movimientos.map((m) => this.mapearADto(m));
   }
 }
