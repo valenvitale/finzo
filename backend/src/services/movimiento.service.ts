@@ -1,5 +1,5 @@
 import { IMovimientoRepository } from '../repositories/movimiento.repository.js';
-// import { ICategoriaRepository } from "../repositories/categoria.repository.js";
+import { ICategoriaRepository } from '../repositories/categoria.repository.js';
 // import { IMedioPagoRepository } from "../repositories/medioPago.repository.js";
 import {
   CrearMovimientoDTO,
@@ -11,13 +11,15 @@ import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../errors/
 
 export class MovimientoService {
   private readonly movimientoRepository: IMovimientoRepository;
+  private readonly categoriaRepository?: ICategoriaRepository;
+
   /**
-   * El Service queda a la espera de la implementacion de laS interfaces:
-   * ICategoriaRepository (KAN-94) y IMedioPagoRepository (KAN-124) para la implementación final
    * @param movimientoRepository - Repositorio de movimientos para interactuar con la base de datos.
+   * @param categoriaRepository - Repositorio de categorías para validar existencia y pertenencia.
    */
-  constructor(movimientoRepository: IMovimientoRepository) {
+  constructor(movimientoRepository: IMovimientoRepository, categoriaRepository?: ICategoriaRepository) {
     this.movimientoRepository = movimientoRepository;
+    this.categoriaRepository = categoriaRepository;
   }
 
   /**
@@ -39,11 +41,16 @@ export class MovimientoService {
     }
   }
 
-  private validarRelaciones(_datosMovimiento: CrearMovimientoDTO | ActualizarMovimientoDTO) {
-    // Validar que la categoria exista
-    // pendiente de la implementacion de la interfaz ICategoriaRepository (KAN-94) de alessio
-    // validar que el medio de pago exista
-    // pendiente de la implementacion de la interfaz IMedioPagoRepository (KAN-124) de alessio
+  private async validarRelaciones(datosMovimiento: CrearMovimientoDTO | ActualizarMovimientoDTO, perfilId?: string) {
+    if (this.categoriaRepository && datosMovimiento.categoriaId) {
+      const categoria = await this.categoriaRepository.obtenerPorId(datosMovimiento.categoriaId);
+      if (!categoria) {
+        throw new ErrorDeValidacion('La categoría especificada no existe');
+      }
+      if (categoria.perfilId !== null && perfilId && categoria.perfilId !== perfilId) {
+        throw new ErrorProhibido('No tienes permiso para utilizar esta categoría');
+      }
+    }
   }
 
   private async validarPertenenciaUsuario(movimientoId: string, perfilId: string) {
@@ -62,7 +69,7 @@ export class MovimientoService {
 
   async crear(perfilId: string, datosMovimiento: CrearMovimientoDTO): Promise<MovimientoResponseDTO> {
     this.validarDatosBasicos(datosMovimiento);
-    this.validarRelaciones(datosMovimiento);
+    await this.validarRelaciones(datosMovimiento, perfilId);
     return this.movimientoRepository.crear(perfilId, datosMovimiento);
   }
 
@@ -77,7 +84,7 @@ export class MovimientoService {
   ): Promise<MovimientoResponseDTO> {
     await this.validarPertenenciaUsuario(id, perfilId);
     this.validarDatosBasicos(datosActualizacion);
-    this.validarRelaciones(datosActualizacion);
+    await this.validarRelaciones(datosActualizacion, perfilId);
     return this.movimientoRepository.actualizar(id, datosActualizacion);
   }
 
