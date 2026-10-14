@@ -54,7 +54,7 @@
 3. [Tecnología elegida](#-tecnología-elegida)
 4. [Cómo empezar](#-cómo-empezar)
 5. [Estado actual y pendientes conocidos](#-estado-actual-y-pendientes-conocidos)
-6. [Arquitectura y diseño](#-arquitectura-y-diseño)
+6. [Arquitectura, diseño y patrones](#-arquitectura-y-diseño)
 7. [Estructura del repositorio](#-estructura-del-repositorio)
 8. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
 9. [Metodología de trabajo y convenciones](#-metodología-de-trabajo-y-convenciones)
@@ -243,10 +243,10 @@ pnpm build
 
 #### 6. Ejecución de Pruebas Automatizadas
 
-Para ejecutar las suites de tests unitarios y de integración con Vitest:
+El backend cuenta con una suite completa de **75 pruebas unitarias** implementadas con Vitest que validan controladores, servicios, repositorios, middlewares y esquemas de validación de forma aislada en memoria:
 
 ```bash
-# Ejecutar tests del backend
+# Ejecutar tests del backend (75 pruebas unitarias)
 pnpm --filter backend test
 
 # Ejecutar tests del frontend
@@ -258,25 +258,24 @@ pnpm --filter frontend test
 ## 📊 Estado Actual y Pendientes Conocidos
 
 > [!NOTE]
-> **Fase Taller I:** El proyecto se encuentra en su etapa de arranque e inicialización arquitectónica. Esta sección documenta el estado real del repositorio y el plan de trabajo inmediato.
+> **Fase Taller II (Diseño y Mantenibilidad):** El backend cuenta con su arquitectura central consolidada, patrones de diseño justificados, inyección de dependencias y una sólida suite de pruebas unitarias automatizadas. Esta sección documenta el estado real del repositorio y los próximos pasos hacia el MVP completo.
 
 ### ✅ Estado Actual (Completado)
 
 - [x] **Monorepo configurado:** Estructura de espacios de trabajo (`pnpm-workspace.yaml`) integrando los paquetes `frontend` y `backend`.
-- [x] **Arquitectura de directorios:** Estructura en capas en el backend (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `models`, `types`) y arquitectura por módulos y componentes en el frontend.
-- [x] **Configuración de base:** Archivos `tsconfig.json`, `package.json`, `vitest.config.ts`, `.nvmrc` y reglas de `.gitignore` creados.
-- [x] **Definición funcional y técnica:** Propuesta formal del proyecto documentada en detalle en [`PROPUESTA.md`](./PROPUESTA.md).
-- [x] **Definición del stack y dependencias:** Dependencias base instaladas (Express 5, React 19, Supabase JS, Tailwind, Vitest).
-- [x] **Ajuste de scripts en `package.json`:** Comandos unificados en la raíz para ejecutar dev, build, lint, format y tests de ambos paquetes simultáneamente.
-- [x] **Configuración del proyecto en Supabase:** Creación de la instancia PostgreSQL en la nube, obtención de credenciales API y cadenas de conexión del pooler configuradas.
-- [x] **Persistencia relacional con Prisma:** Esquema relacional completo en `backend/prisma/schema.prisma`, migración inicial hacia Supabase ejecutada y seed de datos base (`seed.ts`).
+- [x] **Arquitectura en capas desacopladas:** Separación estricta de responsabilidades (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `models`, `types`).
+- [x] **Persistencia relacional con Prisma:** Esquema relacional completo en `backend/prisma/schema.prisma`, cliente tipado con pooler de PostgreSQL en Supabase y seed de datos base.
+- [x] **Modelos de dominio independientes:** Definidos en `backend/src/models/` para movimientos, categorías, monedas, medios de pago y perfiles.
+- [x] **Autenticación e identidad:** Integración con Supabase Auth, middleware de verificación JWT (`auth.middleware.ts`) y servicio de credenciales (`perfil-auth.service.ts`).
+- [x] **Lógica de negocio y endpoints REST (CRUD):** Módulos completos para movimientos, categorías, monedas, medios de pago y perfiles.
+- [x] **Validación declarativa y DTOs:** Esquemas Zod en rutas con middlewares genéricos (`validacion.middleware.ts`) y tipado estricto con DTOs en TypeScript.
+- [x] **Patrones de diseño aplicados y justificados (Taller II):** Implementación de Singleton, Adapter, Data Mapper / ACL, Repository Pattern, Dependency Injection, Composition Root, Chain of Responsibility, Strategy y Facade.
+- [x] **Documentación técnica de diseño:** Análisis exhaustivo, diagnóstico, alternativas, evidencia y trade-offs registrado en [`docs/decisiones-diseno.md`](./docs/decisiones-diseno.md).
+- [x] **Testing automatizado (75 tests unitarios):** Cobertura de pruebas unitarias 100% en verde con Vitest sin dependencia de base de datos externa.
 
 ### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
 
-- [ ] **Modelos de dominio independientes:** Definir las interfaces y modelos de dominio en `backend/src/models/`.
-- [ ] **Flujo de autenticación:** Implementar registro, login y middleware de validación de tokens JWT en el backend.
-- [ ] **CRUD de categorías y movimientos:** Desarrollo de endpoints REST, repositorios y servicios con reglas de negocio para transacciones y categorías.
-- [ ] **Dashboard inicial en Frontend:** Construcción de vistas de balance actual, historial de movimientos y formulario de carga.
+- [ ] **Desarrollo de pantallas del Dashboard e Historial en Frontend:** Integrar vistas de carga de movimientos, filtros, selector de categorías y medios de pago en React.
 - [ ] **Pipeline de CI:** Configurar flujos de trabajo en `.github/workflows/` para ejecución automática de linter y tests en cada Pull Request.
 - [ ] **Despliegue a producción:** Configurar servicio en **Render** para la API del backend y proyecto en **Vercel** para la SPA del frontend.
 
@@ -374,6 +373,7 @@ finzo/
 │   ├── src/
 │   │   ├── config/             # Configuración de entorno y clientes externos
 │   │   ├── controllers/        # Controladores que reciben peticiones HTTP
+│   │   ├── errors/             # Jerarquía de excepciones de dominio (AppError)
 │   │   ├── middlewares/        # Middlewares de autenticación, validación y error
 │   │   ├── models/             # Interfaces y modelos de dominio
 │   │   ├── repositories/       # Abstracción y acceso a la base de datos
@@ -381,9 +381,13 @@ finzo/
 │   │   ├── services/           # Lógica y reglas de negocio del sistema
 │   │   ├── types/              # Declaraciones de tipos TypeScript y DTOs
 │   │   ├── utils/              # Funciones auxiliares de cálculo y formato
+│   │   ├── validation/         # Esquemas de validación declarativa con Zod
 │   │   ├── app.ts              # Configuración de la aplicación Express
 │   │   └── server.ts           # Punto de entrada y levantamiento del servidor
-│   ├── tests/                  # Tests unitarios y de integración (Vitest)
+│   ├── tests/                  # Pruebas automatizadas con Vitest
+│   │   ├── unit/               # Tests unitarios (controladores, servicios, repositorios)
+│   │   ├── integration/        # Tests de integración
+│   │   └── setup.ts            # Configuración del entorno de testing
 │   ├── .env.example            # Plantilla de variables de entorno para backend
 │   ├── package.json            # Dependencias y scripts del backend
 │   ├── prisma.config.ts        # Configuración de Prisma
@@ -413,8 +417,9 @@ finzo/
 │   ├── vite.config.ts          # Configuración del bundler Vite
 │   └── vitest.config.ts        # Configuración de pruebas para frontend
 │
-├── docs/                       # Documentación complementaria (API, diagramas)
-│   └── API.md
+├── docs/                       # Documentación técnica y académica
+│   ├── API.md                  # Especificación de endpoints REST
+│   └── decisiones-diseno.md    # Registro de decisiones de diseño y refactorización (Taller II)
 ├── .github/                    # Automatización e integración continua
 │   └── workflows/              # GitHub Actions para CI/CD
 ├── .gitignore                  # Reglas de exclusión de Git
