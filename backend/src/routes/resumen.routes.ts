@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 import { ResumenController } from '../controllers/resumen.controller.js';
 import { ResumenService } from '../services/resumen.service.js';

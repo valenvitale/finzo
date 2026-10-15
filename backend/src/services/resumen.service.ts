@@ -8,7 +8,7 @@ import {
 
 import { ErrorDeConflicto } from '../errors/errores.js';
 
-//nuevo bloque de codigo
+// nuevo bloque de codigo
 // ahora tenemos un contrato que establece que debe hacer cualquier servicio de resumen.
 // nos permite que el controller dependa de IResumenService en lugar de una implementación concreta, lo que facilita la prueba y el mantenimiento.
 export interface IResumenService {
