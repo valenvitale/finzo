@@ -10,7 +10,25 @@ import {
 
 import { ErrorDeConflicto } from '../errors/errores.js';
 
-export class ResumenService {
+//nuevo bloque de codigo
+// ahora tenemos un contrato que establece que debe hacer cualquier servicio de resumen.
+// nos permite que el controller dependa de IResumenService en lugar de una implementación concreta, lo que facilita la prueba y el mantenimiento.
+export interface IResumenService {
+  obtenerResumen(
+    perfilId: string,
+    mes?: number,
+    anio?: number
+  ): Promise<{
+    totalIngresos: number;
+    totalGastos: number;
+    balance: number;
+    moneda: string;
+  }>;
+}
+// termina nuevo bloque de codigo
+
+//antes solo exportabamos la clase ResumenService.
+export class ResumenService implements IResumenService {
   constructor(
     private readonly movimientoRepository: IMovimientoRepository = new MovimientoRepository(),
     private readonly monedaRepository: IMonedaRepository = new MonedaRepository(),
