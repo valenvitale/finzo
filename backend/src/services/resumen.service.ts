@@ -1,11 +1,9 @@
 import {
-  IMovimientoRepository,
-  MovimientoRepository,
+  IMovimientoRepository
 } from '../repositories/movimiento.repository.js';
 
 import {
   IMonedaRepository,
-  MonedaRepository,
 } from '../repositories/moneda.repository.js';
 
 import { ErrorDeConflicto } from '../errors/errores.js';
@@ -30,8 +28,8 @@ export interface IResumenService {
 //antes solo exportabamos la clase ResumenService.
 export class ResumenService implements IResumenService {
   constructor(
-    private readonly movimientoRepository: IMovimientoRepository = new MovimientoRepository(),
-    private readonly monedaRepository: IMonedaRepository = new MonedaRepository(),
+    private readonly movimientoRepository: IMovimientoRepository,
+    private readonly monedaRepository: IMonedaRepository,
   ) {}
 
   async obtenerResumen(perfilId: string, mes?: number, anio?: number) {

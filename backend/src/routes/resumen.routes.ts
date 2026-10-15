@@ -5,10 +5,15 @@ import { ResumenService } from '../services/resumen.service.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { validarQuery } from '../middlewares/validacion.middleware.js';
 import { resumenQuerySchema } from '../validation/resumen.schema.js';
+import { MovimientoRepository } from '../repositories/movimiento.repository.js';
+import { MonedaRepository } from '../repositories/moneda.repository.js';
 
-// ahora la ruta crea el servicio y se lo entrega al controlador.
-const resumenService = new ResumenService();
-// y el controlador depende de IResumenService.
+// Composición de dependencias: el servicio depende de los repositorios, y el controlador depende del servicio.
+const movimientoRepository = new MovimientoRepository();
+const monedaRepository = new MonedaRepository();
+
+const resumenService = new ResumenService(movimientoRepository, monedaRepository);
+
 const resumenController = new ResumenController(resumenService);
 
 const resumenRouter = Router();
