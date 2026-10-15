@@ -478,7 +478,7 @@ Para mantener el repositorio organizado entre los cuatro, usamos la estrategia G
 
 - `release/x.0`: Preparación de una nueva versión. Se crea cuando develop tiene suficientes funcionalidades para una entrega; sirve para corregir errores menores durante la revisión, ajustar números de versión, actualizar documentación e **IMPORTANTE: no agregar funcionalidades nuevas**.
 
-  > Se crea desde **develop**, y una vez que se completa el trabajo en dicha rama (obtenemos la versión estable) se realiza el merge a develop y a main para actualizar el código en ambas ramas.
+  > Se crea desde **develop**, y una vez que se completa el trabajo en dicha rama (obtenemos la versión estable) se realiza el merge a main y a develop para actualizar el código en ambas ramas, y se genera el tag correspondiente en main.
 
 - `develop`: Rama de desarrollo.
 
@@ -487,7 +487,7 @@ Para mantener el repositorio organizado entre los cuatro, usamos la estrategia G
   > Se crea desde **develop** para trabajar en una nueva función a implementar. Una vez completada la funcionalidad, se hace el merge a develop y se elimina la rama.
 
 - `hotfix`: Corrección urgente de un error que se encuentra en main.
-  > Cuando encontramos un error importante en la versión estable, se crea desde **main** para trabajar en la corrección del error y solucionarlo lo antes posible. Una vez corregido el bug, se hace el merge a main y a develop.
+  > Cuando encontramos un error importante en la versión estable, se crea desde **main** para trabajar en la corrección del error y solucionarlo lo antes posible. Una vez corregido el bug, se hace el merge a main y a develop, y se crea un nuevo tag de parche.
 
 ### Estándares de contribución
 
@@ -496,3 +496,24 @@ Para mantener el repositorio organizado entre los cuatro, usamos la estrategia G
   > Ejemplo: `feat: implementación de login` o `fix: corrección de ruta API`.
 
 - **Revisiones de Pull Requests (PR)**: Al menos un compañero de equipo debe revisar una solicitud de incorporación de cambios antes de fusionarla (merge) con develop.
+
+- **Etiquetas de Versión (Tags)**: Se utilizan para identificar y registrar cada entrega de la versión estable sobre la rama `main`.
+
+  > Se sigue la convención de **Versionado Semántico (SemVer)** con formato `vMAJOR.MINOR.PATCH`:
+  >
+  > - **MAJOR (`v1.0.0`)**: Cambios estructurales importantes, hitos de fase o modificaciones incompatibles hacia atrás.
+  > - **MINOR (`v1.1.0`)**: Incorporación de nuevas funcionalidades compatibles (al cerrar y fusionar una rama `release/*`).
+  > - **PATCH (`v1.0.1`)**: Correcciones urgentes de bugs o parches menores (al cerrar y fusionar una rama `hotfix`).
+  >
+  > Al completar el merge hacia `main`, se genera un **tag anotado** y se publica en el repositorio:
+  >
+  > ```bash
+  > # 1. Crear tag anotado con mensaje descriptivo
+  > git tag -a v1.0.0 -m "v1.0.0: Primera versión estable del MVP"
+  >
+  > # 2. Subir el tag al repositorio remoto
+  > git push origin v1.0.0
+  >
+  > # 3. Listar los tags existentes
+  > git tag -l
+  > ```
