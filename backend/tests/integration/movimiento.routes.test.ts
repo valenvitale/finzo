@@ -9,6 +9,7 @@ import app from '../../src/app.js';
 
 // ----------- Declaración de mocks --------------------
 
+// Mocks de funciones de repositorios y autenticación
 const mocks = vi.hoisted(() => ({
   getUser: vi.fn(),
   crearMovimiento: vi.fn(),
