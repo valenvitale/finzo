@@ -16,3 +16,12 @@ export interface PerfilResponseDTO {
   created_at: Date;
   updated_at: Date;
 }
+
+export interface PerfilDTO {
+  id: string;
+  nombre: string;
+  apellido: string;
+  fotoPerfil: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}

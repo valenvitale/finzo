@@ -1,6 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { prisma as prismaSingleton } from '../config/prisma.js';
-import { Moneda } from '../models/moneda.model.js';
 import { ErrorDeConflicto } from '../errors/errores.js';
 import { MonedaPerfilResponseDTO, MonedaResponseDTO } from '../types/moneda.types.js';
 
@@ -8,20 +7,20 @@ type PerfilMonedaConMoneda = Prisma.PerfilMonedaGetPayload<{ include: { moneda: 
 
 export interface IMonedaRepository {
   listarDisponibles(): Promise<MonedaResponseDTO[]>;
-  obtenerDisponible(id: string): Promise<Moneda | null>;
+  obtenerDisponible(id: string): Promise<MonedaResponseDTO | null>;
   existePerfil(perfilId: string): Promise<boolean>;
   listarPorPerfil(perfilId: string): Promise<MonedaPerfilResponseDTO[]>;
   asignar(perfilId: string, monedaId: string, solicitarPrincipal?: boolean): Promise<MonedaPerfilResponseDTO>;
   eliminarAsignacion(perfilId: string, monedaId: string): Promise<boolean>;
 }
 
-function mapearMoneda(moneda: { id: string; nombre: string; codigo: string; simbolo: string }): Moneda {
-  return new Moneda({
+function mapearMoneda(moneda: { id: string; nombre: string; codigo: string; simbolo: string }): MonedaResponseDTO {
+  return {
     id: moneda.id,
     nombre: moneda.nombre,
     codigo: moneda.codigo,
     simbolo: moneda.simbolo,
-  });
+  };
 }
 
 function mapearAsignacion(asignacion: PerfilMonedaConMoneda): MonedaPerfilResponseDTO {
@@ -42,7 +41,7 @@ export class MonedaRepository implements IMonedaRepository {
     return monedas.map((moneda) => mapearMoneda(moneda));
   }
 
-  async obtenerDisponible(id: string): Promise<Moneda | null> {
+  async obtenerDisponible(id: string): Promise<MonedaResponseDTO | null> {
     const moneda = await this.prisma.moneda.findUnique({ where: { id } });
     return moneda ? mapearMoneda(moneda) : null;
   }

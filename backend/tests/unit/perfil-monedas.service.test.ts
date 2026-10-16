@@ -1,6 +1,4 @@
 import { describe, expect, it, vi } from 'vitest';
-import { Moneda } from '../../src/models/moneda.model.js';
-import { Perfil } from '../../src/models/perfil.model.js';
 import { IMonedaRepository } from '../../src/repositories/moneda.repository.js';
 import { IPerfilRepository } from '../../src/repositories/perfil.repository.js';
 import { IPerfilAuthService } from '../../src/services/perfil-auth.service.js';
@@ -8,15 +6,16 @@ import { MonedaService } from '../../src/services/moneda.service.js';
 import { PerfilService } from '../../src/services/perfil.service.js';
 import { ErrorNoEncontrado } from '../../src/errors/errores.js';
 import { MonedaPerfilResponseDTO, MonedaResponseDTO } from '../../src/types/moneda.types.js';
+import { PerfilDTO } from '../../src/types/perfil.types.js';
 
-const perfil = new Perfil({
+const perfil: PerfilDTO = {
   id: 'user-id',
   nombre: 'Máximo',
   apellido: 'Messina',
   fotoPerfil: null,
   createdAt: new Date('2026-01-01T00:00:00.000Z'),
   updatedAt: new Date('2026-01-02T00:00:00.000Z'),
-});
+};
 
 describe('PerfilService', () => {
   it('obtiene el perfil asociado al correo autenticado', async () => {
@@ -39,7 +38,7 @@ describe('PerfilService', () => {
   });
 
   it('actualiza credenciales solo después de verificar la contraseña actual', async () => {
-    const actualizado = new Perfil({ ...perfil, nombre: 'Max' });
+    const actualizado: PerfilDTO = { ...perfil, nombre: 'Max' };
     const repository: IPerfilRepository = {
       obtenerPorId: vi.fn().mockResolvedValue(perfil),
       actualizar: vi.fn().mockResolvedValue(actualizado),
@@ -84,7 +83,7 @@ describe('MonedaService', () => {
   function crearRepository(overrides: Partial<IMonedaRepository> = {}): IMonedaRepository {
     return {
       listarDisponibles: vi.fn().mockResolvedValue(catalogo),
-      obtenerDisponible: vi.fn().mockResolvedValue(new Moneda(catalogo[0])),
+      obtenerDisponible: vi.fn().mockResolvedValue(catalogo[0]),
       existePerfil: vi.fn().mockResolvedValue(true),
       listarPorPerfil: vi.fn().mockResolvedValue([asignada]),
       asignar: vi.fn().mockResolvedValue(asignada),
