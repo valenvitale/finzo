@@ -1,5 +1,5 @@
-/** 
- * Tests de integración 
+/**
+ * Tests de integración
  * Pruebas HTTP con Supertest validando status 200, 201, 400 y 401.
  */
 
@@ -115,9 +115,7 @@ describe('GET /api/movimientos (Status 200 y 401)', () => {
     mocks.listarMovimientos.mockResolvedValue([movimientoSimulado]);
 
     // Act (Envío de la petición)
-    const respuesta = await request(app)
-      .get('/api/movimientos')
-      .set('Authorization', 'Bearer token-valido');
+    const respuesta = await request(app).get('/api/movimientos').set('Authorization', 'Bearer token-valido');
 
     // Assert (Aserciones)
     expect(respuesta.status).toBe(200);
@@ -202,118 +200,7 @@ describe('POST /api/movimientos (Status 201 y 400)', () => {
     // Assert (Aserciones)
     expect(respuesta.status).toBe(400);
     expect(respuesta.body.exito).toBe(false);
-    expect(respuesta.body.errores).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining('monto:'),
-      ])
-    );
-    expect(mocks.crearMovimiento).not.toHaveBeenCalled();
-  });
-});
-  mocks.obtenerMedioPagoPorId.mockResolvedValue({
-    id: medioPagoId,
-    id_perfil: perfilId,
-    nombre: 'Efectivo',
-  });
-
-describe('GET /api/movimientos (Status 200 y 401)', () => {
-  it('devuelve 200 con la lista de movimientos del perfil autenticado', async () => {
-    // Arrange (Preparación)
-    mocks.listarMovimientos.mockResolvedValue([movimientoSimulado]);
-
-    // Act (Envío de la petición)
-    const respuesta = await request(app)
-      .get('/api/movimientos')
-      .set('Authorization', 'Bearer token-valido');
-
-    // Assert (Aserciones)
-    expect(respuesta.status).toBe(200);
-    expect(respuesta.body).toEqual({
-      exito: true,
-      datos: [movimientoRespuesta],
-    });
-    expect(mocks.getUser).toHaveBeenCalledWith('token-valido');
-    expect(mocks.listarMovimientos).toHaveBeenCalledWith(perfilId, {});
-  });
-
-  it('devuelve 401 cuando no se envía el header Authorization', async () => {
-    // Arrange (Preparación)
-    // No enviamos header de Authorization
-
-    // Act (Envío de la petición)
-    const respuesta = await request(app).get('/api/movimientos');
-
-    // Assert (Aserciones)
-    expect(respuesta.status).toBe(401);
-    expect(respuesta.body).toEqual({
-      exito: false,
-      mensaje: 'Token de autenticación ausente',
-      errores: [],
-    });
-    expect(mocks.getUser).not.toHaveBeenCalled();
-    expect(mocks.listarMovimientos).not.toHaveBeenCalled();
-  });
-});
-
-describe('POST /api/movimientos (Status 201 y 400)', () => {
-  it('devuelve 201 al crear un movimiento con datos válidos', async () => {
-    // Arrange (Preparación)
-    const datosNuevoMovimiento = {
-      fecha: '2026-10-16T12:00:00.000Z',
-      monto: 1500,
-      descripcion: 'Supermercado semanal',
-      monedaId,
-      categoriaId,
-      medioPagoId,
-    };
-
-    mocks.crearMovimiento.mockResolvedValue(movimientoSimulado);
-
-    // Act (Envío de la petición)
-    const respuesta = await request(app)
-      .post('/api/movimientos')
-      .set('Authorization', 'Bearer token-valido')
-      .send(datosNuevoMovimiento);
-
-    // Assert (Aserciones)
-    expect(respuesta.status).toBe(201);
-    expect(respuesta.body).toEqual({
-      exito: true,
-      datos: movimientoRespuesta,
-    });
-    expect(mocks.crearMovimiento).toHaveBeenCalledWith(
-      perfilId,
-      expect.objectContaining({
-        monto: 1500,
-        descripcion: 'Supermercado semanal',
-        monedaId,
-        categoriaId,
-        medioPagoId,
-      })
-    );
-  });
-
-  it('devuelve 400 si el cuerpo contiene datos inválidos', async () => {
-    // Arrange (Preparación): monto negativo y UUIDs inválidos para disparar error de Zod
-    const datosInvalidos = {
-      monto: -500,
-      monedaId: 'id-no-valido',
-    };
-
-    // Act (Envío de la petición)
-    const respuesta = await request(app)
-      .post('/api/movimientos')
-      .set('Authorization', 'Bearer token-valido')
-      .send(datosInvalidos);
-
-    // Assert (Aserciones)
-    expect(respuesta.status).toBe(400);
-    expect(respuesta.body.exito).toBe(false);
-    expect(respuesta.body.errores).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining('monto:'),
-      ])
-    );
+    expect(respuesta.body.errores).toEqual(expect.arrayContaining([expect.stringContaining('monto:')]));
     expect(mocks.crearMovimiento).not.toHaveBeenCalled();
   });
 });
