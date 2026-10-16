@@ -16,3 +16,12 @@ export interface MedioPagoResponseDTO {
     created_at: string; // Fecha serializada en formato ISO 8601.
     updated_at: string; // Fecha serializada en formato ISO 8601.
 }
+
+export interface MedioPago {
+    id: string;
+    nombre: string;
+    icono: string;
+    id_perfil: string | null;
+    created_at: Date;
+    updated_at: Date;
+}
