@@ -1,181 +1,125 @@
 # Decisiones de Diseño y Registro de Refactorización — Finzo
 
-## Introducción y Propósito
-
-En el marco del desarrollo del backend de **Finzo**, este documento registra el análisis técnico, el diagnóstico de calidad de código y las decisiones de diseño arquitectónico tomadas sobre el sistema. El objetivo principal fue transformar una base de código heterogénea en una arquitectura mantenible, desacoplada, testeable y robusta frente a problemas reales de infraestructura y concurrencia.
-
----
-
-## 1. Código Analizado
-
-El análisis se centró en la comparación estructural entre dos módulos centrales del sistema y en la arquitectura del backend:
-
-*   **Módulo de Categorías (Módulo analizado y refactorizado):**
-    *   Repositorio: [`backend/src/repositories/categoria.repository.ts`](../backend/src/repositories/categoria.repository.ts)
-    *   Servicio: [`backend/src/services/categoria.service.ts`](../backend/src/services/categoria.service.ts)
-    *   Controlador: [`backend/src/controllers/categoria.controller.ts`](../backend/src/controllers/categoria.controller.ts)
-    *   Rutas y Composición: [`backend/src/routes/categoria.routes.ts`](../backend/src/routes/categoria.routes.ts)
-    *   Esquemas de Validación: [`backend/src/validation/categoria.schema.ts`](../backend/src/validation/categoria.schema.ts)
-    *   Contratos y DTOs: [`backend/src/types/categoria.types.ts`](../backend/src/types/categoria.types.ts) y [`frontend/src/types/categoria.types.ts`](../frontend/src/types/categoria.types.ts)
-
-*   **Módulo de Movimientos (Módulo tomado como referencia arquitectónica):**
-    *   Repositorio: [`backend/src/repositories/movimiento.repository.ts`](../backend/src/repositories/movimiento.repository.ts)
-    *   Servicio: [`backend/src/services/movimiento.service.ts`](../backend/src/services/movimiento.service.ts)
-    *   Controlador: [`backend/src/controllers/movimiento.controller.ts`](../backend/src/controllers/movimiento.controller.ts)
-    *   Rutas y Composición: [`backend/src/routes/movimiento.routes.ts`](../backend/src/routes/movimiento.routes.ts)
-
-*   **Infraestructura Transversal y Servicios Conectados:**
-    *   Conexión a Base de Datos (Singleton y Adapter): [`backend/src/config/prisma.ts`](../backend/src/config/prisma.ts)
-    *   Middlewares (Autenticación, Validación y Errores): [`backend/src/middlewares/`](../backend/src/middlewares/)
-    *   Consumo de Servicios en Cliente: [`frontend/src/services/medio-pago.service.ts`](../frontend/src/services/medio-pago.service.ts)
+# Objetivo
+Analizamos dos módulos reales del backend de FINZO para mejorar la claridad del código, reducir el acoplamiento y facilitar las pruebas. Relacionamos los cambios con code smells, refactoring, Clean Code y SOLID, tal como se trabajó en clase.
 
 ---
 
-## 2. Diagnóstico
+## CASO 1 - Módulo de Categorías
 
-Al revisar el código con el equipo, notamos una discrepancia importante: mientras el módulo de **Movimientos** seguía un diseño por capas limpio y desacoplado, el módulo de **Categorías** presentaba varios problemas de diseño, code smells y riesgos técnicos que afectaban la mantenibilidad del proyecto:
+### Código Analizado:
+**Módulo de Categorías (Módulo analizado y refactorizado):**
+- [`backend/src/repositories/categoria.repository.ts`](../backend/src/repositories/categoria.repository.ts)
+- [`backend/src/services/categoria.service.ts`](../backend/src/services/categoria.service.ts)
+- [`backend/src/controllers/categoria.controller.ts`](../backend/src/controllers/categoria.controller.ts)
+- [`backend/src/routes/categoria.routes.ts`](../backend/src/routes/categoria.routes.ts)
+- [`backend/src/validation/categoria.schema.ts`](../backend/src/validation/categoria.schema.ts)
+- [`backend/src/types/categoria.types.ts`](../backend/src/types/categoria.types.ts)
 
-### 2.1 Filtración del modelo de base de datos a capas superiores (Falta de DTOs y ACL)
-En la versión inicial de Categorías, el repositorio devolvía directamente los tipos generados por Prisma (`Categoria`), exponiendo los nombres de las columnas en *snake_case* (`id_perfil`, `created_at`, `updated_at`). 
-*   **Problema de diseño:** Se violaba el encapsulamiento. Cualquier cambio futuro en el esquema de base de datos obligaba a cambiar los servicios, los controladores y hasta las interfaces de React en el frontend (*Shotgun Surgery*).
-*   **Contraste:** Movimientos utilizaba DTOs explícitos (`MovimientoResponseDTO`) y un método de mapeo interno que aislaba la base de datos del resto del sistema.
+Tomamos el módulo de Movimientos como referencia para mantener una estructura similar entre módulos.
 
-### 2.2 Omisión del Singleton de base de datos y riesgo de saturación de conexiones
-El constructor inicial de `CategoriaRepository` exigía obligatoriamente que se le pasara un cliente por parámetro (`constructor(private prisma: PrismaClient)`), sin vincular la instancia centralizada.
-*   **Impacto de infraestructura:** En Node.js con PostgreSQL, abrir clientes adicionales de Prisma abre nuevos pools de sockets (`pg.Pool`). En un entorno de desarrollo con recargas continuas de código (*hot reload*), esto genera conexiones huérfanas que saturan rápidamente el límite de conexiones del motor (`max_connections`), provocando caídas del servidor (*Connection Pool Exhaustion*).
-*   **Contraste:** Movimientos permitía inyección de dependencias pero asignaba por defecto el Singleton global (`constructor(prismaClient: PrismaClient = prismaSingleton)`).
+**Módulo de Movimientos (Módulo tomado como referencia arquitectónica):**
+- [`backend/src/repositories/movimiento.repository.ts`](../backend/src/repositories/movimiento.repository.ts)
+- [`backend/src/services/movimiento.service.ts`](../backend/src/services/movimiento.service.ts)
+- [`backend/src/controllers/movimiento.controller.ts`](../backend/src/controllers/movimiento.controller.ts)
+- [`backend/src/routes/movimiento.routes.ts`](../backend/src/routes/movimiento.routes.ts)
 
-### 2.3 Acoplamiento rígido en el controlador (Imposibilidad de testear)
-El controlador original de Categorías no estaba estructurado como una clase con dependencias inyectables, sino como funciones sueltas que instanciaban directamente al servicio en el cuerpo del archivo (`const categoriaService = new CategoriaService(...)`).
-*   **Violación de Principio:** Se violaba el principio de Inversión de Dependencias (DIP). Era imposible escribir pruebas unitarias para el controlador sin levantar una base de datos real, porque no había forma de inyectar un doble de prueba (*mock* o *stub*).
+**Infraestructura Transversal y Servicios Conectados:**
+- **Conexión a Base de Datos (Singleton y Adapter):** [`backend/src/config/prisma.ts`](../backend/src/config/prisma.ts)
+- **Middlewares (Autenticación, Validación y Errores):** [`backend/src/middlewares/`](../backend/src/middlewares/)
+- **Consumo de Servicios en Cliente:** [`frontend/src/services/medio-pago.service.ts`](../frontend/src/services/medio-pago.service.ts)
 
-### 2.4 Mezcla de responsabilidades en la validación (Violación de SRP)
-En Categorías, las rutas no validaban los identificadores recibidos por parámetro (`:id`). En su lugar, el controlador invocaba a mano una función auxiliar `obtenerCategoriaId(req)` para comprobar si el string era válido antes de operar.
-*   **Problema:** Se mezclaban validaciones sintácticas de entrada HTTP con la orquestación del caso de uso.
-*   **Contraste:** Movimientos utilizaba middlewares declarativos con esquemas Zod en las rutas, rechazando de inmediato las peticiones malformadas antes de que tocaran el controlador (*Fail-Fast*).
+### Problemas detectados (Code Smells):
+- **Acoplamiento:** el controlador creaba su propio CategoriaService, lo que dificultaba reemplazarlo por un objeto simulado en las pruebas.
+- **Responsabilidades mezcladas:** el controlador validaba manualmente los identificadores recibidos por HTTP.
+- **Dependencia de la base de datos:** se exponían tipos y nombres de campos de Prisma (snake_case) a otras capas.
+- **Inconsistencias:** algunos métodos de Categorías y Movimientos tenían nombres y órdenes de parámetros distintos.
 
-### 2.5 Inconsistencia en la interfaz pública (Violación del Principio de Menor Sorpresa)
-Existía una disparidad innecesaria en la nomenclatura y orden de parámetros entre módulos vecinos:
-*   Búsquedas: `obtenerPorId` en Movimientos vs `buscarPorId` en Categorías.
-*   Listados: `listarPorPerfil(perfilId)` en Movimientos vs `listar(idPerfil)` en Categorías.
-*   Orden en servicios: Movimientos recibía `(id, perfilId, datos)` mientras Categorías recibía `(idPerfil, id, datos)`.
-Esta inconsistencia aumentaba la carga cognitiva y propiciaba errores al invocar métodos cruzados entre servicios.
+### Alternativas consideradas
+1. **No modificar nada:** era más rápido, pero mantenía los problemas.
+2. **Cambiar solo repositorio y servicio:** mejoraba parte del diseño, pero dejaba el controlador acoplado.
+3. **Refactorizar las capas del módulo:** fue la opción elegida porque resolvía los problemas principales.
 
----
+### Cambios realizados
+- Incorporamos interfaces e inyección de dependencias para que controladores y servicios reciban sus colaboradores.
+- Separamos la validación HTTP mediante esquemas Zod y middlewares.
+- Incorporamos DTOs y mapeos para no exponer directamente el modelo de Prisma.
+- Unificamos criterios de nombres y organización con el módulo de Movimientos.
+- Reutilizamos la configuración centralizada de Prisma para gestionar el acceso a la base de datos.
 
-## 3. Alternativas Consideradas
+### Relación con la materia
+- **SRP (responsabilidad única):** validación, lógica de negocio, HTTP y persistencia quedan en componentes diferentes.
+- **DIP (inversión de dependencias):** las capas superiores pueden depender de interfaces en lugar de construir implementaciones concretas.
+- **Clean Code:** nombres y responsabilidades más claros; menor necesidad de conocer detalles de Prisma fuera del repositorio.
+- **Refactoring:** reorganizamos el código para mejorar su mantenimiento sin reescribir el módulo desde cero.
+- **Repository y DTO/Data Mapper:** ayudan a separar la persistencia de los datos que utiliza la aplicación.
 
-Frente al diagnóstico, evaluamos tres caminos posibles:
-
-### Alternativa 1: Conservar el código como estaba ("No tocar lo que ya funciona")
-*   **Enfoque:** Dejar Categorías funcionando con sus funciones sueltas y tipos provisionales.
-*   **Evaluación:** Aunque no requería tiempo de desarrollo inmediato, fue descartada porque consolidaba una deuda técnica creciente. Impedía testear unitariamente el controlador, dejaba el riesgo de saturación de conexiones abierto y complicaba la integración cuando `MovimientoService` necesitó validar categorías.
-
-### Alternativa 2: Refactorización parcial (Repositorios y Servicios solamente)
-*   **Enfoque:** Estandarizar únicamente el repositorio y el servicio agregando DTOs, pero mantener el controlador con la instancia fija en el archivo.
-*   **Evaluación:** Descartada por ser una solución a medias. No resolvía la imposibilidad de testear el controlador de forma aislada y mantenía las validaciones manuales dispersas.
-
-### Alternativa 3: Refactorización integral alineada al estándar de Movimientos (Opción Elegida)
-*   **Enfoque:** Migrar Categorías a una arquitectura basada en clases con Inyección de Dependencias, DTOs formales, Data Mappers internos, uso del Singleton de Prisma con fallback, middlewares de validación declarativos en rutas y suite de pruebas unitarias 100% aisladas en memoria.
-*   **Justificación:** Logra que todo el backend hable el mismo idioma conceptual. Facilita la incorporación de cualquier desarrollador al código, garantiza la estabilidad de la base de datos y permite una cobertura de pruebas automatizadas sólida y rápida.
-
----
-
-## 4. Decisión Fundamentada y Patrones de Diseño Aplicados
-
-Se decidió implementar la **Alternativa 3**. A continuación se detalla cómo se organizó la solución y qué patrones y principios respaldan cada parte del código:
-
-### 4.1 Patrones Creacionales
-
-*   **Singleton (Gestión de Recursos Compartidos):**
-    *   *Implementación:* En [`backend/src/config/prisma.ts`](../backend/src/config/prisma.ts) y [`backend/src/config/supabase.ts`](../backend/src/config/supabase.ts).
-    *   *Justificación:* Garantiza que toda la aplicación comparta una única instancia de `PrismaClient` conectada al pool de PostgreSQL (`pg.Pool`), evitando abrir sockets innecesarios y previniendo fugas de memoria en desarrollo.
-*   **Factory / Factory Method (Fábricas de Middlewares y Excepciones):**
-    *   *Implementación:* Las funciones `validarCuerpo` y `validarParametros` en [`backend/src/middlewares/validacion.middleware.ts`](../backend/src/middlewares/validacion.middleware.ts) actúan como fábricas que generan handlers de Express preconfigurados para esquemas específicos. De igual modo, la jerarquía de errores en [`backend/src/errors/errores.ts`](../backend/src/errors/errores.ts) fabrica excepciones tipadas (`ErrorNoEncontrado`, `ErrorDeConflicto`, `ErrorDeValidacion`) con su código HTTP correspondiente.
-
-### 4.2 Patrones Estructurales
-
-*   **Adapter (Adaptador):**
-    *   *Implementación:* En [`backend/src/config/prisma.ts`](../backend/src/config/prisma.ts) mediante `new PrismaPg(pool)`.
-    *   *Justificación:* Adapta el pool nativo de `node-postgres` al contrato de controlador que espera Prisma para ejecutar consultas optimizadas.
-*   **Data Mapper / Anti-Corruption Layer (Capa Anti-Corrupción):**
-    *   *Implementación:* Métodos privados `mapearADto` en [`backend/src/repositories/movimiento.repository.ts`](../backend/src/repositories/movimiento.repository.ts) y [`backend/src/repositories/categoria.repository.ts`](../backend/src/repositories/categoria.repository.ts).
-    *   *Justificación:* Traduce entidades crudas en *snake_case* a DTOs normalizados en *camelCase*. Si la base de datos cambia nombres de columnas, el impacto queda confinado a esa función y no rompe las capas superiores ni el frontend.
-*   **Facade (Fachada):**
-    *   *Implementación:* 
-        *   `apiRouter` en [`backend/src/routes/index.ts`](../backend/src/routes/index.ts) unifica los submódulos de la API en un único punto de entrada.
-        *   `listarMediosPago` en [`frontend/src/services/medio-pago.service.ts`](../frontend/src/services/medio-pago.service.ts), ocultando al cliente la resolución del token JWT, las cabeceras HTTP y el parseo de respuestas.
-        *   Barrel pattern en [`frontend/src/components/common/index.ts`](../frontend/src/components/common/index.ts) para exponer los componentes de interfaz.
-*   **Decorator / Interceptor:**
-    *   *Implementación:* [`backend/src/middlewares/auth.middleware.ts`](../backend/src/middlewares/auth.middleware.ts) intercepta la petición entrante, verifica el token y decora el objeto `req` inyectando la identidad del usuario (`req.user`).
-
-### 4.3 Patrones de Comportamiento y Arquitectura
-
-*   **Repository Pattern (Patrón Repositorio):**
-    *   *Implementación:* Interfaces `ICategoriaRepository` en [`backend/src/repositories/categoria.repository.ts`](../backend/src/repositories/categoria.repository.ts) e `IMovimientoRepository` en [`backend/src/repositories/movimiento.repository.ts`](../backend/src/repositories/movimiento.repository.ts) implementadas por sus respectivas clases concretas. Abstraen las operaciones de lectura y persistencia desacoplando la lógica de negocio de la tecnología de almacenamiento.
-*   **Dependency Injection (Inyección de Dependencias) & DIP:**
-    *   *Implementación:* Los servicios reciben sus repositorios por constructor (ej. `CategoriaService` en [`backend/src/services/categoria.service.ts`](../backend/src/services/categoria.service.ts) depende de `ICategoriaRepository`). Los controladores reciben sus servicios por constructor (ej. `CategoriaController` en [`backend/src/controllers/categoria.controller.ts`](../backend/src/controllers/categoria.controller.ts)).
-*   **Composition Root (Raíz de Composición):**
-    *   *Implementación:* Al inicio de cada archivo de rutas (como [`backend/src/routes/categoria.routes.ts`](../backend/src/routes/categoria.routes.ts) y [`backend/src/routes/movimiento.routes.ts`](../backend/src/routes/movimiento.routes.ts)). Es el único lugar donde se ensambla el grafo de objetos (`Repository → Service → Controller`).
-*   **Chain of Responsibility (Cadena de Responsabilidad):**
-    *   *Implementación:* Pipeline de middlewares en Express. Una petición pasa sucesivamente por CORS, parseo JSON, autenticación, validación de parámetros, validación de cuerpo, controlador, y en caso de error, es capturada por el manejador global en [`backend/src/middlewares/errorHandler.ts`](../backend/src/middlewares/errorHandler.ts).
-*   **Strategy (Estrategia):**
-    *   *Implementación:* Los esquemas Zod en [`backend/src/validation/categoria.schema.ts`](../backend/src/validation/categoria.schema.ts) definen estrategias de validación independientes que el middleware genérico consume de forma polimórfica sin conocer su estructura interna.
-*   **Data Transfer Object (DTO):**
-    *   *Implementación:* Contratos formales en [`backend/src/types/categoria.types.ts`](../backend/src/types/categoria.types.ts) (`CrearCategoriaDTO`, `ActualizarCategoriaDTO`, `CategoriaResponseDTO`).
-
-### 4.4 Resumen de Alineación con Principios SOLID
-
-| Principio SOLID | Cómo se cumple en la solución refactorizada |
-| :--- | :--- |
-| **S - Responsabilidad Única** | Middlewares validan y autentican; Controladores manejan protocolo HTTP; Servicios aplican reglas de negocio (ej. límite de 8 categorías); Repositorios acceden a datos. |
-| **O - Abierto / Cerrado** | Se pueden añadir nuevos filtros de búsqueda o esquemas de validación sin modificar la lógica base de los middlewares ni alterar los repositorios existentes. |
-| **L - Sustitución de Liskov** | En los tests unitarios, cualquier implementación simulada (mock) de `ICategoriaRepository` sustituye a la real sin romper el comportamiento esperado de `CategoriaService`. |
-| **I - Segregación de Interfaces** | Las interfaces (`ICategoriaRepository`, `IMovimientoRepository`, `IMonedaRepository`) definen exclusivamente los métodos que su dominio requiere, sin obligar a implementar métodos ajenos. |
-| **D - Inversión de Dependencias** | `CategoriaService` y `MovimientoService` dependen de abstracciones (`ICategoriaRepository`) y no de implementaciones concretas de Prisma ni de instancias fijas. |
+### Evidencia y costos
+Los archivos de Categorías y sus pruebas unitarias permiten mostrar la separación de responsabilidades y el uso de dobles de prueba. La refactorización agrega interfaces, clases y mapeos: hay más código inicial, pero es más sencillo modificar y probar cada parte.
 
 ---
 
-## 5. Evidencia y Trade-offs
+## CASO 2 - Endpoint de Resumen
 
-### 5.1 Evidencia en el Código y Verificación Automatizada
+### Código analizado:
+**Módulo de Resumen (Módulo analizado y refactorizado):**
+- [backend/src/controllers/resumen.controller.ts](../backend/src/controllers/resumen.controller.ts)
+- [backend/src/services/resumen.service.ts](../backend/src/services/resumen.service.ts)
+- [backend/src/routes/resumen.routes.ts](../backend/src/routes/resumen.routes.ts)
+- [backend/src/validation/resumen.schema.ts](../backend/src/validation/resumen.schema.ts)
+- [backend/src/middlewares/validacion.middleware.ts](../backend/src/middlewares/validacion.middleware.ts)
 
-La efectividad de las decisiones tomadas se verifica directamente en la suite de pruebas del proyecto:
+Se conservaron versiones del código anterior en [docs/resumen-controller.md](../docs/resumen-controller.md) y [docs/resumen.routes.md](../docs/resumen.routes.md) para comparar el antes y el después.
 
-1.  **Suite de pruebas 100% en verde:**
-    *   Se crearon suites dedicadas para cada capa desacoplada:
-        *   [`backend/tests/unit/categoria.repository.test.ts`](../backend/tests/unit/categoria.repository.test.ts) (8 tests): Comprueba el mapeo a DTO, altas, bajas, conteo de personalizadas y persistencia.
-        *   [`backend/tests/unit/categoria.service.test.ts`](../backend/tests/unit/categoria.service.test.ts) (10 tests): Valida reglas de negocio puras (límite de 8 categorías, permisos sobre categorías del sistema o de terceros, y bloqueo de borrado si existen movimientos asociados) usando dobles de prueba (`vi.fn()`) sin tocar la base de datos.
-        *   [`backend/tests/unit/categoria.controller.test.ts`](../backend/tests/unit/categoria.controller.test.ts) (6 tests): Valida respuestas HTTP (200, 201, 204), manejo de usuario autenticado y delegación adecuada al middleware de error.
-        *   [`backend/tests/unit/movimiento.service.test.ts`](../backend/tests/unit/movimiento.service.test.ts) (12 tests): Valida que los movimientos verifiquen la existencia y permisos de categorías y medios de pago inyectados antes de persistir.
-    *   El total del backend cuenta con **75 tests unitarios pasando exitosamente** en Vitest (12 archivos de prueba).
-2.  **Integración limpia entre módulos:**
-    *   En [`backend/src/services/movimiento.service.ts`](../backend/src/services/movimiento.service.ts), `MovimientoService` inyecta tanto `ICategoriaRepository` como `IMedioPagoRepository` para validar que la categoría y el medio de pago indicados existan y pertenezcan al usuario (o sean globales del sistema) antes de registrar o modificar un movimiento, colaborando a través de contratos claros.
-3.  **Salud del código:**
-    *   El proyecto compila sin errores de tipos en TypeScript estricto (`tsc`) y supera todas las reglas de ESLint y Prettier.
+### Problemas detectados (code smells)
+- **Acoplamiento:** el controlador creaba directamente new ResumenService().
+- **Responsabilidades mezcladas:** además de atender la petición, comprobaba manualmente el mes y el año.
+- **Validación difícil de leer:** utilizaba condiciones extensas y conversiones dentro del controlador.
 
-### 5.2 Beneficios Obtenidos
+### Alternativas consideradas
+1. **Dejarlo como estaba:** no requería cambios, pero mantenía el acoplamiento.
+2. **Extraer solo la validación:** mejoraba la claridad, pero no resolvía la dependencia directa del servicio.
+3. **Extraer la validación e inyectar el servicio:** fue la opción elegida.
 
-*   **Estabilidad y escalabilidad del servidor:** Al compartir el Singleton de Prisma Client respaldado por un único `pg.Pool`, se eliminó el riesgo de agotar las conexiones disponibles de PostgreSQL (*connection exhaustion*), asegurando un uso predecible de memoria y CPU.
-*   **Facilidad de mantenimiento y coherencia cognoscitiva:** Quien comprende el flujo de Movimientos entiende de inmediato Categorías o Medios de Pago. La arquitectura homogénea reduce el tiempo de desarrollo de nuevas funcionalidades.
-*   **Pruebas rápidas y confiables:** Al no depender de la base de datos para probar la lógica de controladores y servicios, las 75 pruebas unitarias se ejecutan en milisegundos en cualquier entorno de integración.
-*   **Detección temprana de errores (*Fail-Fast*):** Parámetros inválidos o cuerpos de petición incompletos son rechazados de inmediato en la capa de rutas mediante middlewares Zod con HTTP 400, evitando llamadas infructuosas a la base de datos.
+### Cambios Realizados:
 
-### 5.3 Costos y Compromisos Asumidos (Trade-offs)
+**Antes:**
+``` typescript
+const resumenService = new ResumenService();
+```
 
-Ninguna decisión de ingeniería es gratuita. Para lograr estos beneficios se asumieron los siguientes costos:
+**Ahora:**
+``` typescript
+export class ResumenController {
+  constructor(private readonly resumenService: IResumenService) {}
+}
+```
+Ahora `resumen.routes.ts` crea el servicio y se lo pasa al controlador. La validación de mes y anio se realiza con `resumenQuerySchema` y `validarQuery` antes de ejecutar el controlador.
 
-1.  **Mayor volumen de código inicial (*Boilerplate*):**
-    *   Crear interfaces explícitas, clases controladoras, DTOs y mappers requiere escribir más archivos y líneas de código que un enfoque directo con funciones sueltas y tipos implícitos.
-    *   *Balance:* Es un costo que se paga una sola vez al inicio, pero ahorra horas de depuración y refactorización a mediano y largo plazo.
-2.  **Tiempo de refactorización cruzada:**
-    *   Al cambiar las respuestas del backend a *camelCase* uniforme (`perfilId`), fue necesario sincronizar coordinadamente los tipos del frontend ([`frontend/src/types/categoria.types.ts`](../frontend/src/types/categoria.types.ts)).
-    *   *Balance:* Se eliminó la fricción de manejar nombres de variables mezclados en React, logrando una API consistente y predecible.
+### Relación con la materia
+- **DIP**: el controlador depende de IResumenService, no de una instancia creada internamente.
+- **SRP**: el esquema Zod define las reglas de validación; el controlador coordina la petición; el servicio calcula el resumen.
+- **Clean Code**: el código expresa mejor su intención y evita una condición extensa dentro del controlador.
+- **Refactoring**: mejoramos la estructura manteniendo la lógica de cálculo financiero.
 
----
+**Importante:** la validación también cambió un detalle: ahora se rechazan parámetros de consulta adicionales y el formato del error de validación es distinto. Esto es un cambio de comportamiento, no refactoring puro.
 
-## 6. Conclusión
+### Evidencia y costos
 
-La refactorización del módulo de Categorías y la consolidación de los patrones creacionales, estructurales y de comportamiento en Finzo no respondieron a un ejercicio teórico, sino a la resolución de problemas reales: riesgo de saturación de base de datos, código imposible de testear y desorganización de capas. 
+Agregamos 10 pruebas para controlador, esquema y ruta. En la última ejecución registrada, el backend completó **99 pruebas aprobadas en 18 archivos.**
 
-El resultado final es una base de código profesional, alineada a los principios SOLID y Clean Code, respaldada por evidencia empírica en pruebas automatizadas y lista para su defensa en el Taller II.
+El costo principal fue incorporar una interfaz, un esquema y una configuración adicional en rutas. A cambio, el controlador puede probarse con un servicio simulado y la validación queda separada.
+
+## Conclusión
+
+En FINZO analizamos dos módulos reales del backend: **Categorías y Resumen**, con el objetivo de mejorar la calidad del código, facilitar su mantenimiento y conservar diseños similares entre los modulos.
+
+En ambos casos identificamos problemas de diseño, como el **acoplamiento entre componentes** y la **mezcla de responsabilidades**. Para resolverlos, realizamos refactorizaciones aplicando principalmente los principios **SRP (Responsabilidad Única)** y **DIP (Inversión de Dependencias)**.
+
+También utilizamos **inyección de dependencias, interfaces, DTOs y validaciones con Zod** para organizar mejor el código y facilitar las pruebas.
+
+Evaluamos los patrones de diseño estudiados en clase, pero decidimos no incorporar patrones adicionales cuando no existía una necesidad concreta, evitando agregar complejidad innecesaria.
+
+Los cambios se respaldaron con pruebas automatizadas, alcanzando **99 tests aprobados** en la última ejecución.
+
+**En conclusión, el objetivo no fue aplicar patrones por obligación, sino identificar problemas reales, evaluar alternativas y tomar decisiones fundamentadas para conseguir un código más claro, desacoplado, testeable y mantenible.**
