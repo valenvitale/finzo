@@ -1,4 +1,4 @@
-import type { TipoMovimiento } from '../models/categoria.model.js';
+export type TipoMovimiento = 'INGRESO' | 'GASTO';
 
 export interface CrearCategoriaDTO {
   nombre: string;
