@@ -108,36 +108,7 @@
   - Dejar las validaciones de formato, tipo y valores positivos en **Zod**.
   - Dejar en el **Servicio** únicamente las validaciones de negocio que requieren hablar con la base de datos (por ejemplo: comprobar si la categoría pertenece al usuario o si el medio de pago existe).
 
----
-
-### 🟡 5. Preparar el Cálculo del Resumen para Nuevos Tipos de Transacciones (OCP + Strategy)
-
-* **¿Qué pasa hoy?**  
-  En [`resumen.service.ts`](../backend/src/services/resumen.service.ts):
-  ```typescript
-  for (const movimiento of movimientos) {
-    if (movimiento.tipo === 'INGRESO') {
-      totalIngresos += movimiento.monto;
-    } else if (movimiento.tipo === 'GASTO') {
-      totalGastos += movimiento.monto;
-    }
-  }
-  ```
-* **¿Por qué es un problema?**  
-  En el Sprint 3 o en el backlog se prevén transferencias entre cuentas propias, ahorros o inversiones. Cada vez que agreguemos un tipo nuevo, vamos a tener que abrir este archivo y meter más `else if`.
-* **¿Cómo lo solucionamos?**  
-  Crear una estrategia de cálculo:
-  ```typescript
-  export interface IEstrategiaCalculo {
-    acumular(movimiento: MovimientoResponseDTO, acumulador: BalanceAcumulado): void;
-  }
-  ```
-  De esta forma, sumar un nuevo comportamiento contable no modifica el servicio principal.
-* **Principio SOLID involucrado:** **OCP** (Principio de Abierto/Cerrado).
-
----
-
-### 🟢 6. Evitar "Type Assertions" (`as`) en Controladores
+### 🟢 5. Evitar "Type Assertions" (`as`) en Controladores
 
 * **¿Qué pasa hoy?**  
   En varios controladores encontramos:
@@ -156,7 +127,7 @@
 
 ---
 
-### 🔴 7. Reemplazar el `DashboardTemporal` y Activar las Páginas Reales
+### 🔴 6. Reemplazar el `DashboardTemporal` y Activar las Páginas Reales
 
 * **¿Qué pasa hoy?**  
   En [`AppRouter.tsx`](../frontend/src/routes/AppRouter.tsx) está activa una función `DashboardTemporal` que solo tiene un cartel que dice *"FINZO - Sesión iniciada"* y un botón rojo de logout. La página real [`Dashboard.tsx`](../frontend/src/pages/Dashboard.tsx) está comentada.
@@ -169,7 +140,7 @@
 
 ---
 
-### 🔴 8. Crear Custom Hooks para Aislar la Lógica de las Vistas (SRP en React)
+### 🔴 7. Crear Custom Hooks para Aislar la Lógica de las Vistas (SRP en React)
 
 * **¿Qué pasa hoy?**  
   Actualmente solo existe `useAuth.ts`. Si escribimos las llamadas `apiClient.get('/movimientos')` directamente adentro de los componentes visuales (`Movimientos.tsx`), los componentes mezclarán maquetado con llamadas HTTP y manejo de errores.
@@ -186,7 +157,7 @@
 
 ---
 
-### 🟡 9. Integrar Toasts y Manejo Visual de Sesión Expirada
+### 🟡 8. Integrar Toasts y Manejo Visual de Sesión Expirada
 
 * **¿Qué pasa hoy?**  
   En [`frontend/src/services/api.ts`](../frontend/src/services/api.ts), cuando el backend devuelve `401 Unauthorized`, el interceptor de Axios hace `supabase.auth.signOut({ scope: 'local' })`. Pero el usuario no recibe ningún mensaje explicativo; simplemente es redirigido de golpe al login.
@@ -198,7 +169,7 @@
 
 ---
 
-### 🟡 10. Corregir el Warning de `act(...)` y Aumentar la Cobertura en Frontend
+### 🟡 9. Corregir el Warning de `act(...)` y Aumentar la Cobertura en Frontend
 
 * **¿Qué pasa hoy?**  
   Al correr los tests con `pnpm --filter frontend test`, solo corre 1 prueba (`App.test.tsx`), y arroja una advertencia en consola:
@@ -223,7 +194,7 @@
 | **2** | Backend | Unificar bloques `try/catch` con `next(error)` en todos los controladores | Manejo consistente y predecible de errores | Baja |
 | **3** | Backend | Crear interfaces `IMovimientoService` e `IMedioPagoService` | Cumple DIP desacoplando controladores de implementaciones concretas | Baja |
 | **4** | Backend | Quitar `validarDatosBasicos` manuales en `MovimientoService` | Elimina código duplicado delegando el formato a Zod (DRY/SRP) | Baja |
-| **5** | Backend | Extraer lógica de balance a patrón Strategy en `ResumenService` | Abierto a nuevos tipos de movimientos sin alterar el servicio (OCP) | Media |
+| **5** | Backend | Eliminar aserciones de tipo (`as`) en controladores tipando `Request` | Mayor seguridad de tipos en tiempo de compilación | Baja |
 | **6** | Frontend | Reemplazar `DashboardTemporal` y activar las rutas reales | Conecta la experiencia de usuario real de Finzo | Media |
 | **7** | Frontend | Implementar hooks `useMovimientos`, `useCategorias` y `useResumen` | Separa la lógica asíncrona de los componentes visuales | Media |
 | **8** | Frontend | Agregar notificación de "Sesión expirada" en el interceptor 401 | Mejora la experiencia y claridad del usuario | Baja |
