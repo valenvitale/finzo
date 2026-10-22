@@ -66,60 +66,33 @@
 
 ---
 
-### 🟡 3. Desacoplar Controladores mediante Interfaces de Servicio (`IMovimientoService`, `IMedioPagoService`)
+### 🟢 3. Evitar "Type Assertions" (`as`) en Controladores
 
 * **¿Qué pasa hoy?**  
-  `ResumenController` recibe la interfaz `IResumenService` (excelente). Pero `MovimientoController` recibe directamente la clase concreta `MovimientoService`.
-* **¿Por qué es un problema?**  
-  El principio **DIP** dice: *"dependé de abstracciones (interfaces), no de clases concretas"*. Al depender de la clase concreta, el controlador sigue conociendo detalles de la implementación.
-* **¿Cómo lo solucionamos?**  
-  Definir en `types/movimiento.types.ts`:
+  En controladores como [`categoria.controller.ts`](../backend/src/controllers/categoria.controller.ts) o [`resumen.controller.ts`](../backend/src/controllers/resumen.controller.ts) aún encontramos casteo manual:
   ```typescript
-  export interface IMovimientoService {
-    crear(perfilId: string, datos: CrearMovimientoDTO): Promise<MovimientoResponseDTO>;
-    obtenerPorId(id: string, perfilId: string): Promise<MovimientoResponseDTO>;
-    actualizar(id: string, perfilId: string, datos: ActualizarMovimientoDTO): Promise<MovimientoResponseDTO>;
-    eliminar(id: string, perfilId: string): Promise<void>;
-    listarPorPerfil(perfilId: string, filtros?: FiltrosMovimientoDTO): Promise<MovimientoResponseDTO[]>;
-  }
-  ```
-  Y hacer que el constructor de `MovimientoController` pida esa interfaz:
-  ```typescript
-  constructor(private readonly movimientoService: IMovimientoService) {}
-  ```
-* **Principio SOLID involucrado:** **DIP** (Inversión de Dependencias).
+  // En categoria.controller.ts:
+  const datosCategoria = req.body as CrearCategoriaDTO;
+  const categoriaId = req.params.id as string;
 
----
-
-### 🟡 4. Eliminar validaciones manuales duplicadas en el Servicio (DRY + SRP)
-
-* **¿Qué pasa hoy?**  
-  En [`movimiento.service.ts`](../backend/src/services/movimiento.service.ts) existe el método:
-  ```typescript
-  private validarDatosBasicos(datosMovimiento) {
-    if (datosMovimiento.monto <= 0) throw new ErrorDeValidacion(...);
-    if (!(datosMovimiento.fecha instanceof Date)) throw new ErrorDeValidacion(...);
-  }
-  ```
-  ¡Pero esto ya lo valida Zod en [`movimiento.schema.ts`](../backend/src/validation/movimiento.schema.ts) antes de que la petición llegue siquiera al controlador!
-* **¿Por qué es un problema?**  
-  Violamos el principio **DRY** (Don't Repeat Yourself) y **SRP**. Si el día de mañana queremos cambiar un mensaje o regla sobre el monto, tenemos que cambiarlo en dos lugares distintos.
-* **¿Cómo lo solucionamos?**  
-  - Dejar las validaciones de formato, tipo y valores positivos en **Zod**.
-  - Dejar en el **Servicio** únicamente las validaciones de negocio que requieren hablar con la base de datos (por ejemplo: comprobar si la categoría pertenece al usuario o si el medio de pago existe).
-
-### 🟢 5. Evitar "Type Assertions" (`as`) en Controladores
-
-* **¿Qué pasa hoy?**  
-  En varios controladores encontramos:
-  ```typescript
-  const datosMovimiento = req.body as CrearMovimientoDTO;
-  const movimientoId = req.params.id as string;
+  // En resumen.controller.ts:
+  const { mes, anio } = req.query as unknown as { mes?: number; anio?: number };
   ```
 * **¿Por qué es un problema?**  
   El operador `as` de TypeScript le dice al compilador: *"confiá en mí, sé lo que hago"*, apagando la verificación de tipos. Si el esquema de Zod cambia y el DTO no, TypeScript no nos avisa del error en tiempo de compilación.
 * **¿Cómo lo solucionamos?**  
-  Inyectar tipos fuertemente tipados a través de `Request` genéricos de Express o utilizar `z.infer<typeof schema>` directamente.
+  Tipar directamente las peticiones utilizando los tipos genéricos de Express ya disponibles en [`auth.middleware.ts`](../backend/src/middlewares/auth.middleware.ts) (`RequestBody<T>`, `RequestParams<P>`, `RequestQuery<Q>`), tal como ya se implementó en [`movimiento.controller.ts`](../backend/src/controllers/movimiento.controller.ts) (pueden tomarlo como referencia):
+  ```typescript
+  // ✅ Ejemplo tipando la Request (sin necesidad de 'as'):
+  crear = async (
+    req: RequestBody<CrearCategoriaDTO>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const datosCategoria = req.body; // Ya está tipado como CrearCategoriaDTO
+    // ...
+  };
+  ```
 
 ---
 
