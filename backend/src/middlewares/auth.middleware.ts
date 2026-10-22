@@ -14,10 +14,19 @@ export interface AuthenticatedRequest<
   };
 }
 
-export type RequestBody<B> = AuthenticatedRequest<Record<string, string>, unknown, B>;
+// Helpers para peticiones autenticadas (todas las combinaciones posibles de Params, Body y Query)
+// 1 elemento:
 export type RequestParams<P> = AuthenticatedRequest<P>;
-export type RequestParamsBody<P, B> = AuthenticatedRequest<P, unknown, B>;
+export type RequestBody<B> = AuthenticatedRequest<Record<string, string>, unknown, B>;
 export type RequestQuery<Q> = AuthenticatedRequest<Record<string, string>, unknown, unknown, Q>;
+
+// 2 elementos combinados:
+export type RequestParamsBody<P, B> = AuthenticatedRequest<P, unknown, B>;
+export type RequestParamsQuery<P, Q> = AuthenticatedRequest<P, unknown, unknown, Q>;
+export type RequestBodyQuery<B, Q> = AuthenticatedRequest<Record<string, string>, unknown, B, Q>;
+
+// 3 elementos combinados:
+export type RequestParamsBodyQuery<P, B, Q> = AuthenticatedRequest<P, unknown, B, Q>;
 
 export async function authMiddleware(
   req: AuthenticatedRequest,
