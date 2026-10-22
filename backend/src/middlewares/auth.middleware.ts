@@ -14,6 +14,11 @@ export interface AuthenticatedRequest<
   };
 }
 
+export type RequestBody<B> = AuthenticatedRequest<Record<string, string>, unknown, B>;
+export type RequestParams<P> = AuthenticatedRequest<P>;
+export type RequestParamsBody<P, B> = AuthenticatedRequest<P, unknown, B>;
+export type RequestQuery<Q> = AuthenticatedRequest<Record<string, string>, unknown, unknown, Q>;
+
 export async function authMiddleware(
   req: AuthenticatedRequest,
   res: Response,

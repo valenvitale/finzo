@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
+import { AuthenticatedRequest, RequestBody } from '../middlewares/auth.middleware.js';
 import type { ActualizarPerfilDTO } from '../types/perfil.types.js';
 import { PerfilRepository } from '../repositories/perfil.repository.js';
 import { PerfilAuthService } from '../services/perfil-auth.service.js';
@@ -21,7 +21,7 @@ export async function obtenerPerfil(req: AuthenticatedRequest, res: Response): P
 }
 
 export async function actualizarPerfil(
-  req: AuthenticatedRequest<Record<string, string>, unknown, ActualizarPerfilDTO>,
+  req: RequestBody<ActualizarPerfilDTO>,
   res: Response
 ): Promise<void> {
   const usuario = obtenerIdentidad(req);

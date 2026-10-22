@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
+import { AuthenticatedRequest, RequestBody, RequestParams, RequestParamsBody, RequestQuery } from '../middlewares/auth.middleware.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
 import { ActualizarMovimientoDTO, CrearMovimientoDTO, FiltrosMovimientoDTO } from '../types/movimiento.types.js';
 import type { IMovimientoService } from '../services/movimiento.service.js';
@@ -21,7 +21,7 @@ export class MovimientoController {
   // Crea un nuevo movimiento
   // POST /api/movimientos
   crear = async (
-    req: AuthenticatedRequest<Record<string, string>, unknown, CrearMovimientoDTO>,
+    req: RequestBody<CrearMovimientoDTO>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -38,7 +38,7 @@ export class MovimientoController {
   // Obtiene un movimiento por su ID
   // GET /api/movimientos/:id
   obtenerPorId = async (
-    req: AuthenticatedRequest<{ id: string }>,
+    req: RequestParams<{ id: string }>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -55,7 +55,7 @@ export class MovimientoController {
   // Actualiza un movimiento existente
   // PATCH /api/movimientos/:id
   actualizar = async (
-    req: AuthenticatedRequest<{ id: string }, unknown, ActualizarMovimientoDTO>,
+    req: RequestParamsBody<{ id: string }, ActualizarMovimientoDTO>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -77,7 +77,7 @@ export class MovimientoController {
   // Elimina un movimiento existente
   // DELETE /api/movimientos/:id
   eliminar = async (
-    req: AuthenticatedRequest<{ id: string }>,
+    req: RequestParams<{ id: string }>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -94,7 +94,7 @@ export class MovimientoController {
   // Lista todos los movimientos de un perfil con filtros opcionales
   // GET /api/movimientos
   listar = async (
-    req: AuthenticatedRequest<Record<string, string>, unknown, unknown, FiltrosMovimientoDTO>,
+    req: RequestQuery<FiltrosMovimientoDTO>,
     res: Response,
     next: NextFunction
   ): Promise<void> => {

@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
+import { AuthenticatedRequest, RequestBody } from '../middlewares/auth.middleware.js';
 import type { AsignarMonedaDTO } from '../types/moneda.types.js';
 import { MonedaRepository } from '../repositories/moneda.repository.js';
 import { MonedaService } from '../services/moneda.service.js';
@@ -26,7 +26,7 @@ export async function listarMonedasPerfil(req: AuthenticatedRequest, res: Respon
 }
 
 export async function asignarMoneda(
-  req: AuthenticatedRequest<Record<string, string>, unknown, AsignarMonedaDTO>,
+  req: RequestBody<AsignarMonedaDTO>,
   res: Response
 ): Promise<void> {
   res.status(201).json({
