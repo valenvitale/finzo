@@ -6,12 +6,7 @@ export type AuthContextType = {
   session: Session | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (
-    nombre: string,
-    apellido: string,
-    email: string,
-    password: string
-  ) => Promise<void>;
+  register: (nombre: string, apellido: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 
