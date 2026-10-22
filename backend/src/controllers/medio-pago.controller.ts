@@ -1,7 +1,7 @@
 import type { NextFunction, Response } from 'express';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
-import { type MedioPagoService } from '../services/medio-pago.service.js';
+import type { MedioPagoService } from '../services/medio-pago.service.js';
 
 export class MedioPagoController {
   constructor(private readonly medioPagoService: MedioPagoService) {}

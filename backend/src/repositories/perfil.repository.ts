@@ -1,6 +1,6 @@
-import { type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { prisma as prismaSingleton } from '../config/prisma.js';
-import { type PerfilDTO } from '../types/perfil.types.js';
+import type { PerfilDTO } from '../types/perfil.types.js';
 
 export interface IPerfilRepository {
   obtenerPorId(id: string): Promise<PerfilDTO | null>;

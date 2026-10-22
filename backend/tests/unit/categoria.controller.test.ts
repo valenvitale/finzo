@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { Response } from 'express';
 import type { AuthenticatedRequest } from '../../src/middlewares/auth.middleware.js';
 import { CategoriaController } from '../../src/controllers/categoria.controller.js';
-import { type CategoriaService } from '../../src/services/categoria.service.js';
+import type { CategoriaService } from '../../src/services/categoria.service.js';
 import { ErrorNoAutorizado } from '../../src/errors/errores.js';
 
 describe('CategoriaController', () => {

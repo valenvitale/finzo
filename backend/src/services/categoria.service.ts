@@ -1,5 +1,5 @@
-import { type ICategoriaRepository } from '../repositories/categoria.repository.js';
-import { type CrearCategoriaDTO, type ActualizarCategoriaDTO, type CategoriaResponseDTO } from '../types/categoria.types.js';
+import type { ICategoriaRepository } from '../repositories/categoria.repository.js';
+import type { CrearCategoriaDTO, ActualizarCategoriaDTO, CategoriaResponseDTO } from '../types/categoria.types.js';
 import { ErrorDeConflicto, ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
 
 export class CategoriaService {

@@ -1,6 +1,6 @@
-import { type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { prisma as prismaSingleton } from '../config/prisma.js';
-import { type MedioPago } from '../types/medio-pago.types.js';
+import type { MedioPago } from '../types/medio-pago.types.js';
 
 export interface IMedioPagoRepository {
   listarPorPerfil(idPerfil: string): Promise<MedioPago[]>;

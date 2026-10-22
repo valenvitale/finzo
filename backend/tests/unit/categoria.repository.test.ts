@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { CategoriaRepository } from '../../src/repositories/categoria.repository.js';
-import { type CrearCategoriaDTO, type ActualizarCategoriaDTO } from '../../src/types/categoria.types.js';
+import type { CrearCategoriaDTO, ActualizarCategoriaDTO } from '../../src/types/categoria.types.js';
 
 describe('CategoriaRepository', () => {
   const mockPrismaCategoria = {

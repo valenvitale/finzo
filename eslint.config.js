@@ -28,8 +28,9 @@ export default defineConfig([
       ],
       '@typescript-eslint/consistent-type-imports': [
         'warn',
-        { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+        { prefer: 'type-imports', fixStyle: 'separate-type-imports' },
       ],
+      '@typescript-eslint/no-import-type-side-effects': 'warn',
     },
   },
 

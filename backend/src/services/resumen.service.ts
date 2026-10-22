@@ -1,9 +1,9 @@
-import {
-  type IMovimientoRepository
+import type {
+  IMovimientoRepository
 } from '../repositories/movimiento.repository.js';
 
-import {
-  type IMonedaRepository,
+import type {
+  IMonedaRepository,
 } from '../repositories/moneda.repository.js';
 
 import { ErrorDeConflicto } from '../errors/errores.js';

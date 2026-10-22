@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import { type AuthenticatedRequest, type RequestBody } from '../middlewares/auth.middleware.js';
+import type { AuthenticatedRequest, RequestBody } from '../middlewares/auth.middleware.js';
 import type { ActualizarPerfilDTO } from '../types/perfil.types.js';
 import { PerfilRepository } from '../repositories/perfil.repository.js';
 import { PerfilAuthService } from '../services/perfil-auth.service.js';
