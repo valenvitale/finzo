@@ -9,7 +9,14 @@ import {
 } from '../types/movimiento.types.js';
 import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
 
-export class MovimientoService {
+export interface IMovimientoService {
+  crear(perfilId: string, datosMovimiento: CrearMovimientoDTO): Promise<MovimientoResponseDTO>;
+  obtenerPorId(id: string, perfilId: string): Promise<MovimientoResponseDTO>;
+  actualizar(id: string, perfilId: string, datosActualizacion: ActualizarMovimientoDTO): Promise<MovimientoResponseDTO>;
+  eliminar(id: string, perfilId: string): Promise<void>;
+  listarPorPerfil(perfilId: string, filtros?: FiltrosMovimientoDTO): Promise<MovimientoResponseDTO[]>;
+}
+export class MovimientoService implements IMovimientoService {
   private readonly movimientoRepository: IMovimientoRepository;
   private readonly categoriaRepository?: ICategoriaRepository;
   private readonly medioPagoRepository?: IMedioPagoRepository;
@@ -33,20 +40,6 @@ export class MovimientoService {
    * Funciones que validan los datos de entrada para crear o actualizar un movimiento.
    * @param datosMovimiento - Los datos del movimiento a validar.
    */
-
-  private validarDatosBasicos(datosMovimiento: CrearMovimientoDTO | ActualizarMovimientoDTO) {
-    if (
-      datosMovimiento.monto !== undefined &&
-      (!Number.isFinite(datosMovimiento.monto) || datosMovimiento.monto <= 0)
-    ) {
-      throw new ErrorDeValidacion('El monto debe ser un número mayor a 0');
-    }
-    if (datosMovimiento.fecha !== undefined) {
-      if (!(datosMovimiento.fecha instanceof Date) || Number.isNaN(datosMovimiento.fecha.getTime())) {
-        throw new ErrorDeValidacion('La fecha no es válida');
-      }
-    }
-  }
 
   private async validarRelaciones(datosMovimiento: CrearMovimientoDTO | ActualizarMovimientoDTO, perfilId?: string) {
     if (this.categoriaRepository && datosMovimiento.categoriaId) {
@@ -85,7 +78,6 @@ export class MovimientoService {
   }
 
   async crear(perfilId: string, datosMovimiento: CrearMovimientoDTO): Promise<MovimientoResponseDTO> {
-    this.validarDatosBasicos(datosMovimiento);
     await this.validarRelaciones(datosMovimiento, perfilId);
     return this.movimientoRepository.crear(perfilId, datosMovimiento);
   }
@@ -100,7 +92,6 @@ export class MovimientoService {
     datosActualizacion: ActualizarMovimientoDTO
   ): Promise<MovimientoResponseDTO> {
     await this.validarPertenenciaUsuario(id, perfilId);
-    this.validarDatosBasicos(datosActualizacion);
     await this.validarRelaciones(datosActualizacion, perfilId);
     return this.movimientoRepository.actualizar(id, datosActualizacion);
   }

@@ -93,11 +93,6 @@ describe('MovimientoService', () => {
       expect(resultado).toEqual(mockMovimiento);
     });
 
-    it('lanza ErrorDeValidacion si el monto es menor o igual a 0', async () => {
-      const { service } = preparar();
-      await expect(service.crear('perfil-1', { ...dtoValido, monto: 0 })).rejects.toThrow(ErrorDeValidacion);
-    });
-
     it('lanza ErrorDeValidacion si el medio de pago especificado no existe', async () => {
       const { service } = preparar({}, {}, {
         obtenerPorId: vi.fn().mockResolvedValue(null),

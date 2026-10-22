@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
 import { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
-import { MovimientoService } from '../services/movimiento.service.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
 import { ActualizarMovimientoDTO, CrearMovimientoDTO, FiltrosMovimientoDTO } from '../types/movimiento.types.js';
+import type { IMovimientoService } from '../services/movimiento.service.js';
 
 function obtenerPerfilId(req: AuthenticatedRequest): string {
   if (!req.user?.id) {
@@ -12,18 +12,22 @@ function obtenerPerfilId(req: AuthenticatedRequest): string {
 }
 
 export class MovimientoController {
-  private readonly movimientoService: MovimientoService;
+  private readonly movimientoService: IMovimientoService;
 
-  constructor(movimientoService: MovimientoService) {
+  constructor(movimientoService: IMovimientoService) {
     this.movimientoService = movimientoService;
   }
 
   // Crea un nuevo movimiento
   // POST /api/movimientos
-  crear = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+  crear = async (
+    req: AuthenticatedRequest<Record<string, string>, unknown, CrearMovimientoDTO>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const datosMovimiento = req.body as CrearMovimientoDTO;
+      const datosMovimiento = req.body;
       const nuevoMovimiento = await this.movimientoService.crear(perfilId, datosMovimiento);
       res.status(201).json({ exito: true, datos: nuevoMovimiento });
     } catch (error) {
@@ -33,10 +37,14 @@ export class MovimientoController {
 
   // Obtiene un movimiento por su ID
   // GET /api/movimientos/:id
-  obtenerPorId = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+  obtenerPorId = async (
+    req: AuthenticatedRequest<{ id: string }>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const movimientoId = req.params.id as string;
+      const movimientoId = req.params.id;
       const movimiento = await this.movimientoService.obtenerPorId(movimientoId, perfilId);
       res.status(200).json({ exito: true, datos: movimiento });
     } catch (error) {
@@ -46,11 +54,15 @@ export class MovimientoController {
 
   // Actualiza un movimiento existente
   // PATCH /api/movimientos/:id
-  actualizar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+  actualizar = async (
+    req: AuthenticatedRequest<{ id: string }, unknown, ActualizarMovimientoDTO>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const movimientoId = req.params.id as string;
-      const datosActualizacion = req.body as ActualizarMovimientoDTO;
+      const movimientoId = req.params.id;
+      const datosActualizacion = req.body;
       const movimientoActualizado = await this.movimientoService.actualizar(
         movimientoId,
         perfilId,
@@ -64,10 +76,14 @@ export class MovimientoController {
 
   // Elimina un movimiento existente
   // DELETE /api/movimientos/:id
-  eliminar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+  eliminar = async (
+    req: AuthenticatedRequest<{ id: string }>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const movimientoId = req.params.id as string;
+      const movimientoId = req.params.id;
       await this.movimientoService.eliminar(movimientoId, perfilId);
       res.status(204).send();
     } catch (error) {
@@ -77,10 +93,14 @@ export class MovimientoController {
 
   // Lista todos los movimientos de un perfil con filtros opcionales
   // GET /api/movimientos
-  listar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+  listar = async (
+    req: AuthenticatedRequest<Record<string, string>, unknown, unknown, FiltrosMovimientoDTO>,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const filtros = req.query as unknown as FiltrosMovimientoDTO;
+      const filtros = req.query;
       const movimientos = await this.movimientoService.listarPorPerfil(perfilId, filtros);
       res.status(200).json({ exito: true, datos: movimientos });
     } catch (error) {
