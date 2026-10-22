@@ -1,21 +1,80 @@
+import { defineConfig } from 'eslint/config';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import globals from 'globals';
 
-export default tseslint.config(
-  // Ignorar carpetas generadas y dependencias
+export default defineConfig([
+  // 1. Archivos y carpetas ignoradas globalmente
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**'],
+    ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/.vscode/**'],
   },
-  // Reglas recomendadas de JS y TS
+
+  // 2. Reglas recomendadas base (JS y TypeScript)
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  // Desactiva reglas de ESLint que choquen con Prettier
-  prettierConfig,
+
+  // 3. Reglas comunes a todo el proyecto (Frontend + Backend)
   {
     rules: {
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      '@typescript-eslint/consistent-type-imports': [
+        'warn',
+        { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+      ],
+    },
+  },
+
+  // 4. Configuración específica para el FRONTEND (React + Vite)
+  {
+    files: ['frontend/**/*.{ts,tsx}'],
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
+  },
+
+  // 5. Configuración específica para el BACKEND (Node.js + Express)
+  {
+    files: ['backend/**/*.ts'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
       'no-console': 'off',
     },
-  }
-);
+  },
+
+  // 6. Scripts raíz y configs
+  {
+    files: ['*.config.{js,ts}', '*.config.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+
+  // 7. Prettier al final para apagar reglas de formato redundantes
+  prettierConfig,
+]);
