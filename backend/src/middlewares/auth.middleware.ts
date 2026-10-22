@@ -2,7 +2,12 @@ import type { NextFunction, Request, Response } from 'express';
 import { supabase } from '../config/supabase.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
 
-export interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest<
+  P = Record<string, string>,
+  ResBody = unknown,
+  ReqBody = unknown,
+  ReqQuery = unknown,
+> extends Request<P, ResBody, ReqBody, ReqQuery> {
   user?: {
     id: string;
     email: string;
