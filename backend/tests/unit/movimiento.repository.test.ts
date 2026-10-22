@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import { MovimientoRepository } from '../../src/repositories/movimiento.repository.js';
-import { CrearMovimientoDTO, ActualizarMovimientoDTO } from '../../src/types/movimiento.types.js';
+import { type CrearMovimientoDTO, type ActualizarMovimientoDTO } from '../../src/types/movimiento.types.js';
 
 describe('MovimientoRepository', () => {
   const mockPrismaMovimiento = {

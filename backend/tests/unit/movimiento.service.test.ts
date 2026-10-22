@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { MovimientoService } from '../../src/services/movimiento.service.js';
-import { IMovimientoRepository } from '../../src/repositories/movimiento.repository.js';
-import { ICategoriaRepository } from '../../src/repositories/categoria.repository.js';
-import { IMedioPagoRepository } from '../../src/repositories/medio-pago.repository.js';
+import { type IMovimientoRepository } from '../../src/repositories/movimiento.repository.js';
+import { type ICategoriaRepository } from '../../src/repositories/categoria.repository.js';
+import { type IMedioPagoRepository } from '../../src/repositories/medio-pago.repository.js';
 import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../../src/errors/errores.js';
-import { CrearMovimientoDTO, MovimientoResponseDTO } from '../../src/types/movimiento.types.js';
+import { type CrearMovimientoDTO, type MovimientoResponseDTO } from '../../src/types/movimiento.types.js';
 
 describe('MovimientoService', () => {
   const mockMovimiento: MovimientoResponseDTO = {

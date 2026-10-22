@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { CategoriaService } from '../../src/services/categoria.service.js';
-import { ICategoriaRepository } from '../../src/repositories/categoria.repository.js';
+import { type ICategoriaRepository } from '../../src/repositories/categoria.repository.js';
 import { ErrorDeConflicto, ErrorNoEncontrado, ErrorProhibido } from '../../src/errors/errores.js';
 
 describe('CategoriaService', () => {

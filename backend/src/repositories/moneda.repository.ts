@@ -1,7 +1,7 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import { prisma as prismaSingleton } from '../config/prisma.js';
 import { ErrorDeConflicto } from '../errors/errores.js';
-import { MonedaPerfilResponseDTO, MonedaResponseDTO } from '../types/moneda.types.js';
+import { type MonedaPerfilResponseDTO, type MonedaResponseDTO } from '../types/moneda.types.js';
 
 type PerfilMonedaConMoneda = Prisma.PerfilMonedaGetPayload<{ include: { moneda: true } }>;
 

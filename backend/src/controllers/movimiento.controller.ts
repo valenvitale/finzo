@@ -1,7 +1,7 @@
-import { NextFunction, Response } from 'express';
-import { AuthenticatedRequest, RequestBody, RequestParams, RequestParamsBody, RequestQuery } from '../middlewares/auth.middleware.js';
+import { type NextFunction, type Response } from 'express';
+import { type AuthenticatedRequest, type RequestBody, type RequestParams, type RequestParamsBody, type RequestQuery } from '../middlewares/auth.middleware.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
-import { ActualizarMovimientoDTO, CrearMovimientoDTO, FiltrosMovimientoDTO } from '../types/movimiento.types.js';
+import { type ActualizarMovimientoDTO, type CrearMovimientoDTO, type FiltrosMovimientoDTO } from '../types/movimiento.types.js';
 import type { IMovimientoService } from '../services/movimiento.service.js';
 
 function obtenerPerfilId(req: AuthenticatedRequest): string {

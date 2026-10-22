@@ -1,6 +1,6 @@
 import { ErrorNoEncontrado } from '../errors/errores.js';
-import { AsignarMonedaDTO, MonedaPerfilResponseDTO, MonedaResponseDTO } from '../types/moneda.types.js';
-import { IMonedaRepository } from '../repositories/moneda.repository.js';
+import { type AsignarMonedaDTO, type MonedaPerfilResponseDTO, type MonedaResponseDTO } from '../types/moneda.types.js';
+import { type IMonedaRepository } from '../repositories/moneda.repository.js';
 
 export class MonedaService {
   constructor(private readonly monedaRepository: IMonedaRepository) {}

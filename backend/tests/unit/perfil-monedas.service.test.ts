@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
-import { IMonedaRepository } from '../../src/repositories/moneda.repository.js';
-import { IPerfilRepository } from '../../src/repositories/perfil.repository.js';
-import { IPerfilAuthService } from '../../src/services/perfil-auth.service.js';
+import { type IMonedaRepository } from '../../src/repositories/moneda.repository.js';
+import { type IPerfilRepository } from '../../src/repositories/perfil.repository.js';
+import { type IPerfilAuthService } from '../../src/services/perfil-auth.service.js';
 import { MonedaService } from '../../src/services/moneda.service.js';
 import { PerfilService } from '../../src/services/perfil.service.js';
 import { ErrorNoEncontrado } from '../../src/errors/errores.js';
-import { MonedaPerfilResponseDTO, MonedaResponseDTO } from '../../src/types/moneda.types.js';
-import { PerfilDTO } from '../../src/types/perfil.types.js';
+import { type MonedaPerfilResponseDTO, type MonedaResponseDTO } from '../../src/types/moneda.types.js';
+import { type PerfilDTO } from '../../src/types/perfil.types.js';
 
 const perfil: PerfilDTO = {
   id: 'user-id',

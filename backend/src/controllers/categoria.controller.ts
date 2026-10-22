@@ -1,8 +1,8 @@
-import { NextFunction, Response } from 'express';
-import { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
-import { CategoriaService } from '../services/categoria.service.js';
+import { type NextFunction, type Response } from 'express';
+import { type AuthenticatedRequest } from '../middlewares/auth.middleware.js';
+import { type CategoriaService } from '../services/categoria.service.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
-import { ActualizarCategoriaDTO, CrearCategoriaDTO } from '../types/categoria.types.js';
+import { type ActualizarCategoriaDTO, type CrearCategoriaDTO } from '../types/categoria.types.js';
 
 function obtenerPerfilId(req: AuthenticatedRequest): string {
   if (!req.user?.id) {

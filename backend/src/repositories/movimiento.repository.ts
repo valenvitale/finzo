@@ -1,10 +1,10 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { type PrismaClient, type Prisma } from '@prisma/client';
 import { prisma as prismaSingleton } from '../config/prisma.js';
 import {
-  CrearMovimientoDTO,
-  ActualizarMovimientoDTO,
-  FiltrosMovimientoDTO,
-  MovimientoResponseDTO,
+  type CrearMovimientoDTO,
+  type ActualizarMovimientoDTO,
+  type FiltrosMovimientoDTO,
+  type MovimientoResponseDTO,
 } from '../types/movimiento.types.js';
 
 export interface IMovimientoRepository {

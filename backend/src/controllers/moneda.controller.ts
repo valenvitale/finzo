@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import { AuthenticatedRequest, RequestBody } from '../middlewares/auth.middleware.js';
+import { type AuthenticatedRequest, type RequestBody } from '../middlewares/auth.middleware.js';
 import type { AsignarMonedaDTO } from '../types/moneda.types.js';
 import { MonedaRepository } from '../repositories/moneda.repository.js';
 import { MonedaService } from '../services/moneda.service.js';

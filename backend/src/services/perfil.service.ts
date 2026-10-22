@@ -1,7 +1,7 @@
 import { ErrorNoAutorizado, ErrorNoEncontrado } from '../errors/errores.js';
-import { ActualizarPerfilDTO, PerfilResponseDTO } from '../types/perfil.types.js';
-import { IPerfilRepository } from '../repositories/perfil.repository.js';
-import { IPerfilAuthService } from './perfil-auth.service.js';
+import { type ActualizarPerfilDTO, type PerfilResponseDTO } from '../types/perfil.types.js';
+import { type IPerfilRepository } from '../repositories/perfil.repository.js';
+import { type IPerfilAuthService } from './perfil-auth.service.js';
 
 export class PerfilService {
   constructor(

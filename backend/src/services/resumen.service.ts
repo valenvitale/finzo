@@ -1,9 +1,9 @@
 import {
-  IMovimientoRepository
+  type IMovimientoRepository
 } from '../repositories/movimiento.repository.js';
 
 import {
-  IMonedaRepository,
+  type IMonedaRepository,
 } from '../repositories/moneda.repository.js';
 
 import { ErrorDeConflicto } from '../errors/errores.js';

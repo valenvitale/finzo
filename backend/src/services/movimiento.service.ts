@@ -1,11 +1,11 @@
-import { IMovimientoRepository } from '../repositories/movimiento.repository.js';
-import { ICategoriaRepository } from '../repositories/categoria.repository.js';
-import { IMedioPagoRepository } from '../repositories/medio-pago.repository.js';
+import { type IMovimientoRepository } from '../repositories/movimiento.repository.js';
+import { type ICategoriaRepository } from '../repositories/categoria.repository.js';
+import { type IMedioPagoRepository } from '../repositories/medio-pago.repository.js';
 import {
-  CrearMovimientoDTO,
-  ActualizarMovimientoDTO,
-  FiltrosMovimientoDTO,
-  MovimientoResponseDTO,
+  type CrearMovimientoDTO,
+  type ActualizarMovimientoDTO,
+  type FiltrosMovimientoDTO,
+  type MovimientoResponseDTO,
 } from '../types/movimiento.types.js';
 import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
 

@@ -1,6 +1,6 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { type PrismaClient, type Prisma } from '@prisma/client';
 import { prisma as prismaSingleton } from '../config/prisma.js';
-import { CrearCategoriaDTO, ActualizarCategoriaDTO, CategoriaResponseDTO } from '../types/categoria.types.js';
+import { type CrearCategoriaDTO, type ActualizarCategoriaDTO, type CategoriaResponseDTO } from '../types/categoria.types.js';
 
 export interface ICategoriaRepository {
   crear(perfilId: string, datosCategoria: CrearCategoriaDTO): Promise<CategoriaResponseDTO>;
