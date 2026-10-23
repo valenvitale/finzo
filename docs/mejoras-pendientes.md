@@ -100,7 +100,7 @@
 
 ---
 
-### 🔴 6. Reemplazar el `DashboardTemporal` y Activar las Páginas Reales
+### 🔴 4. Reemplazar el `DashboardTemporal` y Activar las Páginas Reales
 
 * **¿Qué pasa hoy?**  
   En [`AppRouter.tsx`](../frontend/src/routes/AppRouter.tsx) está activa una función `DashboardTemporal` que solo tiene un cartel que dice *"FINZO - Sesión iniciada"* y un botón rojo de logout. La página real [`Dashboard.tsx`](../frontend/src/pages/Dashboard.tsx) está comentada.
@@ -113,7 +113,7 @@
 
 ---
 
-### 🔴 7. Crear Custom Hooks para Aislar la Lógica de las Vistas (SRP en React)
+### 🔴 5. Crear Custom Hooks para Aislar la Lógica de las Vistas (SRP en React)
 
 * **¿Qué pasa hoy?**  
   Actualmente solo existe `useAuth.ts`. Si escribimos las llamadas `apiClient.get('/movimientos')` directamente adentro de los componentes visuales (`Movimientos.tsx`), los componentes mezclarán maquetado con llamadas HTTP y manejo de errores.
@@ -130,7 +130,7 @@
 
 ---
 
-### 🟡 8. Integrar Toasts y Manejo Visual de Sesión Expirada
+### 🟡 6. Integrar Toasts y Manejo Visual de Sesión Expirada
 
 * **¿Qué pasa hoy?**  
   En [`frontend/src/services/api.ts`](../frontend/src/services/api.ts), cuando el backend devuelve `401 Unauthorized`, el interceptor de Axios hace `supabase.auth.signOut({ scope: 'local' })`. Pero el usuario no recibe ningún mensaje explicativo; simplemente es redirigido de golpe al login.
@@ -142,7 +142,7 @@
 
 ---
 
-### 🟡 9. Corregir el Warning de `act(...)` y Aumentar la Cobertura en Frontend
+### 🟡 7. Corregir el Warning de `act(...)` y Aumentar la Cobertura en Frontend
 
 * **¿Qué pasa hoy?**  
   Al correr los tests con `pnpm --filter frontend test`, solo corre 1 prueba (`App.test.tsx`), y arroja una advertencia en consola:
@@ -159,7 +159,7 @@
 
 ---
 
-## 4. 💡 Conclusión para el Equipo
+## 3. 💡 Conclusión para el Equipo
 
 El backend de Finzo ya cuenta con una base sólida (103 tests funcionando, seguridad JWT, migraciones en Supabase y capas bien diferenciadas). 
 
