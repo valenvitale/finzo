@@ -2,9 +2,9 @@
 
 # Finzo: Sistema web de gestión de finanzas personales
 
-**Documento actualizado:** 05/10/2026  
-**Versión:** 7.0  
-**Equipo:** Federico Heinrich, Valentina Vitale, Alesio Cragno, Maximo Messina.
+**Documento actualizado:** 22/10/2026  
+**Versión:** 8.0  
+**Equipo:** Federico Heinrich, Valentina Vitale, Alessio Cragno, Máximo Messina.
 
 ---
 
@@ -149,7 +149,7 @@ El dashboard calculará los ingresos, gastos y el balance del mes actual. En el 
 
 ---
 
-## 4. Arquitectura propuesta
+## 5. Arquitectura propuesta
 
 ```text
 ┌────────────────────────────────────────┐
@@ -180,13 +180,14 @@ finzo/
 │   ├── src/
 │   │   ├── config/             # Configuración de entorno y clientes externos
 │   │   ├── controllers/        # Controladores que reciben peticiones HTTP
+│   │   ├── errors/             # Jerarquía de excepciones de dominio (AppError)
 │   │   ├── middlewares/        # Middlewares de autenticación, validación y error
-│   │   ├── models/             # Interfaces y modelos de dominio
-│   │   ├── repositories/       # Abstracción y acceso a la base de datos
+│   │   ├── repositories/       # Abstracción y acceso a la base de datos (Data Mapper)
 │   │   ├── routes/             # Definición de endpoints REST
 │   │   ├── services/           # Lógica y reglas de negocio del sistema
-│   │   ├── types/              # Declaraciones de tipos TypeScript y DTOs
+│   │   ├── types/              # Declaraciones de tipos TypeScript, DTOs e interfaces
 │   │   ├── utils/              # Funciones auxiliares de cálculo y formato
+│   │   ├── validation/         # Esquemas de validación declarativa con Zod
 │   │   ├── app.ts              # Configuración de la aplicación Express
 │   │   └── server.ts           # Punto de entrada y levantamiento del servidor
 │   ├── tests/                  # Tests unitarios y de integración (Vitest)
@@ -238,7 +239,7 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 
 ---
 
-## 5. Tecnologías y criterio de elección
+## 6. Tecnologías y criterio de elección
 
 | Área                | Propuesta                             | Uso principal                                                                        |
 | ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------ |
@@ -267,7 +268,7 @@ Esta estructura es una guía inicial. Podrá cambiar mediante una decisión docu
 
 ---
 
-## 6. Modelo inicial de datos
+## 7. Modelo inicial de datos
 
 ![Modelo Entidad-Relación y Relacional](./frontend/public/images/BD-Finzo.svg)
 
@@ -360,7 +361,7 @@ medios_pago 1 ─── M movimientos
 
 ---
 
-## 7. API inicial orientativa
+## 8. API inicial orientativa
 
 | Método | Ruta                  | Descripción                                                                                        |
 | ------ | --------------------- | -------------------------------------------------------------------------------------------------- |
@@ -389,22 +390,25 @@ La API de autenticación dependerá de la integración definida con Supabase Aut
 
 ---
 
-## 8. Calidad de diseño, SOLID y refactoring
+## 9. Calidad de diseño, SOLID y refactoring
 
 No se incorporarán patrones de forma artificial. El equipo partirá de una solución simple, observará problemas concretos y documentará cualquier cambio estructural.
 
 ### Principios a aplicar
 
-- **Responsabilidad única:** evitar controladores que validen, calculen y accedan directamente a la base.
-- **Abierto/cerrado:** permitir extensiones razonables sin modificar innecesariamente código estable.
-- **Inversión de dependencias:** aislar la lógica de negocio del cliente de datos cuando aporte testabilidad y mantenibilidad.
-- **Simplicidad:** evitar abstracciones que no resuelvan una necesidad actual.
+- **Responsabilidad única (SRP):** Controller atiende peticiones HTTP, Service procesa reglas de negocio, Repository interactúa con la base de datos, y los esquemas Zod validan datos de entrada.
+- **Inversión de dependencias (DIP):** Las capas superiores dependen de abstracciones (interfaces como IMovimientoService, ICategoriaService, IResumenService), desacoplando controladores de implementaciones concretas para facilitar dobles de prueba (mocks).
+- **Abierto/cerrado (OCP):** Middlewares genéricos y arquitectura modular extensibles sin necesidad de modificar código base estable.
+- **No repetición (DRY):** Esquemas declarativos con Zod que evitan duplicar validaciones básicas en la lógica de negocio.
+- **Simplicidad:** Evitar abstracciones artificiales que no resuelvan una necesidad concreta de desacoplamiento o mantenibilidad.
 
-### Patrones posibles, no obligatorios
+### Patrones aplicados y justificados
 
-- **Repository:** separar persistencia y negocio.
-- **Strategy:** intercambiar cálculos o reglas cuando existan variantes reales.
-- **Factory:** construir objetos cuando la creación presente diferencias relevantes.
+- **Repository:** Separar y encapsular el acceso a Prisma ORM en la capa de persistencia.
+- **DTO (Data Transfer Object) y Data Mapper:** Tipar contratos de entrada y salida (*DTO) en ackend/src/types/, mapeando datos entre el modelo relacional (snake_case, tipos Decimal) y los DTOs de dominio (camelCase), evitando acoplar la API y el cliente a la estructura interna de la base de datos.
+- **Strategy:** Algoritmos de cálculo financiero intercambiables (resúmenes y balances).
+- **Factory:** Construcción uniforme de errores operacionales tipados (AppError).
+- **Middleware Chain:** Cadena secuencial desacoplada: Autenticación JWT → Validación Zod → Controller → Error Handler.
 
 ### Evidencia esperada de refactoring
 
@@ -419,14 +423,14 @@ Ejemplo:
 
 ```text
 Antes: Controller → Database
-Después: Controller → Service → Repository → Database
+Después: Controller (DTOs) → Service (Interfaces / DIP + Reglas) → Repository (Prisma + Data Mapper) → Database
 ```
 
 El cambio solo se considerará valioso si mejora claridad, pruebas, mantenimiento o separación de responsabilidades.
 
 ---
 
-## 9. Testing, seguridad y manejo de errores
+## 10. Testing, seguridad y manejo de errores
 
 ### Estrategia de testing
 
@@ -469,7 +473,7 @@ El cambio solo se considerará valioso si mejora claridad, pruebas, mantenimient
 
 ---
 
-## 10. Flujo de trabajo con Git y seguimiento
+## 11. Flujo de trabajo con Git y seguimiento
 
 ### Ramas
 
@@ -518,7 +522,7 @@ Las decisiones y bloqueos importantes deberán quedar por escrito en Jira.
 
 ---
 
-## 11. Integración continua y documentación
+## 12. Integración continua y documentación
 
 ### Pipeline mínimo por pull request
 
@@ -555,7 +559,7 @@ La protección de ramas impedirá integrar cambios si fallan los controles oblig
 
 ---
 
-## 12. Organización del equipo y modalidad de trabajo
+## 13. Organización del equipo y modalidad de trabajo
 
 El equipo adopta un enfoque de desarrollo **Full-Stack vertical por módulos y flujos de valor**, en lugar de dividir roles por capas tecnológicas aisladas (solo frontend o solo backend). Cada integrante se responsabiliza de implementar flujos completos de punta a punta (modelado, repositorios, servicios con reglas de negocio, endpoints REST, interfaces de usuario y tests automatizados), garantizando que todos dominen la arquitectura integral del sistema y puedan defenderla técnicamente.
 
@@ -591,13 +595,13 @@ El equipo adopta un enfoque de desarrollo **Full-Stack vertical por módulos y f
 
 - **Revisión de código:** Todos los integrantes revisan y aprueban Pull Requests de sus compañeros antes del merge a ramas principales.
 - **Testing continuo:** Cada funcionalidad nueva debe incluir sus correspondientes pruebas unitarias y de integración.
-- **Decisiones arquitectónicas y de diseño:** Consenso grupal en la aplicación de patrones (Repository, Middleware Chain, Strategy, Factory) y principios SOLID.
+- **Decisiones arquitectónicas y de diseño:** Consenso grupal en la aplicación de patrones (Repository, DTO, Data Mapper, Middleware Chain, Strategy, Factory) y principios SOLID (SRP, DIP, OCP, DRY).
 - **Mantenimiento de documentación:** Mantener actualizados `README.md`, `PROPUESTA.md`, tableros de Jira y especificaciones de API.
 - **Dominio integral del producto:** Rotación y asistencia cruzada (pair programming o soporte mutuo) para evitar concentración de conocimiento y asegurar que todos los miembros puedan justificar cualquier módulo en la defensa académica.
 
 ---
 
-## 13. Plan de trabajo y entregas
+## 14. Plan de trabajo y entregas
 
 ### Etapa 1: fundación
 
@@ -643,16 +647,16 @@ El equipo adopta un enfoque de desarrollo **Full-Stack vertical por módulos y f
 
 ### Cronograma de la Materia
 
-| Hito               | Fecha indicada | Resultado esperado                                                        |
-| ------------------ | -------------: | ------------------------------------------------------------------------- |
-| Taller I           |          11/09 | Proyecto definido, repositorio, README, dependencias y setup reproducible |
-| Taller II          |          16/10 | Diseño, patrones justificados, SOLID, refactoring y mantenibilidad        |
-| Taller III         |          27/11 | Documentación, testing, calidad, automatización, CI y entrega             |
-| Presentación final |          04/12 | Presentación grupal y defensa individual                                  |
+| Hito               | Fecha indicada | Resultado esperado                                                        | Estado       |
+| ------------------ | -------------: | ------------------------------------------------------------------------- | :----------: |
+| Taller I           |          11/09 | Proyecto definido, repositorio, README, dependencias y setup reproducible | ✅ Aprobado   |
+| Taller II          |          16/10 | Diseño, patrones justificados, SOLID, refactoring y mantenibilidad        | ✅ Aprobado   |
+| Taller III         |          27/11 | Documentación, testing, calidad, automatización, CI y entrega             | 🔄 En curso   |
+| Presentación final |          04/12 | Presentación grupal y defensa individual                                  | ⏳ Pendiente  |
 
 ---
 
-## 14. Definicion de tarea completada
+## 15. Definición de tarea completada
 
 Una tarea se considera terminada cuando, según corresponda:
 
@@ -671,7 +675,7 @@ Una historia incompleta al final del sprint no se contabiliza como terminada; vu
 
 ---
 
-## 15. Riesgos y mitigaciones
+## 16. Riesgos y mitigaciones
 
 | Riesgo                       | Impacto                            | Mitigación                                                          |
 | ---------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
@@ -685,7 +689,7 @@ Una historia incompleta al final del sprint no se contabiliza como terminada; vu
 
 ---
 
-## 16. Indicadores de éxito
+## 17. Indicadores de éxito
 
 El proyecto se considerará exitoso si al cierre:
 
