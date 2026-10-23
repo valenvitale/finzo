@@ -263,9 +263,9 @@ pnpm --filter frontend test
 ### ✅ Estado Actual (Completado)
 
 - [x] **Monorepo configurado:** Estructura de espacios de trabajo (`pnpm-workspace.yaml`) integrando los paquetes `frontend` y `backend`.
-- [x] **Arquitectura en capas desacopladas:** Separación estricta de responsabilidades (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `models`, `types`).
+- [x] **Arquitectura en capas desacopladas:** Separación estricta de responsabilidades (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `types`, `validation`).
 - [x] **Persistencia relacional con Prisma:** Esquema relacional completo en `backend/prisma/schema.prisma`, cliente tipado con pooler de PostgreSQL en Supabase y seed de datos base.
-- [x] **Modelos de dominio independientes:** Definidos en `backend/src/models/` para movimientos, categorías, monedas, medios de pago y perfiles.
+- [x] **Tipos y DTOs fuertemente tipados:** Definidos en `backend/src/types/` (`*DTO`, interfaces de servicio e inputs/outputs) desacoplados del modelo físico de la base de datos.
 - [x] **Autenticación e identidad:** Integración con Supabase Auth, middleware de verificación JWT (`auth.middleware.ts`) y servicio de credenciales (`perfil-auth.service.ts`).
 - [x] **Lógica de negocio y endpoints REST (CRUD):** Módulos completos para movimientos, categorías, monedas, medios de pago y perfiles.
 - [x] **Validación declarativa y DTOs:** Esquemas Zod en rutas con middlewares genéricos (`validacion.middleware.ts`) y tipado estricto con DTOs en TypeScript.
@@ -375,7 +375,6 @@ finzo/
 │   │   ├── controllers/        # Controladores que reciben peticiones HTTP
 │   │   ├── errors/             # Jerarquía de excepciones de dominio (AppError)
 │   │   ├── middlewares/        # Middlewares de autenticación, validación y error
-│   │   ├── models/             # Interfaces y modelos de dominio
 │   │   ├── repositories/       # Abstracción y acceso a la base de datos
 │   │   ├── routes/             # Definición de endpoints REST
 │   │   ├── services/           # Lógica y reglas de negocio del sistema
