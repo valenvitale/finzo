@@ -22,10 +22,7 @@ export class ResumenController {
       }
 
       // Zod ya validó y transformó los parámetros.
-      const { mes, anio } = req.query as unknown as {
-        mes?: number;
-        anio?: number;
-      };
+      const { mes, anio }: { mes?: number; anio?: number } = req.query;
 
       const resumen = await this.resumenService.obtenerResumen(
         req.user.id,

@@ -66,33 +66,37 @@
 
 ---
 
-### 🟢 3. Evitar "Type Assertions" (`as`) en Controladores
+### 🟢 3. Evitar "Type Assertions" (`as`) en Controladores (Estandarizado)
 
-* **¿Qué pasa hoy?**  
-  En controladores como [`categoria.controller.ts`](../backend/src/controllers/categoria.controller.ts) o [`resumen.controller.ts`](../backend/src/controllers/resumen.controller.ts) aún encontramos casteo manual:
+* **¿Qué pasaba anteriormente?**  
+  En los controladores se utilizaba casteo manual con el operador `as` para forzar los tipos del body, params y query:
   ```typescript
-  // En categoria.controller.ts:
+  // ❌ Antes: casteo manual que desactiva el chequeo estricto del compilador
   const datosCategoria = req.body as CrearCategoriaDTO;
   const categoriaId = req.params.id as string;
-
-  // En resumen.controller.ts:
   const { mes, anio } = req.query as unknown as { mes?: number; anio?: number };
   ```
 * **¿Por qué es un problema?**  
-  El operador `as` de TypeScript le dice al compilador: *"confiá en mí, sé lo que hago"*, apagando la verificación de tipos. Si el esquema de Zod cambia y el DTO no, TypeScript no nos avisa del error en tiempo de compilación.
-* **¿Cómo lo solucionamos?**  
-  Tipar directamente las peticiones utilizando los tipos genéricos de Express ya disponibles en [`auth.middleware.ts`](../backend/src/middlewares/auth.middleware.ts) (`RequestBody<T>`, `RequestParams<P>`, `RequestQuery<Q>`), tal como ya se implementó en [`movimiento.controller.ts`](../backend/src/controllers/movimiento.controller.ts) (pueden tomarlo como referencia):
+  El operador `as` de TypeScript le dice al compilador: *"confiá en mí, sé lo que hago"*, apagando la verificación de tipos. Si el esquema de Zod cambia y el DTO no, TypeScript no nos avisa del error en tiempo de compilación. Por otro lado, intentar resolver esto mediante tipos genéricos anidados en la firma (`RequestParamsBody<{ id: string }, ActualizarMovimientoDTO>`) generaba firmas verbosas de 5 líneas por método.
+* **¿Cómo se resolvió? (Estándar implementado)**  
+  Mantener las firmas de los métodos limpias en una sola línea `(req: AuthenticatedRequest, res: Response, next: NextFunction)` y realizar la anotación de tipo directa en la variable interna, aprovechando que el middleware de Zod (`validarCuerpo` / `validarParametros` / `validarQuery`) ya verificó y saneó los datos en la ruta:
   ```typescript
-  // ✅ Ejemplo tipando la Request (sin necesidad de 'as'):
-  crear = async (
-    req: RequestBody<CrearCategoriaDTO>,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    const datosCategoria = req.body; // Ya está tipado como CrearCategoriaDTO
-    // ...
+  // ✅ Implementación limpia (sin "as" y sin sobrecargar la firma del método):
+  crear = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const perfilId = obtenerPerfilId(req);
+      const datosCategoria: CrearCategoriaDTO = req.body; // Tipado directo sin "as"
+      const nuevaCategoria = await this.categoriaService.crear(perfilId, datosCategoria);
+      res.status(201).json({ exito: true, datos: nuevaCategoria });
+    } catch (error) {
+      next(error);
+    }
   };
   ```
+  **Beneficios del estándar unificado:**
+  1. Cero uso del operador `as` en los controladores.
+  2. Firmas uniformes, legibles y de una sola línea en toda la capa de presentación.
+  3. Autocompletado y tipado estricto garantizado al interactuar con los servicios.
 
 ---
 

@@ -1,5 +1,5 @@
 import type { NextFunction, Response } from 'express';
-import type { AuthenticatedRequest, RequestBody, RequestParams, RequestParamsBody, RequestQuery } from '../middlewares/auth.middleware.js';
+import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
 import type { ActualizarMovimientoDTO, CrearMovimientoDTO, FiltrosMovimientoDTO } from '../types/movimiento.types.js';
 import type { IMovimientoService } from '../services/movimiento.service.js';
@@ -20,14 +20,10 @@ export class MovimientoController {
 
   // Crea un nuevo movimiento
   // POST /api/movimientos
-  crear = async (
-    req: RequestBody<CrearMovimientoDTO>,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  crear = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const datosMovimiento = req.body;
+      const datosMovimiento: CrearMovimientoDTO = req.body;
       const nuevoMovimiento = await this.movimientoService.crear(perfilId, datosMovimiento);
       res.status(201).json({ exito: true, datos: nuevoMovimiento });
     } catch (error) {
@@ -37,11 +33,7 @@ export class MovimientoController {
 
   // Obtiene un movimiento por su ID
   // GET /api/movimientos/:id
-  obtenerPorId = async (
-    req: RequestParams<{ id: string }>,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  obtenerPorId = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
       const movimientoId = req.params.id;
@@ -54,15 +46,11 @@ export class MovimientoController {
 
   // Actualiza un movimiento existente
   // PATCH /api/movimientos/:id
-  actualizar = async (
-    req: RequestParamsBody<{ id: string }, ActualizarMovimientoDTO>,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  actualizar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
       const movimientoId = req.params.id;
-      const datosActualizacion = req.body;
+      const datosActualizacion: ActualizarMovimientoDTO = req.body;
       const movimientoActualizado = await this.movimientoService.actualizar(
         movimientoId,
         perfilId,
@@ -76,11 +64,7 @@ export class MovimientoController {
 
   // Elimina un movimiento existente
   // DELETE /api/movimientos/:id
-  eliminar = async (
-    req: RequestParams<{ id: string }>,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  eliminar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
       const movimientoId = req.params.id;
@@ -93,14 +77,10 @@ export class MovimientoController {
 
   // Lista todos los movimientos de un perfil con filtros opcionales
   // GET /api/movimientos
-  listar = async (
-    req: RequestQuery<FiltrosMovimientoDTO>,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  listar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const filtros = req.query;
+      const filtros: FiltrosMovimientoDTO = req.query;
       const movimientos = await this.movimientoService.listarPorPerfil(perfilId, filtros);
       res.status(200).json({ exito: true, datos: movimientos });
     } catch (error) {

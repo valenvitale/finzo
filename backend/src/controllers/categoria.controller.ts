@@ -23,7 +23,7 @@ export class CategoriaController {
   crear = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const datosCategoria = req.body as CrearCategoriaDTO;
+      const datosCategoria: CrearCategoriaDTO = req.body;
       const nuevaCategoria = await this.categoriaService.crear(perfilId, datosCategoria);
       res.status(201).json({ exito: true, datos: nuevaCategoria });
     } catch (error) {
@@ -36,7 +36,7 @@ export class CategoriaController {
   obtenerPorId = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const categoriaId = req.params.id as string;
+      const categoriaId = req.params.id;
       const categoria = await this.categoriaService.obtenerPorId(categoriaId, perfilId);
       res.status(200).json({ exito: true, datos: categoria });
     } catch (error) {
@@ -49,8 +49,8 @@ export class CategoriaController {
   actualizar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const categoriaId = req.params.id as string;
-      const datosActualizacion = req.body as ActualizarCategoriaDTO;
+      const categoriaId = req.params.id;
+      const datosActualizacion: ActualizarCategoriaDTO = req.body;
       const categoriaActualizada = await this.categoriaService.actualizar(categoriaId, perfilId, datosActualizacion);
       res.status(200).json({ exito: true, datos: categoriaActualizada });
     } catch (error) {
@@ -63,7 +63,7 @@ export class CategoriaController {
   eliminar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
-      const categoriaId = req.params.id as string;
+      const categoriaId = req.params.id;
       await this.categoriaService.eliminar(categoriaId, perfilId);
       res.status(204).send();
     } catch (error) {

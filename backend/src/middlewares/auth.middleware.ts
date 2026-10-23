@@ -4,9 +4,9 @@ import { ErrorNoAutorizado } from '../errors/errores.js';
 
 export interface AuthenticatedRequest<
   P = Record<string, string>,
-  ResBody = unknown,
-  ReqBody = unknown,
-  ReqQuery = unknown,
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = any,
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
   user?: {
     id: string;
