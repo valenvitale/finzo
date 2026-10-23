@@ -159,22 +159,6 @@
 
 ---
 
-## 3. 📋 Resumen Visual de Tareas Pendientes para Sprint 3
-
-| # | Área | Tarea Concreta | Beneficio Principal | Dificultad |
-| :-: | :--- | :--- | :--- | :-: |
-| **1** | Backend | Migrar `PerfilController` y `MonedaController` a clases con inyección por constructor | Cumple DIP, 100% testeable con mocks y unifica el estilo de todo el backend | Media |
-| **2** | Backend | Unificar bloques `try/catch` con `next(error)` en todos los controladores | Manejo consistente y predecible de errores | Baja |
-| **3** | Backend | Crear interfaces `IMovimientoService` e `IMedioPagoService` | Cumple DIP desacoplando controladores de implementaciones concretas | Baja |
-| **4** | Backend | Quitar `validarDatosBasicos` manuales en `MovimientoService` | Elimina código duplicado delegando el formato a Zod (DRY/SRP) | Baja |
-| **5** | Backend | Eliminar aserciones de tipo (`as`) en controladores tipando `Request` | Mayor seguridad de tipos en tiempo de compilación | Baja |
-| **6** | Frontend | Reemplazar `DashboardTemporal` y activar las rutas reales | Conecta la experiencia de usuario real de Finzo | Media |
-| **7** | Frontend | Implementar hooks `useMovimientos`, `useCategorias` y `useResumen` | Separa la lógica asíncrona de los componentes visuales | Media |
-| **8** | Frontend | Agregar notificación de "Sesión expirada" en el interceptor 401 | Mejora la experiencia y claridad del usuario | Baja |
-| **9** | Frontend | Corregir warning `act(...)` y sumar tests de componentes UI | Pruebas limpias y confiables en el pipeline de CI/CD | Media |
-
----
-
 ## 4. 💡 Conclusión para el Equipo
 
 El backend de Finzo ya cuenta con una base sólida (103 tests funcionando, seguridad JWT, migraciones en Supabase y capas bien diferenciadas). 
