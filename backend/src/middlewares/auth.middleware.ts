@@ -2,34 +2,11 @@ import type { NextFunction, Request, Response } from 'express';
 import { supabase } from '../config/supabase.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
 
-export interface AuthenticatedRequest<
-  P = Record<string, string>,
-  ResBody = any,
-  ReqBody = any,
-  ReqQuery = any,
-> extends Request<P, ResBody, ReqBody, ReqQuery> {
-  user?: {
-    id: string;
-    email: string;
-  };
-}
-
-// Helpers para peticiones autenticadas (todas las combinaciones posibles de Params, Body y Query)
-// 1 elemento:
-export type RequestParams<P> = AuthenticatedRequest<P>;
-export type RequestBody<B> = AuthenticatedRequest<Record<string, string>, unknown, B>;
-export type RequestQuery<Q> = AuthenticatedRequest<Record<string, string>, unknown, unknown, Q>;
-
-// 2 elementos combinados:
-export type RequestParamsBody<P, B> = AuthenticatedRequest<P, unknown, B>;
-export type RequestParamsQuery<P, Q> = AuthenticatedRequest<P, unknown, unknown, Q>;
-export type RequestBodyQuery<B, Q> = AuthenticatedRequest<Record<string, string>, unknown, B, Q>;
-
-// 3 elementos combinados:
-export type RequestParamsBodyQuery<P, B, Q> = AuthenticatedRequest<P, unknown, B, Q>;
+// Request autenticado con parámetros de ruta tipados como cadenas simples por defecto
+export type AuthenticatedRequest<P = Record<string, string>> = Request<P>;
 
 export async function authMiddleware(
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> {
@@ -76,3 +53,5 @@ export async function authMiddleware(
     next(error);
   }
 }
+
+
