@@ -266,16 +266,16 @@ pnpm --filter frontend test
 - [x] **Arquitectura en capas desacopladas:** Separación estricta de responsabilidades (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `types`, `validation`).
 - [x] **Persistencia relacional con Prisma:** Esquema relacional completo en `backend/prisma/schema.prisma`, cliente tipado con pooler de PostgreSQL en Supabase y seed de datos base.
 - [x] **Tipos y DTOs fuertemente tipados:** Definidos en `backend/src/types/` (`*DTO`, interfaces de servicio e inputs/outputs) desacoplados del modelo físico de la base de datos.
-- [x] **Autenticación e identidad:** Integración con Supabase Auth, middleware de verificación JWT (`auth.middleware.ts`) y servicio de credenciales (`perfil-auth.service.ts`).
+- [x] **Autenticación e identidad:** Integración con Supabase Auth, middleware de verificación JWT (`auth.middleware.ts`), extensión de tipos nativos con Declaration Merging (`backend/src/types/express.d.ts`) y servicio de credenciales (`perfil-auth.service.ts`).
 - [x] **Lógica de negocio y endpoints REST (CRUD):** Módulos completos para movimientos, categorías, monedas, medios de pago y perfiles.
 - [x] **Validación declarativa y DTOs:** Esquemas Zod en rutas con middlewares genéricos (`validacion.middleware.ts`) y tipado estricto con DTOs en TypeScript.
 - [x] **Patrones de diseño aplicados y justificados (Taller II):** Implementación de Singleton, Adapter, Data Mapper / ACL, Repository Pattern, Dependency Injection, Composition Root, Chain of Responsibility, Strategy y Facade.
 - [x] **Documentación técnica de diseño:** Análisis exhaustivo, diagnóstico, alternativas, evidencia y trade-offs registrado en [`docs/decisiones-diseno.md`](./docs/decisiones-diseno.md).
-- [x] **Testing automatizado (75 tests unitarios):** Cobertura de pruebas unitarias 100% en verde con Vitest sin dependencia de base de datos externa.
+- [x] **Testing automatizado (102 tests unitarios e integración):** Cobertura de pruebas unitarias y de integración 100% en verde con Vitest sin dependencia de base de datos externa.
 
 ### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
 
-- [ ] **Desarrollo de pantallas del Dashboard e Historial en Frontend:** Integrar vistas de carga de movimientos, filtros, selector de categorías y medios de pago en React.
+- [ ] **Desarrollo de pantallas del Dashboard en Frontend:** Integrar vistas de carga de movimientos, filtros, selector de categorías y medios de pago en React.
 - [ ] **Pipeline de CI:** Configurar flujos de trabajo en `.github/workflows/` para ejecución automática de linter y tests en cada Pull Request.
 - [ ] **Despliegue a producción:** Configurar servicio en **Render** para la API del backend y proyecto en **Vercel** para la SPA del frontend.
 

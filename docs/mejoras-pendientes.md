@@ -77,11 +77,13 @@
   const { mes, anio } = req.query as unknown as { mes?: number; anio?: number };
   ```
 * **¿Por qué es un problema?**  
-  El operador `as` de TypeScript le dice al compilador: *"confiá en mí, sé lo que hago"*, apagando la verificación de tipos. Si el esquema de Zod cambia y el DTO no, TypeScript no nos avisa del error en tiempo de compilación. Por otro lado, intentar resolver esto mediante tipos genéricos anidados en la firma (`RequestParamsBody<{ id: string }, ActualizarMovimientoDTO>`) generaba firmas verbosas de 5 líneas por método.
+  El operador `as` de TypeScript le dice al compilador: *"confiá en mí, sé lo que hago"*, apagando la verificación de tipos. Si el esquema de Zod cambia y el DTO no, TypeScript no nos avisa del error en tiempo de compilación. Por otro lado, intentar resolver esto mediante tipos genéricos anidados en la firma (`RequestParamsBody<{ id: string }, ActualizarMovimientoDTO>`) generaba firmas verbosas de 5 líneas por método y propensas a usar defaults con `= any` en la interfaz `AuthenticatedRequest`, lo que disparaba la regla `@typescript-eslint/no-explicit-any`.
 * **¿Cómo se resolvió? (Estándar implementado)**  
-  Mantener las firmas de los métodos limpias en una sola línea `(req: AuthenticatedRequest, res: Response, next: NextFunction)` y realizar la anotación de tipo directa en la variable interna, aprovechando que el middleware de Zod (`validarCuerpo` / `validarParametros` / `validarQuery`) ya verificó y saneó los datos en la ruta:
+  1. **Declaration Merging en `backend/src/types/express.d.ts`:** Se extendió la interfaz nativa `Express.Request` de forma global para incluir `user?: { id: string; email: string }`, siguiendo las mejores prácticas oficiales del ecosistema DefinitelyTyped sin usar `any`.
+  2. **Alias simplificado sin `any` para parámetros (`auth.middleware.ts`):** Se definió `AuthenticatedRequest<P = Record<string, string>> = Request<P>`, garantizando que `req.params.id` sea tipado como `string` simple (evitando que Express 5 lo infiera como `string | string[]` y choque con los servicios) sin introducir `any`.
+  3. **Tipado interno asistido por Zod:** Mantener las firmas de los métodos limpias en una sola línea `(req: AuthenticatedRequest, res: Response, next: NextFunction)` y realizar la anotación de tipo directa en la variable interna, aprovechando que el middleware de Zod (`validarCuerpo` / `validarParametros` / `validarQuery`) ya verificó y saneó los datos en la ruta:
   ```typescript
-  // ✅ Implementación limpia (sin "as" y sin sobrecargar la firma del método):
+  // ✅ Implementación limpia (sin "as", sin "any" y sin sobrecargar la firma del método):
   crear = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const perfilId = obtenerPerfilId(req);
@@ -95,8 +97,9 @@
   ```
   **Beneficios del estándar unificado:**
   1. Cero uso del operador `as` en los controladores.
-  2. Firmas uniformes, legibles y de una sola línea en toda la capa de presentación.
-  3. Autocompletado y tipado estricto garantizado al interactuar con los servicios.
+  2. Cero uso de `any` en interfaces y middlewares (linter 100% limpio).
+  3. Firmas uniformes, legibles y de una sola línea en toda la capa de presentación.
+  4. Autocompletado y tipado estricto garantizado al interactuar con los servicios.
 
 ---
 

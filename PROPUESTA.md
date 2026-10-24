@@ -185,7 +185,7 @@ finzo/
 │   │   ├── repositories/       # Abstracción y acceso a la base de datos (Data Mapper)
 │   │   ├── routes/             # Definición de endpoints REST
 │   │   ├── services/           # Lógica y reglas de negocio del sistema
-│   │   ├── types/              # Declaraciones de tipos TypeScript, DTOs e interfaces
+│   │   ├── types/              # Declaraciones de tipos TypeScript, DTOs, interfaces y express.d.ts (Declaration Merging)
 │   │   ├── utils/              # Funciones auxiliares de cálculo y formato
 │   │   ├── validation/         # Esquemas de validación declarativa con Zod
 │   │   ├── app.ts              # Configuración de la aplicación Express
@@ -572,7 +572,7 @@ El equipo adopta un enfoque de desarrollo **Full-Stack vertical por módulos y f
 
 ### Integrante 2: Valentina Vitale — Autenticación, Resumen, Dashboard y Despliegues (Full-Stack)
 
-- **Seguridad y backend transversal:** Triggers de base de datos en Supabase, middleware de autenticación JWT (`auth.middleware.ts`), y servicio y controlador de cálculo del Resumen financiero mensual (`ResumenService`, `ResumenController`).
+- **Seguridad y backend transversal:** Triggers de base de datos en Supabase, middleware de autenticación JWT (`auth.middleware.ts`), extensión de tipos nativos con Declaration Merging (`backend/src/types/express.d.ts`), y servicio y controlador de cálculo del Resumen financiero mensual (`ResumenService`, `ResumenController`).
 - **Frontend de sesión y métricas:** Cliente HTTP base (`apiClient`), `AuthContext`, páginas de Login y Registro, guardias de navegación (`RutaProtegida`, `RutaPublica`), y Dashboard principal con tarjetas de métricas (ingresos, gastos, balance) y widget de transacciones recientes.
 - **Infraestructura y despliegue cloud:** Configuración de políticas de seguridad en base de datos (RLS) en Supabase, y administración de entornos y despliegues en producción en Vercel (Frontend), Render (Backend Web Service) y variables de entorno coordinadas.
 - **Testing y calidad:** Tests automatizados del middleware de autenticación y de las reglas de cálculo del resumen financiero.
