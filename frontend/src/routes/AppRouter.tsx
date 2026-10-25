@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
+import TestPage from '../pages/test';
 // import Dashboard from '../pages/Dashboard';
 
 function DashboardTemporal() {
@@ -91,6 +92,7 @@ export default function AppRouter() {
           }
         />
 
+        <Route path="/test" element={<TestPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
