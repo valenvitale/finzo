@@ -50,7 +50,7 @@ export function Modal({
           type="button"
           aria-label={etiquetaCerrar}
           onClick={onCerrar}
-          className="rounded-md p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          className="rounded-md p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
         >
           <span aria-hidden="true">×</span>
         </button>

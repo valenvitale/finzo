@@ -1,13 +1,14 @@
 interface CargandoProps {
   etiqueta?: string;
+  className?: string;
 }
 
-export function Cargando({ etiqueta = 'Cargando...' }: CargandoProps) {
+export function Cargando({ etiqueta = 'Cargando...', className = '' }: CargandoProps) {
   return (
-    <div role="status" className="flex items-center justify-center gap-3 py-8 text-slate-600">
+    <div role="status" className={`flex items-center justify-center gap-3 py-8 text-slate-600 ${className}`}>
       <svg
         aria-hidden="true"
-        className="size-5 animate-spin text-indigo-600"
+        className="size-5 animate-spin text-naranja"
         viewBox="0 0 24 24"
         fill="none"
       >
