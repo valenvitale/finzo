@@ -10,6 +10,37 @@ import {
   Tarjeta,
   toast,
 } from '../components/common';
+import { TablaMovimientos } from '../components/movimientos/TablaMovimientos';
+import type { MovimientoResponseDTO } from '../types/movimiento.types';
+
+const movimientosSimulados: MovimientoResponseDTO[] = [
+  {
+    id: '1',
+    monto: 15500,
+    tipo: 'GASTO',
+    fecha: '2026-10-24T18:00:00.000Z',
+    descripcion: 'Supermercado Coto',
+    perfilId: 'perfil-1',
+    monedaId: 'ARS',
+    categoriaId: 'cat-comida',
+    medioPagoId: 'mp-debito',
+    createdAt: '2026-10-24T18:00:00.000Z',
+    updatedAt: '2026-10-24T18:00:00.000Z',
+  },
+  {
+    id: '2',
+    monto: 250000,
+    tipo: 'INGRESO',
+    fecha: '2026-10-25T10:00:00.000Z',
+    descripcion: 'Sueldo Desarrollo Software',
+    perfilId: 'perfil-1',
+    monedaId: 'ARS',
+    categoriaId: 'cat-sueldo',
+    medioPagoId: 'mp-transferencia',
+    createdAt: '2026-10-25T10:00:00.000Z',
+    updatedAt: '2026-10-25T10:00:00.000Z',
+  },
+];
 
 export default function TestPage() {
   // Estados para probar Boton
@@ -641,6 +672,23 @@ export default function TestPage() {
               </Boton>
             </div>
           </Tarjeta>
+        </section>
+                {/* Sección Tabla de Movimientos */}
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">
+              Tabla de Movimientos
+            </h2>
+            <p className="text-sm text-slate-500">
+              Visualización de la lista de movimientos con montos, fechas y acciones.
+            </p>
+          </div>
+
+          <TablaMovimientos
+            movimientos={movimientosSimulados}
+            onEliminar={(id) => toast.error(`Clic en eliminar movimiento con ID: ${id}`)}
+            onEditar={(id) => toast.info(`Clic en editar movimiento con ID: ${id}`)}
+          />
         </section>
 
         {/* Pie de página */}
