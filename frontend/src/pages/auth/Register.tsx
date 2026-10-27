@@ -21,7 +21,7 @@ export default function Register() {
     setError('');
 
     if (!nombre.trim() || !apellido.trim() || !email.trim() || !password) {
-      setError('Completá todos los campos.');
+      setError('Por favor completá todos los campos.');
       return;
     }
 
@@ -33,26 +33,27 @@ export default function Register() {
     setCargando(true);
 
     try {
-        await register(nombre.trim(), apellido.trim(), email.trim(), password);
-        setRegistrado(true);
-    } catch (error) {
-        console.error('Error al registrar usuario:', error);
+      await register(nombre.trim(), apellido.trim(), email.trim(), password);
 
-        setError(
-            error instanceof Error
-            ? error.message
-            : 'Ocurrió un error desconocido.'
-        );
+      setRegistrado(true);
+    } catch (error) {
+      console.error('Error al registrarse:', error);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Ocurrió un error desconocido.'
+      );
     } finally {
-    setCargando(false);
+      setCargando(false);
     }
   };
 
   if (registrado) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-        <div className="w-full max-w-md space-y-4 rounded-xl bg-white p-8 text-center shadow-md">
-          <h1 className="text-2xl font-bold text-indigo-600">¡Registro recibido!</h1>
+        <div className="w-full max-w-md space-y-4 rounded-2xl bg-white p-8 text-center shadow-sm border border-slate-200">
+          <h1 className="text-2xl font-bold text-oliva">¡Registro recibido!</h1>
           <p className="text-slate-600">
             Si se requiere confirmar tu correo, revisá tu bandeja de entrada.
             Después podés iniciar sesión.
@@ -69,10 +70,10 @@ export default function Register() {
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md space-y-5 rounded-xl bg-white p-8 shadow-md"
+        className="w-full max-w-md space-y-5 rounded-2xl bg-white p-8 shadow-sm border border-slate-200"
       >
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-indigo-600">FINZO</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-oliva">FINZO</h1>
           <h2 className="mt-2 text-xl font-semibold text-slate-900">Crear cuenta</h2>
         </div>
 
@@ -119,7 +120,7 @@ export default function Register() {
 
         <p className="text-center text-sm text-slate-600">
           ¿Ya tenés cuenta?{' '}
-          <Link to="/login" className="font-medium text-indigo-600 hover:underline">
+          <Link to="/login" className="font-medium text-naranja hover:text-naranja-hover hover:underline">
             Iniciá sesión
           </Link>
         </p>

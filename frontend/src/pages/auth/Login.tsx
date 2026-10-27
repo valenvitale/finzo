@@ -28,26 +28,26 @@ export default function Login() {
       await login(email.trim(), password);
       navigate('/dashboard', { replace: true });
     } catch (error) {
-        console.error('Error al iniciar sesión:', error);
+      console.error('Error al iniciar sesión:', error);
 
-        setError(
-            error instanceof Error
-            ? error.message
-            : 'Ocurrió un error desconocido.'
-        );
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Ocurrió un error desconocido.'
+      );
     } finally {
       setCargando(false);
     }
-    };
+  };
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md space-y-5 rounded-xl bg-white p-8 shadow-md"
+        className="w-full max-w-md space-y-5 rounded-2xl bg-white p-8 shadow-sm border border-slate-200"
       >
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-indigo-600">FINZO</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-oliva">FINZO</h1>
           <h2 className="mt-2 text-xl font-semibold text-slate-900">
             Iniciar sesión
           </h2>
@@ -95,7 +95,7 @@ export default function Login() {
           ¿No tenés cuenta?{' '}
           <Link
             to="/register"
-            className="font-medium text-indigo-600 hover:underline"
+            className="font-medium text-naranja hover:text-naranja-hover hover:underline"
           >
             Registrate
           </Link>
