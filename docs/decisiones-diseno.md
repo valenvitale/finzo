@@ -145,6 +145,43 @@ El costo principal fue incorporar una interfaz, un esquema y una configuración 
 - `pnpm --filter backend build` (`tsc`) compila exitosamente el 100% del código.
 - Los 102 tests unitarios y de integración continúan pasando en verde sin regresiones.
 
+---
+
+## CASO 4 — Arquitectura en Frontend: Separación de Responsabilidades en la Tabla de Movimientos
+
+### Código Analizado:
+- [`frontend/src/components/movimientos/TablaMovimientos.tsx`](../frontend/src/components/movimientos/TablaMovimientos.tsx)
+- [`frontend/src/pages/Movimientos.tsx`](../frontend/src/pages/Movimientos.tsx)
+- [`frontend/src/hooks/useMovimientos.ts`](../frontend/src/hooks/useMovimientos.ts)
+
+### Problema planteado:
+Al momento de construir la tabla de movimientos, surgió una duda de diseño fundamental:  
+**¿Quién debe hacerse cargo de mostrar el spinner de carga (`cargando`) y el cartel de error (`error`)?**  
+¿Le pasamos esa información a la tabla para que ella decida qué mostrar en pantalla, o dejamos que la página principal lo controle y que la tabla solo se dedique a pintar filas?
+
+### Alternativas consideradas:
+
+1. **Modalidad 1: Tabla autónoma (control interno de estados)**  
+   La tabla recibe `movimientos`, `cargando` y `error`. Adentro del componente se colocan varios `if` para mostrar `<Cargando />`, `<MensajeError />` o `<EstadoVacio />`.  
+   - *Punto a favor:* La página contenedora tiene menos líneas de código porque le delega todo a la tabla.  
+   - *Punto en contra:* La tabla queda sobrecargada de responsabilidades. Si la red está lenta, la tabla borra todo su espacio para poner un spinner gigante, ocultando el contexto. Además, si queríamos usar esa misma tabla en otra pantalla (como en el Dashboard para ver los últimos movimientos), nos obligaba a lidiar con estados de carga que quizás en esa pantalla se manejaban de otra forma.
+
+2. **Modalidad 2: Tabla pura / presentacional (control en la página contenedora) — Elegida**  
+   La tabla solo recibe la lista de datos (`movimientos`) y los eventos de acción (`onEditar`, `onEliminar`). No sabe de llamadas a la red ni de fallos de internet. La página principal (`Movimientos.tsx`) usa el hook `useMovimientos`, sabe cuándo mostrar el spinner o el error, y recién cuando los datos están listos se los pasa a la tabla para que los dibuje.
+
+### ¿Por qué elegimos la Modalidad 2?
+
+- **Responsabilidad Única (SRP):** La tabla hace una sola cosa y la hace bien: recibir movimientos y mostrarlos de forma clara (con montos en verde para ingresos, rojo para gastos y botones de acción). No se mezcla con la lógica de red.
+- **Mejor experiencia visual (UX):** En la pantalla de movimientos, la barra de filtros y el botón "+ Nuevo Movimiento" se quedan fijos arriba. Cuando el usuario cambia un filtro, no parpadea toda la pantalla; solo la zona de la tabla muestra la carga.
+- **Reutilización real en otras pantallas:** Mañana podemos usar este mismo componente en el Dashboard para mostrar los últimos 5 movimientos sin tener que inventar errores ni estados que no corresponden.
+- **Pruebas más fáciles:** Hacer un test unitario de la tabla es facilísimo: solo le pasamos dos movimientos inventados por props y comprobamos que se vean bien, sin necesidad de simular hooks ni llamadas a la API.
+
+### Relación con la materia:
+- **SRP (Responsabilidad Única):** Separamos la presentación pura (la tabla) de la coordinación y lógica de estado (la página y el hook).
+- **Clean Code y Bajo Acoplamiento:** Componentes simples, con props directas, fáciles de leer y que no dependen de cómo ni de dónde vinieron los datos.
+
+---
+
 ## Conclusión
 
 En FINZO analizamos dos módulos reales del backend: **Categorías y Resumen**, con el objetivo de mejorar la calidad del código, facilitar su mantenimiento y conservar diseños similares entre los modulos.
