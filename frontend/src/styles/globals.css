@@ -20,9 +20,18 @@
   --color-gasto-fondo: #fff1f2;    /* Fondo suave de gasto */
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: #f8fafc;
   color: #0f172a;
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-naranja);
+  color: white;
 }
