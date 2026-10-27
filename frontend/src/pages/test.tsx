@@ -111,7 +111,7 @@ export default function TestPage() {
         <header className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 mb-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-oliva/10 px-3 py-1 text-xs font-semibold text-oliva mb-2">
                 Catálogo de UI / Common Components
               </div>
               <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
@@ -119,7 +119,7 @@ export default function TestPage() {
               </h1>
               <p className="mt-1 text-slate-600 text-sm md:text-base">
                 Vista previa e interactividad de los componentes base creados en{' '}
-                <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono text-indigo-600">
+                <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono text-oliva">
                   src/components/common
                 </code>
                 .
@@ -129,7 +129,7 @@ export default function TestPage() {
               <span className="rounded-lg bg-emerald-50 px-3 py-1.5 font-medium text-emerald-700 border border-emerald-200">
                 8 Componentes
               </span>
-              <span className="rounded-lg bg-indigo-50 px-3 py-1.5 font-medium text-indigo-700 border border-indigo-200">
+              <span className="rounded-lg bg-naranja-claro px-3 py-1.5 font-medium text-naranja border border-orange-200">
                 + Toasts (Sonner)
               </span>
             </div>
@@ -148,11 +148,12 @@ export default function TestPage() {
               { href: '#mensajes-error', label: 'MensajeError' },
               { href: '#cargando', label: 'Cargando' },
               { href: '#notificaciones', label: 'Toasts' },
+              { href: '#movimientos', label: 'TablaMovimientos' },
             ].map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-md bg-slate-100 px-2.5 py-1 text-slate-700 transition hover:bg-indigo-50 hover:text-indigo-600"
+                className="rounded-md bg-slate-100 px-2.5 py-1 text-slate-700 transition hover:bg-naranja-claro hover:text-naranja"
               >
                 {link.label}
               </a>
@@ -164,10 +165,10 @@ export default function TestPage() {
         <section id="botones" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 1
               </span>
-              Boton (<code className="text-sm font-mono text-indigo-600">Boton.tsx</code>)
+              Boton (<code className="text-sm font-mono text-oliva">Boton.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Soporta variantes (<code className="font-mono">primary</code>, <code className="font-mono">secondary</code>, <code className="font-mono">danger</code>), estados <code className="font-mono">cargando</code> con spinner integrado y <code className="font-mono">disabled</code>.
@@ -222,7 +223,7 @@ export default function TestPage() {
                   {botonSimulandoCarga ? 'Procesando...' : 'Hacer click para simular carga (2s)'}
                 </Boton>
                 <span className="text-sm text-slate-600">
-                  Clicks registrados: <strong className="text-indigo-600">{contadorClicks}</strong>
+                  Clicks registrados: <strong className="text-naranja">{contadorClicks}</strong>
                 </span>
               </div>
             </Tarjeta>
@@ -233,10 +234,10 @@ export default function TestPage() {
         <section id="inputs" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 2
               </span>
-              InputTexto (<code className="text-sm font-mono text-indigo-600">InputTexto.tsx</code>)
+              InputTexto (<code className="text-sm font-mono text-oliva">InputTexto.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Entrada de texto accesible con <code className="font-mono">label</code> obligatorio, <code className="font-mono">textoAyuda</code> opcional y estado <code className="font-mono">error</code> descriptivo.
@@ -284,7 +285,7 @@ export default function TestPage() {
               />
               <div className="rounded-lg bg-slate-50 p-3 border border-slate-200 text-xs">
                 <span className="text-slate-500 font-medium">Valor actual: </span>
-                <span className="font-mono text-indigo-600">
+                <span className="font-mono text-oliva">
                   {inputValor ? `"${inputValor}"` : '(vacío)'}
                 </span>
               </div>
@@ -311,10 +312,10 @@ export default function TestPage() {
         <section id="selectores" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 3
               </span>
-              Selector (<code className="text-sm font-mono text-indigo-600">Selector.tsx</code>)
+              Selector (<code className="text-sm font-mono text-oliva">Selector.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Elemento <code className="font-mono">&lt;select&gt;</code> estilizado con soporte para <code className="font-mono">label</code>, <code className="font-mono">textoAyuda</code> y <code className="font-mono">error</code>.
@@ -390,10 +391,10 @@ export default function TestPage() {
         <section id="tarjetas" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 4
               </span>
-              Tarjeta (<code className="text-sm font-mono text-indigo-600">Tarjeta.tsx</code>)
+              Tarjeta (<code className="text-sm font-mono text-oliva">Tarjeta.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Contenedor elevado con borde suave y relleno interno (<code className="font-mono">p-5</code>) para agrupar información.
@@ -408,8 +409,8 @@ export default function TestPage() {
               </p>
             </Tarjeta>
 
-            <Tarjeta className="border-l-4 border-l-indigo-600">
-              <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+            <Tarjeta className="border-l-4 border-l-oliva">
+              <div className="text-xs font-semibold text-oliva uppercase tracking-wider">
                 Balance Total
               </div>
               <div className="mt-1 text-2xl font-bold text-slate-900">$ 450.280,00</div>
@@ -442,10 +443,10 @@ export default function TestPage() {
         <section id="modales" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 5
               </span>
-              Modal (<code className="text-sm font-mono text-indigo-600">Modal.tsx</code>)
+              Modal (<code className="text-sm font-mono text-oliva">Modal.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Diálogo nativo con <code className="font-mono">&lt;dialog&gt;</code>, soporte para cerrar con botón de cruz, tecla Escape o clic en el backdrop oscuro.
@@ -473,7 +474,7 @@ export default function TestPage() {
           >
             <div className="space-y-4">
               <p className="text-sm text-slate-600">
-                Este diálogo utiliza el componente <code className="font-mono text-xs text-indigo-600">Modal</code> creado por Máximo con accesibilidad nativa.
+                Este diálogo utiliza el componente <code className="font-mono text-xs text-oliva">Modal</code> creado por Máximo con accesibilidad nativa.
               </p>
 
               <InputTexto
@@ -515,10 +516,10 @@ export default function TestPage() {
         <section id="estados-vacios" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 6
               </span>
-              EstadoVacio (<code className="text-sm font-mono text-indigo-600">EstadoVacio.tsx</code>)
+              EstadoVacio (<code className="text-sm font-mono text-oliva">EstadoVacio.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Placeholder para cuando una lista o sección no contiene datos, con borde punteado y botón de acción opcional.
@@ -560,10 +561,10 @@ export default function TestPage() {
         <section id="mensajes-error" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 7
               </span>
-              MensajeError (<code className="text-sm font-mono text-indigo-600">MensajeError.tsx</code>)
+              MensajeError (<code className="text-sm font-mono text-oliva">MensajeError.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Alerta de error con rol accesible <code className="font-mono">role="alert"</code>, fondo suave y texto destacado.
@@ -594,10 +595,10 @@ export default function TestPage() {
         <section id="cargando" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 8
               </span>
-              Cargando (<code className="text-sm font-mono text-indigo-600">Cargando.tsx</code>)
+              Cargando (<code className="text-sm font-mono text-oliva">Cargando.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Spinner SVG con etiqueta accesible y rol <code className="font-mono">role="status"</code>.
@@ -625,10 +626,10 @@ export default function TestPage() {
         <section id="notificaciones" className="scroll-mt-6 space-y-4">
           <div className="border-b border-slate-200 pb-2">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span className="flex size-6 items-center justify-center rounded-full bg-indigo-600 text-xs text-white">
+              <span className="flex size-6 items-center justify-center rounded-full bg-oliva text-xs text-white">
                 9
               </span>
-              Notificaciones / Toasts (<code className="text-sm font-mono text-indigo-600">toast</code> desde <code className="text-sm font-mono">common</code>)
+              Notificaciones / Toasts (<code className="text-sm font-mono text-oliva">toast</code> desde <code className="text-sm font-mono">common</code>)
             </h2>
             <p className="text-sm text-slate-500">
               Sistema de alertas toast provisto por Sonner, configurado en <code className="font-mono">main.tsx</code> y re-exportado desde <code className="font-mono">components/common</code>.
