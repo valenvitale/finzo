@@ -112,7 +112,7 @@ El costo principal fue incorporar una interfaz, un esquema y una configuración 
 
 ---
 
-## CASO 3 — Tipado Seguro de Express sin `any` ni Verbosidad (Declaration Merging)
+## CASO 3 — Tipado Seguro en Express y Usuario Autenticado
 
 ### Código Analizado:
 - [`backend/src/middlewares/auth.middleware.ts`](../backend/src/middlewares/auth.middleware.ts)
@@ -121,29 +121,30 @@ El costo principal fue incorporar una interfaz, un esquema y una configuración 
 - [`backend/src/controllers/categoria.controller.ts`](../backend/src/controllers/categoria.controller.ts)
 
 ### Problemas detectados (Code Smells y Linter):
-- **Uso explícito de `any`:** `AuthenticatedRequest` redeclaraba los parámetros genéricos de Express con valores por defecto `= any` (`ResBody = any, ReqBody = any, ReqQuery = any`), disparando la regla `@typescript-eslint/no-explicit-any` de ESLint.
-- **Sobre-ingeniería y firmas verbosas:** Se intentó crear interfaces combinatorias auxiliares (`RequestParamsBody`, `RequestParamsQuery`), lo que multiplicaba tipos innecesarios y sobrecargaba las firmas de los métodos.
-- **Incompatibilidad de parámetros en Express 5:** En Express 5 (`@types/express` v5), los parámetros de ruta (`req.params`) son por defecto `Record<string, string | string[]>`. Si se usa el tipo nativo sin especificar el parámetro genérico `P`, `req.params.id` infiere como `string | string[]`, generando errores de asignación con los métodos de servicios y repositorios que esperan estrictamente un `string`.
+- **Uso de `any`:** El `Request` original de Express no incluye los datos del usuario autenticado (`req.user`). Para resolverlo, se usaba un tipo personalizado con múltiples parámetros genéricos seteados en `any`, lo que disparaba advertencias de ESLint y reducía la seguridad del tipado.
+- **Tipos complejos e innecesarios:** Existían interfaces auxiliares intermedias que sobrecargaban las firmas de los controladores con tipos largos y difíciles de leer.
+- **Tipado impreciso de parámetros:** Por defecto, los parámetros de ruta (`req.params.id`) se interpretaban como texto o lista de textos (`string | string[]`), obligando a realizar conversiones manuales para enviarlos a los servicios.
 
 ### Alternativas consideradas:
-1. **Desactivar la regla de ESLint (`// eslint-disable-next-line`):** Ocultaba la advertencia pero violaba las políticas de calidad estricta del proyecto.
-2. **Reemplazar `any` por `unknown` en los 4 genéricos:** Obligaba a escribir firmas kilométricas en cada controlador (`req: AuthenticatedRequest<Params, unknown, DTO, unknown>`) o a realizar casteos forzados con `as` dentro de cada método.
-3. **Declaration Merging + Type Alias `Request<P = Record<string, string>>`:** Fue la opción elegida. Extiende la interfaz nativa `Express.Request` con `user?:` de manera limpia mediante Module Augmentation en `backend/src/types/express.d.ts`, y define `AuthenticatedRequest<P = Record<string, string>> = Request<P>` sin ningún `any`.
+1. **Desactivar la regla de ESLint (`eslint-disable`):** Ocultaba el aviso del linter, pero mantenía los `any` y la falta de control en el código.
+2. **Reemplazar `any` por `unknown`:** Resolvía la advertencia de ESLint, pero obligaba a escribir firmas kilométricas en cada método del controlador y a forzar conversiones (`as string`) manualmente.
+3. **Extender el `Request` nativo de Express (Opción elegida):** Agregar la propiedad opcional `user` directamente a Express mediante un archivo de definición de tipos y crear un alias simple para los parámetros de ruta.
 
 ### Cambios realizados:
-- Se creó el archivo [`backend/src/types/express.d.ts`](../backend/src/types/express.d.ts) para extender el espacio de nombres global `Express.Request` con la identidad autenticada (`user?: { id: string; email: string }`).
-- Se refactorizó [`backend/src/middlewares/auth.middleware.ts`](../backend/src/middlewares/auth.middleware.ts): `authMiddleware` ahora recibe `req: Request` nativo y se eliminaron todos los defaults con `any` y los tipos auxiliares redundantes.
-- Se preservó el alias `AuthenticatedRequest<P = Record<string, string>> = Request<P>`, garantizando que `req.params.id` sea reconocido como `string` simple en toda la capa de controladores sin requerir casteos manuales.
+- **Extensión global de Express:** Creamos [`backend/src/types/express.d.ts`](../backend/src/types/express.d.ts) para que la propiedad `user?: { id: string; email: string }` esté disponible en el objeto `Request` en todo el proyecto.
+- **Simplificación del middleware:** En [`backend/src/middlewares/auth.middleware.ts`](../backend/src/middlewares/auth.middleware.ts) eliminamos los `any` y las interfaces intermedias. Dejamos un alias limpio (`AuthenticatedRequest`) que garantiza que los parámetros de ruta se lean directamente como `string`.
+- **Firmas más legibles en controladores:** Los métodos ahora reciben `req: AuthenticatedRequest` en una sola línea clara, sin genéricos redundantes ni conversiones forzadas.
 
 ### Relación con la materia:
-- **Clean Code / Legibilidad:** Firmas limpias, uniformes y concisas en una sola línea en todos los controladores.
-- **ISP (Segregación de Interfaces):** Los controladores no están obligados a depender de parámetros genéricos que no necesitan.
-- **Type Safety y Fail Fast:** La verificación en tiempo de ejecución la realiza Zod en las rutas y se proyecta a TypeScript de forma segura sin `any` ni supresiones de tipos.
+- **Clean Code:** Firmas simples, concisas y legibles a primera vista en todos los controladores, sin ruido de tipos innecesarios.
+- **Seguridad de Tipos (Type Safety):** Aprovechamos TypeScript para prevenir errores en tiempo de compilación sin apagar el linter con `any`.
+- **ISP (Segregación de Interfaces):** Los controladores reciben una estructura limpia y no dependen de parámetros genéricos que no necesitan.
 
 ### Evidencia y costos:
 - `pnpm lint` ejecuta con 0 errores y 0 advertencias en todo el monorepo.
 - `pnpm --filter backend build` (`tsc`) compila exitosamente el 100% del código.
 - Los 102 tests unitarios y de integración continúan pasando en verde sin regresiones.
+- El costo fue incorporar un archivo de definición de tipos (`express.d.ts`), pero a cambio simplificó drásticamente el código de los controladores y eliminó tipos repetitivos.
 
 ---
 
