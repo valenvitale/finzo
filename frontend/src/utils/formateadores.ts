@@ -1,8 +1,8 @@
-// Formato de moneda para Argentina (ARS)
-export function formatearMonto(monto: number): string {
+// Formato de moneda con código ISO (por defecto ARS)
+export function formatearMonto(monto: number, codigoMoneda = 'ARS'): string {
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',
-    currency: 'ARS',
+    currency: codigoMoneda,
     minimumFractionDigits: 2,
   }).format(monto);
 }
