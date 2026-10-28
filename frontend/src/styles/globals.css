@@ -1,24 +1,36 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Tipografía */
+  /* Tipografia */
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Identidad Finzo */
   --color-oliva: #3a3f29;          /* Verde oliva oscuro exacto del logo */
-  --color-oliva-oscuro: #272b1c;   /* Tono más profundo para contrastes */
+  --color-oliva-oscuro: #272b1c;   /* Tono mas profundo para contrastes */
   --color-oliva-claro: #f4f5f0;    /* Fondo sutil con tinte oliva */
 
   --color-naranja: #f56f13;        /* Naranja vibrante de la curva */
   --color-naranja-hover: #db5e0a;  /* Naranja en hover */
   --color-naranja-claro: #fef3ea;  /* Fondo acento suave */
 
-  /* Estados Financieros Semánticos */
+  /* Estados Financieros Semanticos */
   --color-ingreso: #059669;        /* Dinero entrante (verde esmeralda) */
   --color-ingreso-fondo: #ecfdf5;  /* Fondo suave de ingreso */
-  --color-gasto: #e11d48;          /* Dinero saliente (rojo carmesí) */
+  --color-ingreso-borde: #a7f3d0;  /* Borde sutil de ingreso */
+
+  --color-gasto: #e11d48;          /* Dinero saliente (rojo carmesi) */
   --color-gasto-fondo: #fff1f2;    /* Fondo suave de gasto */
+  --color-gasto-borde: #fecdd3;    /* Borde sutil de gasto */
+
+  --color-alerta: #d97706;         /* Advertencias y limites de presupuesto (ambar) */
+  --color-alerta-fondo: #fffbeb;   /* Fondo suave de alerta */
+  --color-alerta-borde: #fde68a;   /* Borde sutil de alerta */
 }
+
+/* 
+ * Neutros oficiales: usar la escala 'slate' de Tailwind (slate-50 a slate-900).
+ * Evitar mezclar con gray, zinc o neutral para mantener uniformidad visual.
+ */
 
 html {
   scroll-behavior: smooth;
@@ -35,4 +47,3 @@ body {
   background-color: var(--color-naranja);
   color: white;
 }
-
