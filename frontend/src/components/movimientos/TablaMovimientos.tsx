@@ -7,7 +7,7 @@
  */
 import { ArrowDownLeft, ArrowUpRight, Pencil, Trash2 } from 'lucide-react';
 import type { MovimientoResponseDTO } from '../../types/movimiento.types';
-import { Tarjeta, EstadoVacio } from '../common';
+import { Tarjeta, EstadoVacio, Boton } from '../common';
 import { formatearMonto, formatearFecha } from '../../utils/formateadores';
 
 interface TablaMovimientosProps {
@@ -97,24 +97,26 @@ export function TablaMovimientos({
                   {/* Acciones rapidas */}
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
-                      <button
-                        type="button"
+                      <Boton
+                        variante="ghost"
+                        tamanio="icon"
                         onClick={() => onEditar(mov.id)}
-                        className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-naranja-claro hover:text-naranja"
+                        className="text-slate-400 hover:bg-naranja-claro hover:text-naranja"
                         title="Editar movimiento"
                         aria-label="Editar movimiento"
                       >
                         <Pencil className="size-4" />
-                      </button>
-                      <button
-                        type="button"
+                      </Boton>
+                      <Boton
+                        variante="ghost"
+                        tamanio="icon"
                         onClick={() => onEliminar(mov.id)}
-                        className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-gasto-fondo hover:text-gasto"
+                        className="text-slate-400 hover:bg-gasto-fondo hover:text-gasto"
                         title="Eliminar movimiento"
                         aria-label="Eliminar movimiento"
                       >
                         <Trash2 className="size-4" />
-                      </button>
+                      </Boton>
                     </div>
                   </td>
                 </tr>

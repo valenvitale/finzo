@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { Boton } from './Boton';
 
 interface ModalProps {
   abierto: boolean;
@@ -46,14 +47,15 @@ export function Modal({
         <h2 id={titleId} className="text-lg font-semibold">
           {titulo}
         </h2>
-        <button
-          type="button"
+        <Boton
+          variante="ghost"
+          tamanio="icon"
           aria-label={etiquetaCerrar}
           onClick={onCerrar}
-          className="rounded-md p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-naranja"
+          className="size-8 p-0 text-slate-500 hover:bg-slate-100 hover:text-slate-700"
         >
-          <span aria-hidden="true">×</span>
-        </button>
+          <span aria-hidden="true" className="text-xl leading-none">×</span>
+        </Boton>
       </div>
       <div className="px-6 py-5">{children}</div>
     </dialog>
