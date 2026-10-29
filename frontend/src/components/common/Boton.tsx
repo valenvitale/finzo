@@ -1,10 +1,12 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
-export type VarianteBoton = 'primary' | 'secondary' | 'danger';
+export type VarianteBoton = 'primary' | 'secondary' | 'danger' | 'ghost';
+export type TamanioBoton = 'sm' | 'md' | 'lg' | 'icon';
 
 interface BotonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   variante?: VarianteBoton;
+  tamanio?: TamanioBoton;
   cargando?: boolean;
 }
 
@@ -13,11 +15,21 @@ const variantes: Record<VarianteBoton, string> = {
   secondary:
     'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-naranja',
   danger: 'bg-gasto text-white hover:bg-red-700 focus-visible:ring-gasto',
+  ghost:
+    'bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-800 focus-visible:ring-naranja',
+};
+
+const tamanios: Record<TamanioBoton, string> = {
+  sm: 'px-3 py-1.5 text-xs',
+  md: 'px-4 py-2 text-sm',
+  lg: 'px-5 py-2.5 text-base',
+  icon: 'p-1.5',
 };
 
 export function Boton({
   children,
   variante = 'primary',
+  tamanio = 'md',
   cargando = false,
   className = '',
   disabled,
@@ -30,7 +42,7 @@ export function Boton({
       type={type}
       disabled={disabled || cargando}
       aria-busy={cargando || undefined}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${variantes[variante]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${variantes[variante]} ${tamanios[tamanio]} ${className}`}
     >
       {cargando && (
         <>

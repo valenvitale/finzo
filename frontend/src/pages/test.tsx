@@ -1,3 +1,4 @@
+import { Pencil, Plus } from 'lucide-react';
 import { useState } from 'react';
 import {
   Boton,
@@ -171,7 +172,7 @@ export default function TestPage() {
               Boton (<code className="text-sm font-mono text-oliva">Boton.tsx</code>)
             </h2>
             <p className="text-sm text-slate-500">
-              Soporta variantes (<code className="font-mono">primary</code>, <code className="font-mono">secondary</code>, <code className="font-mono">danger</code>), estados <code className="font-mono">cargando</code> con spinner integrado y <code className="font-mono">disabled</code>.
+              Soporta variantes (<code className="font-mono">primary</code>, <code className="font-mono">secondary</code>, <code className="font-mono">danger</code>, <code className="font-mono">ghost</code>), tamaños (<code className="font-mono">sm</code>, <code className="font-mono">md</code>, <code className="font-mono">lg</code>, <code className="font-mono">icon</code>), estados <code className="font-mono">cargando</code> con spinner integrado y <code className="font-mono">disabled</code>.
             </p>
           </div>
 
@@ -190,6 +191,9 @@ export default function TestPage() {
                 <Boton variante="danger" onClick={() => toast('Click en variante Danger')}>
                   Danger
                 </Boton>
+                <Boton variante="ghost" onClick={() => toast('Click en variante Ghost')}>
+                  Ghost
+                </Boton>
               </div>
             </Tarjeta>
 
@@ -207,6 +211,43 @@ export default function TestPage() {
                 <Boton variante="danger" cargando>
                   Eliminando
                 </Boton>
+              </div>
+            </Tarjeta>
+
+            <Tarjeta className="md:col-span-2">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500">
+                Tamaños Disponibles
+              </h3>
+              <div className="flex flex-wrap items-center gap-3">
+                <Boton tamanio="sm" onClick={() => toast('Tamaño pequeño (sm)')}>
+                  Pequeño (sm)
+                </Boton>
+                <Boton tamanio="md" onClick={() => toast('Tamaño mediano (md)')}>
+                  Mediano (md - default)
+                </Boton>
+                <Boton tamanio="lg" onClick={() => toast('Tamaño grande (lg)')}>
+                  Grande (lg)
+                </Boton>
+                <div className="flex items-center gap-2 border-l border-slate-200 pl-3">
+                  <Boton
+                    variante="secondary"
+                    tamanio="icon"
+                    onClick={() => toast('Tamaño icon con secondary')}
+                    title="Editar"
+                    aria-label="Editar"
+                  >
+                    <Pencil className="size-4" />
+                  </Boton>
+                  <Boton
+                    variante="ghost"
+                    tamanio="icon"
+                    onClick={() => toast('Tamaño icon con ghost')}
+                    title="Agregar"
+                    aria-label="Agregar"
+                  >
+                    <Plus className="size-4" />
+                  </Boton>
+                </div>
               </div>
             </Tarjeta>
 
