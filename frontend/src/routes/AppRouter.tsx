@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import TestPage from '../pages/test';
+import { PageContainer } from '../components/layout/PageContainer';
 // import Dashboard from '../pages/Dashboard';
 
 function DashboardTemporal() {
@@ -84,13 +85,18 @@ export default function AppRouter() {
         />
 
         <Route
-          path="/dashboard"
           element={
             <RutaProtegida>
-                <DashboardTemporal />
+              <PageContainer />
             </RutaProtegida>
           }
-        />
+        >
+          <Route path="/dashboard" element={<DashboardTemporal />} />
+          <Route path="/movimientos" element={<h1>Movimientos</h1>} />
+          <Route path="/categorias" element={<h1>Categorías</h1>} />
+          <Route path="/estadisticas" element={<h1>Estadísticas</h1>} />
+          <Route path="/perfil" element={<h1>Perfil</h1>} />
+        </Route>
 
         <Route path="/test" element={<TestPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
