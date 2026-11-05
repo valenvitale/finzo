@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import Categorias from '../pages/Categorias';
 
 import { useAuth } from '../hooks/useAuth';
 import Login from '../pages/auth/Login';
@@ -24,10 +25,7 @@ function DashboardTemporal() {
       <h1>FINZO - Sesión iniciada</h1>
       <p>La autenticación funciona correctamente.</p>
 
-      <button
-        onClick={cerrarSesion}
-        className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white"
-      >
+      <button onClick={cerrarSesion} className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white">
         Cerrar sesión
       </button>
     </main>
@@ -93,7 +91,7 @@ export default function AppRouter() {
         >
           <Route path="/dashboard" element={<DashboardTemporal />} />
           <Route path="/movimientos" element={<h1>Movimientos</h1>} />
-          <Route path="/categorias" element={<h1>Categorías</h1>} />
+          <Route path="/categorias" element={<Categorias />} />
           <Route path="/estadisticas" element={<h1>Estadísticas</h1>} />
           <Route path="/perfil" element={<h1>Perfil</h1>} />
         </Route>

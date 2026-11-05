@@ -20,24 +20,28 @@ const CATEGORIAS_SISTEMA = [
     nombre: 'Sueldo',
     tipo: TipoMovimiento.INGRESO,
     color: '#22C55E',
+    icono: 'briefcase-business',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000002',
     nombre: 'Inversiones',
     tipo: TipoMovimiento.INGRESO,
     color: '#10B981',
+    icono: 'trending-up',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000003',
     nombre: 'Ventas',
     tipo: TipoMovimiento.INGRESO,
     color: '#06B6D4',
+    icono: 'shopping-bag',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000004',
     nombre: 'Otros Ingresos',
     tipo: TipoMovimiento.INGRESO,
     color: '#84CC16',
+    icono: 'wallet',
   },
   // Categorías de Gasto
   {
@@ -45,42 +49,49 @@ const CATEGORIAS_SISTEMA = [
     nombre: 'Alimentación',
     tipo: TipoMovimiento.GASTO,
     color: '#EF4444',
+    icono: 'utensils',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000006',
     nombre: 'Transporte',
     tipo: TipoMovimiento.GASTO,
     color: '#F97316',
+    icono: 'car',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000007',
     nombre: 'Servicios',
     tipo: TipoMovimiento.GASTO,
     color: '#F59E0B',
+    icono: 'zap',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000008',
     nombre: 'Salud',
     tipo: TipoMovimiento.GASTO,
     color: '#EC4899',
+    icono: 'heart-pulse',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000009',
     nombre: 'Educación',
     tipo: TipoMovimiento.GASTO,
     color: '#8B5CF6',
+    icono: 'graduation-cap',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000010',
     nombre: 'Entretenimiento',
     tipo: TipoMovimiento.GASTO,
     color: '#3B82F6',
+    icono: 'gamepad-2',
   },
   {
     id: 'c0000000-0000-4000-8000-000000000011',
     nombre: 'Otros Gastos',
     tipo: TipoMovimiento.GASTO,
     color: '#6B7280',
+    icono: 'tag',
   },
 ];
 
@@ -141,6 +152,7 @@ async function main() {
         data: {
           color: cat.color,
           tipo: cat.tipo,
+          icono: cat.icono,
         },
       });
       console.log(`  ↺ Actualizada categoría: ${cat.nombre} [${cat.tipo}]`);
@@ -151,6 +163,7 @@ async function main() {
           nombre: cat.nombre,
           color: cat.color,
           tipo: cat.tipo,
+          icono: cat.icono,
           id_perfil: null,
         },
       });
