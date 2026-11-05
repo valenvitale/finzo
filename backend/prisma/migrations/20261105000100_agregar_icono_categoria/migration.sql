@@ -1,0 +1,2 @@
+ALTER TABLE "categorias"
+ADD COLUMN "icono" TEXT NOT NULL DEFAULT 'tag';
