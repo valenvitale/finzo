@@ -1,15 +1,17 @@
 import axios from 'axios';
+import { toast } from 'sonner';
 import { supabase } from './supabase';
 
-export const apiClient = axios.create({ // crea una instancia personalizada de Axios, con una configuración común para todas las peticiones de FINZO.
-  baseURL: import.meta.env.VITE_API_URL,    // lee la dirección del backend desde el archivo .env.
+export const apiClient = axios.create({
+  // Configuración común para todas las peticiones de FINZO
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// agrega automáticamente el JWT a cada petición
+// Agrega automáticamente el JWT a cada petición
 apiClient.interceptors.request.use(
   async (config) => {
     const {
@@ -33,18 +35,22 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// manejo centralizado de errores 401
+// Manejo centralizado de errores 401
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      // evita conservar una sesión local si el backend
-      // rechaza la autenticación.
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
       if (session) {
+        // Avisamos al usuario que su sesión expiró
+        toast.error(
+          'Tu sesión ha expirado. Por favor, ingresa nuevamente.'
+        );
+
+        // Cerramos la sesión local
         await supabase.auth.signOut({ scope: 'local' });
       }
     }
