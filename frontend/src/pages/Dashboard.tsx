@@ -6,6 +6,7 @@ import { useMovimientos } from '../hooks/useMovimientos';
 
 import { ResumenFinanciero } from '../components/dashboard/ResumenFinanciero';
 import { MovimientosRecientes } from '../components/dashboard/MovimientosRecientes';
+import { ResumenSkeleton } from '../components/dashboard/ResumenSkeleton';
 
 export default function Dashboard() {
   const { resumen, cargando, error, recargar } = useResumen();
@@ -53,9 +54,7 @@ export default function Dashboard() {
 
       {/* Resumen financiero */}
       {cargando ? (
-        <p className="text-slate-500">
-          Cargando resumen financiero...
-        </p>
+        <ResumenSkeleton />
       ) : error ? (
         <div className="space-y-3">
           <p className="text-red-600">{error}</p>
