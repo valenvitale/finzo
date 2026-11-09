@@ -6,10 +6,9 @@
  * - medio de pago
  */
 
-import type { FiltrosMovimientoDTO, TipoMovimiento } from '@/types/movimiento.types';
+import type { FiltrosMovimientoDTO } from '@/types/movimiento.types';
 import type { Categoria } from '@/types/categoria.types';
-import type { MedioPago } from '@/types/medio-pago.types';
-import { Trash } from 'lucide-react'; 
+import type { MedioPago } from '@/types/medio-pago.types'; 
 import { Selector, Tarjeta, Boton } from '../common';
 import { useState } from 'react';
 
