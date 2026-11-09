@@ -1,33 +1,27 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import Header from './Header';
+import Navbar from './Navbar';
 
-interface PageContainerProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
-  titulo?: string;
-  descripcion?: string;
-  acciones?: ReactNode;
-}
-
-export function PageContainer({
-  children,
-  titulo,
-  descripcion,
-  acciones,
-  className = '',
-  ...props
-}: PageContainerProps) {
+export function PageContainer() {
   return (
-    <main {...props} className={`mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 ${className}`}>
-      {(titulo || acciones) && (
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            {titulo && <h1 className="text-2xl font-bold tracking-tight text-slate-900">{titulo}</h1>}
-            {descripcion && <p className="mt-1 text-sm text-slate-500">{descripcion}</p>}
-          </div>
-          {acciones && <div className="flex items-center gap-3">{acciones}</div>}
+    <div className="h-screen overflow-hidden">
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
+
+      <div className="flex h-full flex-col md:ml-64">
+        <div className="max-h-[50vh] shrink-0 overflow-y-auto">
+          <Navbar />
         </div>
-      )}
-      {children}
-    </main>
+        <div className="shrink-0 p-6">
+          <Header />
+        </div>
+
+        <main className="min-h-0 flex-1 overflow-y-auto p-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
   );
 }
-

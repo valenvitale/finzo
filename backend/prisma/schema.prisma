@@ -46,6 +46,7 @@ model Categoria {
   nombre String @db.VarChar(30)
   color String @db.VarChar(7)
   tipo TipoMovimiento
+  icono String @default("tag")
   // Nullable ya que las categorias globales no tienen un perfil asociado
   id_perfil String? // Columna en la BD
   // 

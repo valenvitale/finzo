@@ -28,6 +28,7 @@ export class CategoriaRepository implements ICategoriaRepository {
       nombre: categoria.nombre,
       color: categoria.color,
       tipo: categoria.tipo,
+      icono: categoria.icono,
       perfilId: categoria.id_perfil,
       createdAt: categoria.created_at,
       updatedAt: categoria.updated_at,
@@ -42,6 +43,7 @@ export class CategoriaRepository implements ICategoriaRepository {
         nombre: datosCategoria.nombre,
         color: datosCategoria.color,
         tipo: datosCategoria.tipo,
+        icono: datosCategoria.icono,
       },
     });
 
@@ -56,6 +58,7 @@ export class CategoriaRepository implements ICategoriaRepository {
         nombre: datosActualizacion.nombre,
         color: datosActualizacion.color,
         tipo: datosActualizacion.tipo,
+        icono: datosActualizacion.icono,
       },
     });
 
