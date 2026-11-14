@@ -15,6 +15,7 @@ export interface EvolucionMensualDTO {
   mes: string;
   ingresos: number;
   gastos: number;
+  tasaAhorro: number;
 }
 
 export interface EstadisticasMonedaDTO {
