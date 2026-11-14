@@ -25,3 +25,10 @@ export interface MedioPago {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface IMedioPagoService{
+    listarPorPerfil(idPerfil: string): Promise<MedioPagoResponseDTO[]>;
+    crear(idPerfil: string, datos: CrearMedioPagoDTO): Promise<MedioPagoResponseDTO>;
+    actualizar(id: string, idPerfil: string, datos: ActualizarMedioPagoDTO): Promise<MedioPagoResponseDTO>;
+    eliminar(id: string, idPerfil: string): Promise<void>;
+}

@@ -8,6 +8,7 @@ import Register from '../pages/auth/Register';
 import TestPage from '../pages/test';
 import { PageContainer } from '../components/layout/PageContainer';
 // import Dashboard from '../pages/Dashboard';
+import Perfil from '../pages/Perfil';
 
 function DashboardTemporal() {
   const { logout } = useAuth();
@@ -93,7 +94,7 @@ export default function AppRouter() {
           <Route path="/movimientos" element={<h1>Movimientos</h1>} />
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/estadisticas" element={<h1>Estadísticas</h1>} />
-          <Route path="/perfil" element={<h1>Perfil</h1>} />
+          <Route path="/perfil" element={<Perfil />} />
         </Route>
 
         <Route path="/test" element={<TestPage />} />
