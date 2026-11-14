@@ -1,8 +1,6 @@
 import type { IMedioPagoRepository } from '../repositories/medio-pago.repository.js';
 import type { MedioPagoResponseDTO, IMedioPagoService, CrearMedioPagoDTO, ActualizarMedioPagoDTO } from '../types/medio-pago.types.js';
 import { ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
-import { error } from 'node:console';
-import { prisma } from '../config/prisma.js';
 
 export class MedioPagoService implements IMedioPagoService{
   constructor(private readonly medioPagoRepository: IMedioPagoRepository) {}
