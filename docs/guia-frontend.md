@@ -72,12 +72,14 @@ export function Categorias() {
 
 ---
 
-## 4. Formato de Montos y Fechas (`src/utils/formateadores.ts`)
+## 4. Formato de Montos, Fechas y Números (`src/utils`)
 
-Nunca formatees montos monetarios o fechas a mano con strings inventados. Usá siempre las funciones de [`frontend/src/utils/formateadores.ts`](../frontend/src/utils/formateadores.ts):
+Nunca formatees montos monetarios, fechas o números a mano con strings inventados. Usá las funciones basadas en `Intl`:
 
-- **Montos:** `formatearMonto(15000)` $\rightarrow$ `$ 15.000,00`
-- **Fechas:** `formatearFecha('2026-10-27T10:00:00Z')` $\rightarrow$ `27 oct. 2026`
+- **Monedas:** `formatearMoneda(15000, 'ARS')` desde [`moneda.ts`](../frontend/src/utils/moneda.ts).
+- **Fechas:** `formatearFecha('2026-10-27T10:00:00Z')` desde [`fecha.ts`](../frontend/src/utils/fecha.ts).
+- **Números y porcentajes:** `formatearNumero(15000)` y `formatearPorcentaje(0.25)` desde [`formato.ts`](../frontend/src/utils/formato.ts).
+- **Compatibilidad:** [`formateadores.ts`](../frontend/src/utils/formateadores.ts) mantiene `formatearMonto` y `formatearFecha` para los usos existentes.
 - **Números tabulares en tablas:** Al mostrar valores de dinero en tablas o resúmenes, agregá la clase `tabular-nums` de Tailwind para que los dígitos ocupen el mismo ancho y queden alineados verticalmente:
   ```tsx
   <span className="font-semibold tabular-nums text-ingreso">
@@ -87,7 +89,15 @@ Nunca formatees montos monetarios o fechas a mano con strings inventados. Usá s
 
 ---
 
-## 5. Arquitectura: Páginas Inteligentes vs Componentes Presentacionales
+## 5. Hook HTTP genérico (`src/hooks/useApi.ts`)
+
+`useApi` recibe una función asíncrona y expone `data`, `loading`, `error`, `ejecutar` y `refetch`. La consulta se inicia llamando `ejecutar`; `refetch` repite la última ejecución con los mismos argumentos. El hook captura el error para mostrarlo en la vista y también lo vuelve a propagar a quien llamó `ejecutar`.
+
+Los tipos compartidos de respuesta y paginación están en [`api.types.ts`](../frontend/src/types/api.types.ts).
+
+---
+
+## 6. Arquitectura: Páginas Inteligentes vs Componentes Presentacionales
 
 Siguiendo la decisión de diseño del Caso 4:
 1. **La Página / Hook maneja la lógica:** Realiza las llamadas a los servicios con Axios, maneja los estados `cargando` y `error`, y abre los modales.
@@ -97,7 +107,7 @@ Esto permite reutilizar el mismo componente visual (como una lista de movimiento
 
 ---
 
-## 6. Iconos y Nombres
+## 7. Iconos y Nombres
 
 - **Iconos:** Usar únicamente `lucide-react`. No instalar otras librerías de iconos.
 - **Idioma del código:** Componentes, funciones, variables y comentarios en **español** (`TablaMovimientos`, `formatearMonto`, `saldoTotal`).
@@ -108,7 +118,7 @@ Esto permite reutilizar el mismo componente visual (como una lista de movimiento
 
 ---
 
-## 7. Paquetes
+## 8. Paquetes
 
 - **Gestor de paquetes:** Usar **siempre `pnpm`** (`pnpm add`, `pnpm run dev`, `pnpm test`). Nunca usar `npm`.
 
