@@ -2,7 +2,14 @@ import { ErrorNoEncontrado } from '../errors/errores.js';
 import type { AsignarMonedaDTO, MonedaPerfilResponseDTO, MonedaResponseDTO } from '../types/moneda.types.js';
 import type { IMonedaRepository } from '../repositories/moneda.repository.js';
 
-export class MonedaService {
+export interface IMonedaService {
+  listarDisponibles(): Promise<MonedaResponseDTO[]>;
+  listarPorPerfil(perfilId: string): Promise<MonedaPerfilResponseDTO[]>;
+  asignar(perfilId: string, datos: AsignarMonedaDTO): Promise<MonedaPerfilResponseDTO>;
+  eliminar(perfilId: string, monedaId: string): Promise<void>;
+}
+
+export class MonedaService implements IMonedaService {
   constructor(private readonly monedaRepository: IMonedaRepository) {}
 
   listarDisponibles(): Promise<MonedaResponseDTO[]> {
