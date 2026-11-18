@@ -16,6 +16,7 @@ import {
 describe('Schemas del sistema', () => {
   it('valida categorías según los límites del modelo', () => {
     expect(crearCategoriaSchema.safeParse({ nombre: ' Hogar ', color: '#aBc123', tipo: 'GASTO' }).success).toBe(true);
+    expect(crearCategoriaSchema.parse({ nombre: 'Hogar', color: '#A1B2C3', tipo: 'GASTO' }).icono).toBe('tag');
     expect(crearCategoriaSchema.safeParse({ nombre: 'Hogar', color: 'rojo', tipo: 'GASTO' }).success).toBe(false);
     expect(
       crearCategoriaSchema.safeParse({ nombre: 'Hogar', color: '#A1B2C3', tipo: 'GASTO', extra: true }).success

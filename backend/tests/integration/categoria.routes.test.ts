@@ -33,6 +33,7 @@ const categoria = {
   nombre: 'Supermercado',
   color: '#FF5733',
   tipo: 'GASTO',
+  icono: 'tag',
   id_perfil: perfilId,
   created_at: fecha,
   updated_at: fecha,
@@ -42,6 +43,7 @@ const categoriaRespuesta = {
   nombre: categoria.nombre,
   color: categoria.color,
   tipo: categoria.tipo,
+  icono: categoria.icono,
   perfilId,
   createdAt: fecha.toISOString(),
   updatedAt: fecha.toISOString(),
@@ -97,7 +99,7 @@ describe('POST /api/categorias', () => {
     expect(respuesta.body).toEqual({ exito: true, datos: categoriaRespuesta });
     expect(mocks.count).toHaveBeenCalledWith({ where: { id_perfil: perfilId } });
     expect(mocks.create).toHaveBeenCalledWith({
-      data: { id_perfil: perfilId, ...datos },
+      data: { id_perfil: perfilId, ...datos, icono: 'tag' },
     });
   });
 
