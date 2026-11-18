@@ -17,7 +17,9 @@ export function useApi<T, TArgs extends unknown[] = []>(
   const requestIdRef = useRef(0);
   const mountedRef = useRef(true);
 
-  apiFnRef.current = apiFn;
+  useEffect(() => {
+    apiFnRef.current = apiFn;
+  }, [apiFn]);
 
   useEffect(() => {
     mountedRef.current = true;

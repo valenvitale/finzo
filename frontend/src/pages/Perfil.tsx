@@ -39,7 +39,11 @@ export default function Perfil() {
   const [monedaSeleccionada, setMonedaSeleccionada] = useState('');
   const [guardandoMoneda, setGuardandoMoneda] = useState(false);
 
-  const perfilApi = useApi(obtenerPerfil);
+  const {
+    loading: perfilLoading,
+    error: perfilError,
+    ejecutar: ejecutarPerfil,
+  } = useApi(obtenerPerfil);
   const cargarMonedas = useCallback(async (): Promise<MonedasData> => {
     const [disponibles, asignadas] = await Promise.all([
       listarMonedasDisponibles(),
@@ -47,25 +51,35 @@ export default function Perfil() {
     ]);
     return { disponibles, asignadas };
   }, []);
-  const monedasApi = useApi(cargarMonedas);
+  const {
+    data: monedas,
+    loading: monedasLoading,
+    error: monedasError,
+    ejecutar: ejecutarMonedas,
+    refetch: refetchMonedas,
+  } = useApi(cargarMonedas);
 
   useEffect(() => {
-    void perfilApi.ejecutar().catch(() => undefined);
-  }, [perfilApi.ejecutar]);
+    let cancelado = false;
+    void ejecutarPerfil()
+      .then((datos) => {
+        if (cancelado) return;
+        setPerfilBase(datos);
+        setNombre(datos.nombre);
+        setApellido(datos.apellido);
+        setEmail(datos.email);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelado = true;
+    };
+  }, [ejecutarPerfil]);
 
   useEffect(() => {
-    void monedasApi.ejecutar().catch(() => undefined);
-  }, [monedasApi.ejecutar]);
+    void ejecutarMonedas().catch(() => undefined);
+  }, [ejecutarMonedas]);
 
-  useEffect(() => {
-    if (!perfilApi.data) return;
-    setPerfilBase(perfilApi.data);
-    setNombre(perfilApi.data.nombre);
-    setApellido(perfilApi.data.apellido);
-    setEmail(perfilApi.data.email);
-  }, [perfilApi.data]);
-
-  const monedas = monedasApi.data;
   const monedasAsignadas = monedas?.asignadas ?? [];
   const monedasDisponibles = (monedas?.disponibles ?? []).filter(
     (moneda) => !monedasAsignadas.some((asignada) => asignada.id === moneda.id)
@@ -135,7 +149,11 @@ export default function Perfil() {
 
   async function recargarPerfil() {
     try {
-      await perfilApi.ejecutar();
+      const datos = await ejecutarPerfil();
+      setPerfilBase(datos);
+      setNombre(datos.nombre);
+      setApellido(datos.apellido);
+      setEmail(datos.email);
     } catch {
       // El hook conserva el error para mostrarlo en la vista.
     }
@@ -143,7 +161,7 @@ export default function Perfil() {
 
   async function recargarMonedas() {
     try {
-      await monedasApi.ejecutar();
+      await ejecutarMonedas();
     } catch {
       // El hook conserva el error para mostrarlo en la vista.
     }
@@ -157,7 +175,7 @@ export default function Perfil() {
         monedaId,
         ...(esPrincipal ? { esPrincipal: true } : {}),
       });
-      await monedasApi.refetch();
+      await refetchMonedas();
       setMonedaSeleccionada('');
       toast.success(
         esPrincipal ? 'Se actualizó la moneda principal.' : 'Moneda agregada a tu perfil.'
@@ -176,7 +194,7 @@ export default function Perfil() {
     setGuardandoMoneda(true);
     try {
       await eliminarMonedaPerfil(moneda.id);
-      await monedasApi.refetch();
+      await refetchMonedas();
       toast.success('Moneda quitada de tu perfil.');
     } catch (error) {
       toast.error(mensajeDeError(error, 'No se pudo quitar la moneda.'));
@@ -194,14 +212,14 @@ export default function Perfil() {
         </p>
       </header>
 
-      {perfilApi.error !== null && (
+      {perfilError !== null && (
         <MensajeError
           titulo="No se pudo cargar el perfil"
-          mensaje={mensajeDeError(perfilApi.error, 'Intentalo de nuevo.')}
+          mensaje={mensajeDeError(perfilError, 'Intentalo de nuevo.')}
         />
       )}
 
-      {perfilApi.loading && !perfilBase ? (
+      {perfilLoading && !perfilBase ? (
         <Cargando etiqueta="Cargando perfil..." />
       ) : perfilBase ? (
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
@@ -287,16 +305,16 @@ export default function Perfil() {
           </p>
         </div>
 
-        {monedasApi.error !== null && (
+        {monedasError !== null && (
           <div className="mb-4">
             <MensajeError
               titulo="No se pudieron cargar las monedas"
-              mensaje={mensajeDeError(monedasApi.error, 'Intentalo de nuevo.')}
+              mensaje={mensajeDeError(monedasError, 'Intentalo de nuevo.')}
             />
           </div>
         )}
 
-        {monedasApi.loading && !monedas ? (
+        {monedasLoading && !monedas ? (
           <Cargando etiqueta="Cargando monedas..." />
         ) : monedas ? (
           <div className="space-y-5">
