@@ -101,6 +101,29 @@
   3. Firmas uniformes, legibles y de una sola línea en toda la capa de presentación.
   4. Autocompletado y tipado estricto garantizado al interactuar con los servicios.
 
+#### Aplicación del refactoring en Perfil y Monedas (antes / después)
+
+Antes, los controladores de Perfil y Monedas construían sus servicios al importar el módulo. Eso acoplaba los controladores a las implementaciones concretas y dificultaba sustituir los servicios por dobles de prueba:
+
+```typescript
+const perfilService = new PerfilService(new PerfilRepository(), new PerfilAuthService());
+```
+
+Después, cada controlador recibe un contrato (`IPerfilService` o `IMonedaService`) y las rutas construyen e inyectan las implementaciones concretas. Por ejemplo:
+
+```typescript
+const perfilService = new PerfilService(perfilRepository, perfilAuthService);
+const perfilController = new PerfilController(perfilService);
+```
+
+Los handlers también usan `try/catch` y delegan los errores a `next(error)`. Los datos validados se tipan directamente, sin `as`:
+
+```typescript
+const datos: ActualizarPerfilDTO = req.body;
+```
+
+Así, la validación de entrada sigue a cargo del middleware Zod, el controlador depende de una abstracción y los errores llegan al manejador global de Express.
+
 ---
 
 ## 2. 🖥️ Frontend: Conexión, Experiencia de Usuario y Pruebas
