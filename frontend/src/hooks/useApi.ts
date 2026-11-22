@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 function normalizarError(error: unknown): Error {
   if (error instanceof Error) return error;
@@ -17,7 +17,9 @@ export function useApi<T, TArgs extends unknown[] = []>(
   const requestIdRef = useRef(0);
   const mountedRef = useRef(true);
 
-  apiFnRef.current = apiFn;
+  useLayoutEffect(() => {
+    apiFnRef.current = apiFn;
+  }, [apiFn]);
 
   useEffect(() => {
     mountedRef.current = true;

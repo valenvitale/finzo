@@ -1,11 +1,35 @@
+import { AuthApiError } from '@supabase/supabase-js';
 import { describe, expect, it, vi } from 'vitest';
 import type { IMonedaRepository } from '../../src/repositories/moneda.repository.js';
 import type { IPerfilRepository } from '../../src/repositories/perfil.repository.js';
-import type { IPerfilAuthService } from '../../src/services/perfil-auth.service.js';
+import { PerfilAuthService, type IPerfilAuthService } from '../../src/services/perfil-auth.service.js';
+import { supabase, supabasePublic } from '../../src/config/supabase.js';
 import { MonedaService } from '../../src/services/moneda.service.js';
 import { PerfilService } from '../../src/services/perfil.service.js';
 import { ErrorNoEncontrado } from '../../src/errors/errores.js';
 import type { MonedaPerfilResponseDTO, MonedaResponseDTO } from '../../src/types/moneda.types.js';
+
+vi.mock('../../src/config/supabase.js', () => ({
+  supabase: { auth: { admin: { updateUserById: vi.fn() } } },
+  supabasePublic: { auth: { signInWithPassword: vi.fn() } },
+}));
+
+describe('PerfilAuthService', () => {
+  it('rechaza una contraseña actual incorrecta con 403 y conserva las credenciales', async () => {
+    vi.mocked(supabasePublic.auth.signInWithPassword).mockResolvedValueOnce({
+      data: { user: null, session: null },
+      error: new AuthApiError('Invalid login credentials', 400, 'invalid_credentials'),
+    });
+
+    const servicio = new PerfilAuthService();
+    await expect(
+      servicio.actualizarCredenciales('user-id', 'maximo@example.com', 'incorrecta', {
+        email: 'nuevo@example.com',
+      })
+    ).rejects.toMatchObject({ statusCode: 403, message: 'La contraseña actual es incorrecta' });
+    expect(supabase.auth.admin.updateUserById).not.toHaveBeenCalled();
+  });
+});
 import type { PerfilDTO } from '../../src/types/perfil.types.js';
 
 const perfil: PerfilDTO = {

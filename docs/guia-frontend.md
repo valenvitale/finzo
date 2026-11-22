@@ -115,8 +115,3 @@ Esto permite reutilizar el mismo componente visual (como una lista de movimiento
   - Componentes React: `PascalCase.tsx` (ej: `Tarjeta.tsx`, `PageContainer.tsx`).
   - Hooks: `useCamelCase.ts` (ej: `useMovimientos.ts`).
   - Servicios y tipos: `kebab-case.service.ts` y `kebab-case.types.ts`.
-
----
-
-
-

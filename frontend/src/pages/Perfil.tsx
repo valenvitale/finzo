@@ -28,59 +28,24 @@ function mensajeDeError(error: unknown, alternativo: string): string {
   return error instanceof Error ? error.message : alternativo;
 }
 
-export default function Perfil() {
-  const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');
-  const [email, setEmail] = useState('');
+function FormularioPerfil({ perfilInicial }: { perfilInicial: PerfilResponseDTO }) {
+  const [nombre, setNombre] = useState(perfilInicial.nombre);
+  const [apellido, setApellido] = useState(perfilInicial.apellido);
+  const [email, setEmail] = useState(perfilInicial.email);
   const [contrasenaActual, setContrasenaActual] = useState('');
   const [contrasenaNueva, setContrasenaNueva] = useState('');
-  const [perfilBase, setPerfilBase] = useState<PerfilResponseDTO>();
+  const [perfilBase, setPerfilBase] = useState(perfilInicial);
   const [guardandoPerfil, setGuardandoPerfil] = useState(false);
-  const [monedaSeleccionada, setMonedaSeleccionada] = useState('');
-  const [guardandoMoneda, setGuardandoMoneda] = useState(false);
 
-  const perfilApi = useApi(obtenerPerfil);
-  const cargarMonedas = useCallback(async (): Promise<MonedasData> => {
-    const [disponibles, asignadas] = await Promise.all([
-      listarMonedasDisponibles(),
-      listarMonedasPerfil(),
-    ]);
-    return { disponibles, asignadas };
-  }, []);
-  const monedasApi = useApi(cargarMonedas);
-
-  useEffect(() => {
-    void perfilApi.ejecutar().catch(() => undefined);
-  }, [perfilApi.ejecutar]);
-
-  useEffect(() => {
-    void monedasApi.ejecutar().catch(() => undefined);
-  }, [monedasApi.ejecutar]);
-
-  useEffect(() => {
-    if (!perfilApi.data) return;
-    setPerfilBase(perfilApi.data);
-    setNombre(perfilApi.data.nombre);
-    setApellido(perfilApi.data.apellido);
-    setEmail(perfilApi.data.email);
-  }, [perfilApi.data]);
-
-  const monedas = monedasApi.data;
-  const monedasAsignadas = monedas?.asignadas ?? [];
-  const monedasDisponibles = (monedas?.disponibles ?? []).filter(
-    (moneda) => !monedasAsignadas.some((asignada) => asignada.id === moneda.id)
-  );
-  const hayCambiosPerfil = Boolean(
-    perfilBase &&
-      (nombre.trim() !== perfilBase.nombre ||
-        apellido.trim() !== perfilBase.apellido ||
-        email.trim() !== perfilBase.email ||
-        contrasenaNueva.length > 0)
-  );
+  const hayCambiosPerfil =
+    nombre.trim() !== perfilBase.nombre ||
+    apellido.trim() !== perfilBase.apellido ||
+    email.trim() !== perfilBase.email ||
+    contrasenaNueva.length > 0;
 
   async function guardarPerfil(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!perfilBase || guardandoPerfil) return;
+    if (guardandoPerfil) return;
 
     const nombreLimpio = nombre.trim();
     const apellidoLimpio = apellido.trim();
@@ -133,9 +98,108 @@ export default function Perfil() {
     }
   }
 
+  return (
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="mb-5">
+        <h2 className="text-lg font-semibold text-oliva">Datos personales</h2>
+        <p className="mt-1 text-sm text-slate-500">
+          Actualizá tu información de acceso y perfil.
+        </p>
+      </div>
+      <form onSubmit={guardarPerfil} className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InputTexto
+            label="Nombre"
+            value={nombre}
+            onChange={(event) => setNombre(event.target.value)}
+            maxLength={30}
+            required
+            disabled={guardandoPerfil}
+            autoComplete="given-name"
+          />
+          <InputTexto
+            label="Apellido"
+            value={apellido}
+            onChange={(event) => setApellido(event.target.value)}
+            maxLength={30}
+            required
+            disabled={guardandoPerfil}
+            autoComplete="family-name"
+          />
+        </div>
+        <InputTexto
+          label="Correo electrónico"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+          disabled={guardandoPerfil}
+          autoComplete="email"
+        />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <InputTexto
+            label="Contraseña actual"
+            type="password"
+            value={contrasenaActual}
+            onChange={(event) => setContrasenaActual(event.target.value)}
+            disabled={guardandoPerfil}
+            autoComplete="current-password"
+            textoAyuda="Requerida para cambiar el correo o la contraseña."
+          />
+          <InputTexto
+            label="Nueva contraseña"
+            type="password"
+            value={contrasenaNueva}
+            onChange={(event) => setContrasenaNueva(event.target.value)}
+            minLength={8}
+            disabled={guardandoPerfil}
+            autoComplete="new-password"
+            textoAyuda="Dejala vacía si no querés cambiarla."
+          />
+        </div>
+        <div className="flex justify-end">
+          <Boton type="submit" cargando={guardandoPerfil} disabled={!hayCambiosPerfil}>
+            Guardar cambios
+          </Boton>
+        </div>
+      </form>
+    </section>
+  );
+}
+
+export default function Perfil() {
+  const [monedaSeleccionada, setMonedaSeleccionada] = useState('');
+  const [guardandoMoneda, setGuardandoMoneda] = useState(false);
+
+  const perfilApi = useApi(obtenerPerfil);
+  const { ejecutar: ejecutarPerfil } = perfilApi;
+  const cargarMonedas = useCallback(async (): Promise<MonedasData> => {
+    const [disponibles, asignadas] = await Promise.all([
+      listarMonedasDisponibles(),
+      listarMonedasPerfil(),
+    ]);
+    return { disponibles, asignadas };
+  }, []);
+  const monedasApi = useApi(cargarMonedas);
+  const { ejecutar: ejecutarMonedas } = monedasApi;
+
+  useEffect(() => {
+    void ejecutarPerfil().catch(() => undefined);
+  }, [ejecutarPerfil]);
+
+  useEffect(() => {
+    void ejecutarMonedas().catch(() => undefined);
+  }, [ejecutarMonedas]);
+
+  const monedas = monedasApi.data;
+  const monedasAsignadas = monedas?.asignadas ?? [];
+  const monedasDisponibles = (monedas?.disponibles ?? []).filter(
+    (moneda) => !monedasAsignadas.some((asignada) => asignada.id === moneda.id)
+  );
+
   async function recargarPerfil() {
     try {
-      await perfilApi.ejecutar();
+      await ejecutarPerfil();
     } catch {
       // El hook conserva el error para mostrarlo en la vista.
     }
@@ -143,7 +207,7 @@ export default function Perfil() {
 
   async function recargarMonedas() {
     try {
-      await monedasApi.ejecutar();
+      await monedasApi.refetch();
     } catch {
       // El hook conserva el error para mostrarlo en la vista.
     }
@@ -157,11 +221,11 @@ export default function Perfil() {
         monedaId,
         ...(esPrincipal ? { esPrincipal: true } : {}),
       });
-      await monedasApi.refetch();
       setMonedaSeleccionada('');
       toast.success(
         esPrincipal ? 'Se actualizó la moneda principal.' : 'Moneda agregada a tu perfil.'
       );
+      await recargarMonedas();
     } catch (error) {
       toast.error(mensajeDeError(error, 'No se pudo actualizar la moneda.'));
     } finally {
@@ -176,8 +240,8 @@ export default function Perfil() {
     setGuardandoMoneda(true);
     try {
       await eliminarMonedaPerfil(moneda.id);
-      await monedasApi.refetch();
       toast.success('Moneda quitada de tu perfil.');
+      await recargarMonedas();
     } catch (error) {
       toast.error(mensajeDeError(error, 'No se pudo quitar la moneda.'));
     } finally {
@@ -201,74 +265,10 @@ export default function Perfil() {
         />
       )}
 
-      {perfilApi.loading && !perfilBase ? (
+      {perfilApi.loading && !perfilApi.data ? (
         <Cargando etiqueta="Cargando perfil..." />
-      ) : perfilBase ? (
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          <div className="mb-5">
-            <h2 className="text-lg font-semibold text-oliva">Datos personales</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Actualizá tu información de acceso y perfil.
-            </p>
-          </div>
-          <form onSubmit={guardarPerfil} className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <InputTexto
-                label="Nombre"
-                value={nombre}
-                onChange={(event) => setNombre(event.target.value)}
-                maxLength={30}
-                required
-                disabled={guardandoPerfil}
-                autoComplete="given-name"
-              />
-              <InputTexto
-                label="Apellido"
-                value={apellido}
-                onChange={(event) => setApellido(event.target.value)}
-                maxLength={30}
-                required
-                disabled={guardandoPerfil}
-                autoComplete="family-name"
-              />
-            </div>
-            <InputTexto
-              label="Correo electrónico"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-              disabled={guardandoPerfil}
-              autoComplete="email"
-            />
-            <div className="grid gap-4 sm:grid-cols-2">
-              <InputTexto
-                label="Contraseña actual"
-                type="password"
-                value={contrasenaActual}
-                onChange={(event) => setContrasenaActual(event.target.value)}
-                disabled={guardandoPerfil}
-                autoComplete="current-password"
-                textoAyuda="Requerida para cambiar el correo o la contraseña."
-              />
-              <InputTexto
-                label="Nueva contraseña"
-                type="password"
-                value={contrasenaNueva}
-                onChange={(event) => setContrasenaNueva(event.target.value)}
-                minLength={8}
-                disabled={guardandoPerfil}
-                autoComplete="new-password"
-                textoAyuda="Dejala vacía si no querés cambiarla."
-              />
-            </div>
-            <div className="flex justify-end">
-              <Boton type="submit" cargando={guardandoPerfil} disabled={!hayCambiosPerfil}>
-                Guardar cambios
-              </Boton>
-            </div>
-          </form>
-        </section>
+      ) : perfilApi.data ? (
+        <FormularioPerfil key={perfilApi.data.id} perfilInicial={perfilApi.data} />
       ) : (
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <Boton variante="secondary" onClick={() => void recargarPerfil()}>
@@ -288,11 +288,14 @@ export default function Perfil() {
         </div>
 
         {monedasApi.error !== null && (
-          <div className="mb-4">
+          <div className="mb-4 space-y-3">
             <MensajeError
               titulo="No se pudieron cargar las monedas"
               mensaje={mensajeDeError(monedasApi.error, 'Intentalo de nuevo.')}
             />
+            <Boton variante="secondary" onClick={() => void recargarMonedas()}>
+              Reintentar carga de monedas
+            </Boton>
           </div>
         )}
 
@@ -386,11 +389,7 @@ export default function Perfil() {
               </ul>
             )}
           </div>
-        ) : (
-          <Boton variante="secondary" onClick={() => void recargarMonedas()}>
-            Reintentar carga de monedas
-          </Boton>
-        )}
+        ) : null}
       </section>
 
       <GestionMediosPago />

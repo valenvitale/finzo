@@ -3,6 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as monedaService from '../../src/services/moneda.service';
 import * as perfilService from '../../src/services/perfil.service';
 import Perfil from '../../src/pages/Perfil';
+import { toast } from '../../src/components/common';
+
+vi.mock('sonner', () => ({
+  toast: { error: vi.fn(), success: vi.fn() },
+}));
 
 vi.mock('../../src/services/perfil.service', () => ({
   actualizarPerfil: vi.fn(),
@@ -108,6 +113,28 @@ describe('Perfil', () => {
       });
     });
     expect(monedaService.listarMonedasPerfil).toHaveBeenCalledTimes(2);
+  });
+
+  it('confirma el guardado y permite reintentar solo la carga si falló la recarga de monedas', async () => {
+    vi.mocked(monedaService.listarMonedasPerfil)
+      .mockResolvedValueOnce(monedasAsignadas)
+      .mockRejectedValueOnce(new Error('Error de conexión'))
+      .mockResolvedValueOnce([...monedasAsignadas, { ...monedasDisponibles[1], esPrincipal: false }]);
+
+    render(<Perfil />);
+    fireEvent.change(await screen.findByLabelText('Agregar moneda'), {
+      target: { value: 'eur-id' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Agregar moneda' }));
+
+    const reintentar = await screen.findByRole('button', { name: 'Reintentar carga de monedas' });
+    expect(toast.success).toHaveBeenCalledWith('Moneda agregada a tu perfil.');
+    expect(toast.error).not.toHaveBeenCalled();
+
+    fireEvent.click(reintentar);
+
+    expect(await screen.findByText('Euro')).toBeDefined();
+    expect(monedaService.asignarMonedaPerfil).toHaveBeenCalledTimes(1);
   });
 
   it('permite definir como principal una moneda ya asignada', async () => {
