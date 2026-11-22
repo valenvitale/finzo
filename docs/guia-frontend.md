@@ -118,8 +118,5 @@ Esto permite reutilizar el mismo componente visual (como una lista de movimiento
 
 ---
 
-## 8. Paquetes
-
-- **Gestor de paquetes:** Usar **siempre `pnpm`** (`pnpm add`, `pnpm run dev`, `pnpm test`). Nunca usar `npm`.
 
 
