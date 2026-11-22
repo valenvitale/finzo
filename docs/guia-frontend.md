@@ -74,7 +74,7 @@ export function Categorias() {
 
 ## 4. Formato de Montos, Fechas y Números (`src/utils`)
 
-Nunca formatees montos monetarios, fechas o números a mano con strings inventados. Usá las funciones basadas en `Intl`:
+Nunca formatear montos monetarios, fechas o números a mano con strings inventados. Usá las funciones basadas en `Intl`:
 
 - **Monedas:** `formatearMoneda(15000, 'ARS')` desde [`moneda.ts`](../frontend/src/utils/moneda.ts).
 - **Fechas:** `formatearFecha('2026-10-27T10:00:00Z')` desde [`fecha.ts`](../frontend/src/utils/fecha.ts).
