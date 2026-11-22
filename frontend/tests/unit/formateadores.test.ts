@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { formatearFecha } from './fecha';
-import { formatearNumero, formatearPorcentaje } from './formato';
-import { formatearMoneda } from './moneda';
+import { formatearFecha } from '../../src/utils/fecha';
+import { formatearNumero, formatearPorcentaje } from '../../src/utils/formato';
+import { formatearMoneda } from '../../src/utils/moneda';
 
 describe('utilidades de formato', () => {
   it('formatea montos de acuerdo con la moneda y locale indicados', () => {
