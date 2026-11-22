@@ -1,22 +1,22 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import * as monedaService from '../services/moneda.service';
-import * as perfilService from '../services/perfil.service';
-import Perfil from './Perfil';
+import * as monedaService from '../../src/services/moneda.service';
+import * as perfilService from '../../src/services/perfil.service';
+import Perfil from '../../src/pages/Perfil';
 
-vi.mock('../services/perfil.service', () => ({
+vi.mock('../../src/services/perfil.service', () => ({
   actualizarPerfil: vi.fn(),
   obtenerPerfil: vi.fn(),
 }));
 
-vi.mock('../services/moneda.service', () => ({
+vi.mock('../../src/services/moneda.service', () => ({
   asignarMonedaPerfil: vi.fn(),
   eliminarMonedaPerfil: vi.fn(),
   listarMonedasDisponibles: vi.fn(),
   listarMonedasPerfil: vi.fn(),
 }));
 
-vi.mock('../components/medios-pago/GestionMediosPago', () => ({
+vi.mock('../../src/components/medios-pago/GestionMediosPago', () => ({
   default: () => <div>Gestión de medios de pago</div>,
 }));
 
