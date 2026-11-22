@@ -3,7 +3,12 @@ import type { ActualizarPerfilDTO, PerfilResponseDTO } from '../types/perfil.typ
 import type { IPerfilRepository } from '../repositories/perfil.repository.js';
 import type { IPerfilAuthService } from './perfil-auth.service.js';
 
-export class PerfilService {
+export interface IPerfilService {
+  obtenerPerfil(id: string, email: string): Promise<PerfilResponseDTO>;
+  actualizarPerfil(id: string, emailActual: string, datos: ActualizarPerfilDTO): Promise<PerfilResponseDTO>;
+}
+
+export class PerfilService implements IPerfilService {
   constructor(
     private readonly perfilRepository: IPerfilRepository,
     private readonly perfilAuthService: IPerfilAuthService
