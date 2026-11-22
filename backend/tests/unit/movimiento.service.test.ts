@@ -85,6 +85,24 @@ describe('MovimientoService', () => {
       medioPagoId: 'medio-1',
     };
 
+    it.each([undefined, null, 'medio-1'])('guarda ingresos con medio nulo aunque reciba %s', async (medioPagoId) => {
+      const { service, mockMovRepo, mockMedioRepo } = preparar({}, {
+        obtenerPorId: vi.fn().mockResolvedValue({ ...mockCategoria, tipo: 'INGRESO' }),
+      });
+
+      await service.crear('perfil-1', { ...dtoValido, medioPagoId });
+
+      expect(mockMovRepo.crear).toHaveBeenCalledWith('perfil-1', { ...dtoValido, medioPagoId: null });
+      expect(mockMedioRepo.obtenerPorId).not.toHaveBeenCalled();
+    });
+
+    it.each([undefined, null])('rechaza gastos con medio de pago %s', async (medioPagoId) => {
+      const { service, mockMovRepo } = preparar();
+
+      await expect(service.crear('perfil-1', { ...dtoValido, medioPagoId })).rejects.toThrow('Los gastos requieren un medio de pago');
+      expect(mockMovRepo.crear).not.toHaveBeenCalled();
+    });
+
     it('crea un movimiento correctamente cuando los datos y relaciones son válidos', async () => {
       const { service, mockMovRepo } = preparar();
       const resultado = await service.crear('perfil-1', dtoValido);
@@ -145,6 +163,55 @@ describe('MovimientoService', () => {
   });
 
   describe('actualizar', () => {
+    it('limpia el medio al cambiar un gasto a ingreso', async () => {
+      const { service, mockMovRepo } = preparar({}, {
+        obtenerPorId: vi.fn().mockResolvedValue({ ...mockCategoria, id: 'cat-ingreso', tipo: 'INGRESO' }),
+      });
+
+      await service.actualizar('mov-1', 'perfil-1', { categoriaId: 'cat-ingreso' });
+
+      expect(mockMovRepo.actualizar).toHaveBeenCalledWith('mov-1', {
+        categoriaId: 'cat-ingreso', medioPagoId: null,
+      }, mockMovimiento);
+    });
+
+    it('exige un medio al convertir un ingreso a gasto', async () => {
+      const { service, mockMovRepo } = preparar({
+        obtenerPorId: vi.fn().mockResolvedValue({ ...mockMovimiento, tipo: 'INGRESO', medioPagoId: null }),
+      });
+
+      await expect(service.actualizar('mov-1', 'perfil-1', { categoriaId: 'cat-1' })).rejects.toThrow('Los gastos requieren un medio de pago');
+      expect(mockMovRepo.actualizar).not.toHaveBeenCalled();
+    });
+
+    it('permite convertir un ingreso a gasto con un medio válido', async () => {
+      const movimiento = { ...mockMovimiento, tipo: 'INGRESO' as const, medioPagoId: null };
+      const { service, mockMovRepo } = preparar({ obtenerPorId: vi.fn().mockResolvedValue(movimiento) });
+
+      await service.actualizar('mov-1', 'perfil-1', { categoriaId: 'cat-1', medioPagoId: 'medio-1' });
+
+      expect(mockMovRepo.actualizar).toHaveBeenCalledWith('mov-1', {
+        categoriaId: 'cat-1', medioPagoId: 'medio-1',
+      }, movimiento);
+    });
+
+    it('mantiene el medio existente en una edición parcial de un gasto', async () => {
+      const { service, mockMovRepo } = preparar();
+      await service.actualizar('mov-1', 'perfil-1', { monto: 2000 });
+      expect(mockMovRepo.actualizar).toHaveBeenCalledWith('mov-1', { monto: 2000, medioPagoId: 'medio-1' }, mockMovimiento);
+    });
+
+    it('rechaza quitar el medio de un gasto', async () => {
+      const { service } = preparar();
+      await expect(service.actualizar('mov-1', 'perfil-1', { medioPagoId: null })).rejects.toThrow('Los gastos requieren un medio de pago');
+    });
+
+    it('limpia el medio de un ingreso antiguo al editarlo', async () => {
+      const movimiento = { ...mockMovimiento, tipo: 'INGRESO' as const };
+      const { service, mockMovRepo } = preparar({ obtenerPorId: vi.fn().mockResolvedValue(movimiento) });
+      await service.actualizar('mov-1', 'perfil-1', { monto: 2000 });
+      expect(mockMovRepo.actualizar).toHaveBeenCalledWith('mov-1', { monto: 2000, medioPagoId: null }, movimiento);
+    });
     it('lanza ErrorNoEncontrado si el movimiento no existe', async () => {
       const { service } = preparar({
         obtenerPorId: vi.fn().mockResolvedValue(null),

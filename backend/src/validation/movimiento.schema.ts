@@ -8,7 +8,7 @@ export const crearMovimientoSchema = z.strictObject({
     descripcion: z.string().max(100, 'La descripción no puede superar los 100 caracteres').optional().nullable(),
     monedaId: z.uuid('El ID de la moneda no es válido'),
     categoriaId: z.uuid('El ID de la categoría no es válido'),
-    medioPagoId: z.uuid('El ID del medio de pago no es válido'),
+    medioPagoId: z.uuid('El ID del medio de pago no es válido').nullable().optional(),
 });
 
 // Esquema de validacion para actualizar un movimiento
