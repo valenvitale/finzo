@@ -26,7 +26,7 @@ it('oculta y limpia el medio de pago al filtrar por ingresos', () => {
 
     fireEvent.change(tipo, { target: { value: 'INGRESO' } });
     expect(screen.queryByLabelText('Medio de pago')).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Aplicar Filtros' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Aplicar filtros' }));
     expect(cambiarFiltros).toHaveBeenCalledExactlyOnceWith(
         expect.objectContaining({ tipo: 'INGRESO', medioPagoId: undefined })
     );

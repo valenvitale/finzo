@@ -60,7 +60,7 @@ it('registra un ingreso y muestra la moneda actualizada después de editarlo', a
     vi.mocked(movimientoService.actualizarMovimiento).mockResolvedValue(editado);
 
     render(<Movimientos />);
-    const nuevo = await screen.findByRole('button', { name: '+ Nuevo Movimiento' });
+    const nuevo = await screen.findByRole('button', { name: 'Nuevo movimiento' });
     await waitFor(() => expect(nuevo).toHaveProperty('disabled', false));
     fireEvent.click(nuevo);
 
