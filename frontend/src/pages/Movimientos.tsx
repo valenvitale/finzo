@@ -6,6 +6,7 @@ import { TablaMovimientos } from '../components/movimientos/TablaMovimientos';
 import { FiltrosMovimiento } from '../components/movimientos/FiltrosMovimiento';
 import { FormularioMovimiento } from '../components/movimientos/FormularioMovimiento';
 import { useState, useEffect } from 'react';
+import { Plus } from 'lucide-react';
 import type { MovimientoResponseDTO, ActualizarMovimientoDTO, CrearMovimientoDTO } from '../types/movimiento.types';
 import { listarMonedasDisponibles, listarMonedasPerfil } from '../services/moneda.service';
 import { useApi } from '../hooks/useApi';
@@ -90,35 +91,48 @@ export default function Movimientos() {
     }
 
     return (
-        <div>
-            <h1>Movimientos</h1>
-            <p>{movimientos.length} movimientos registrados</p>
-            <p>{categorias.length} categorías registradas</p>
-            <p>{mediosPago.length} medios de pago registrados</p>
-            <FiltrosMovimiento filtros={filtros ?? {}} cambiarFiltros={setFiltros} limpiarFiltros={() => setFiltros({})} categorias={categorias} mediosPago={mediosPago} />
-            <Boton
-                disabled={monedasAsignadas.length === 0}
-                onClick={() => {
-                    setMovimientoEditado(null);
-                    setFormularioAbierto(true);
-                }}
-            >
-                + Nuevo Movimiento
-            </Boton>
+        <div className="mx-auto max-w-6xl space-y-5 pb-6">
+            <header className="flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
+                <div>
+                    <h1 className="text-2xl font-semibold tracking-tight text-oliva sm:text-3xl">Movimientos</h1>
+                    <p className="mt-1 text-sm text-slate-600">
+                        {movimientos.length} {movimientos.length === 1 ? 'movimiento' : 'movimientos'}
+                    </p>
+                </div>
+                <Boton
+                    disabled={monedasAsignadas.length === 0}
+                    onClick={() => {
+                        setMovimientoEditado(null);
+                        setFormularioAbierto(true);
+                    }}
+                >
+                    <Plus size={17} aria-hidden="true" /> Nuevo movimiento
+                </Boton>
+            </header>
             {errorMonedas && (
-                <>
+                <div className="space-y-2">
                     <MensajeError mensaje="No se pudieron cargar las monedas." />
                     <Boton
                         variante="secondary"
+                        tamanio="sm"
                         onClick={() => void cargarMonedas().catch(() => undefined)}
                     >
                         Reintentar carga de monedas
                     </Boton>
-                </>
+                </div>
             )}
             {!errorMonedas && monedas && monedasAsignadas.length === 0 && (
-                <p>Agregá una moneda en Perfil para registrar movimientos.</p>
+                <p className="rounded-lg border border-alerta-borde bg-alerta-fondo px-4 py-2 text-sm text-slate-700">
+                    Agregá una moneda en Perfil para registrar movimientos.
+                </p>
             )}
+            <FiltrosMovimiento
+                filtros={filtros ?? {}}
+                cambiarFiltros={setFiltros}
+                limpiarFiltros={() => setFiltros({})}
+                categorias={categorias}
+                mediosPago={mediosPago}
+            />
             {formularioAbierto && (
                 <FormularioMovimiento
                     abierto={formularioAbierto}
