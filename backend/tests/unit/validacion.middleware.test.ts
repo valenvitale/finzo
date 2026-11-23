@@ -65,7 +65,7 @@ describe('Middleware genérico de validación Zod', () => {
     });
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ nombre: 'Hogar', color: '#aBc123', tipo: 'GASTO' });
+    expect(await response.json()).toEqual({ nombre: 'Hogar', color: '#aBc123', tipo: 'GASTO', icono: 'tag' });
   });
 
   it('convierte errores del cuerpo en ErrorDeValidacion', async () => {
