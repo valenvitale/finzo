@@ -1,4 +1,5 @@
 import { useState, type SubmitEventHandler } from 'react';
+import { isAuthApiError } from '@supabase/supabase-js';
 import { Link, useNavigate } from 'react-router-dom';
 import { Boton } from '../../components/common/Boton';
 import { InputTexto } from '../../components/common/InputTexto';
@@ -29,6 +30,11 @@ export default function Login() {
       navigate('/dashboard', { replace: true });
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
+
+      if (isAuthApiError(error) && error.code === 'invalid_credentials') {
+        setError('El correo electrónico o la contraseña son incorrectos.');
+        return;
+      }
 
       setError(
         error instanceof Error
