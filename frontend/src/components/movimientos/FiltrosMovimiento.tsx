@@ -35,7 +35,10 @@ export function FiltrosMovimiento({
 
     function aplicarFiltros() {
         if ((!filtrosTemporales.mes && !filtrosTemporales.anio) || (filtrosTemporales.mes && filtrosTemporales.anio)){
-            cambiarFiltros(filtrosTemporales);
+            cambiarFiltros(filtrosTemporales.tipo === 'INGRESO'
+                ? { ...filtrosTemporales, medioPagoId: undefined }
+                : filtrosTemporales
+            );
             setErrorPeriodo('');
         } else {
             setErrorPeriodo("Debe seleccionar tanto el mes como el año para filtrar por fecha.");
@@ -102,11 +105,16 @@ export function FiltrosMovimiento({
                 <Selector
                     label="Tipo de movimiento"
                     value={filtrosTemporales.tipo ?? ""}
-                    onChange={(e) => setFiltrosTemporales({
-                        ...filtrosTemporales,
-                        tipo: e.target.value === "" ? undefined : e.target.value === "INGRESO" ? "INGRESO" : "GASTO",
-                        categoriaId: undefined,
-                    })}
+                    onChange={(e) => {
+                        const valor = e.target.value;
+                        const tipo = valor === 'INGRESO' || valor === 'GASTO' ? valor : undefined;
+                        setFiltrosTemporales((actuales) => ({
+                            ...actuales,
+                            tipo,
+                            categoriaId: undefined,
+                            medioPagoId: tipo === 'INGRESO' ? undefined : actuales.medioPagoId,
+                        }));
+                    }}
                 >
                     <option value="">Todos los tipos</option>
                     <option value="INGRESO">Ingreso</option>
@@ -124,18 +132,20 @@ export function FiltrosMovimiento({
                         </option>
                     ))}
                 </Selector>
-                <Selector
-                    label="Medio de pago"
-                    value={filtrosTemporales.medioPagoId ?? ""}
-                    onChange={(e) => setFiltrosTemporales({ ...filtrosTemporales, medioPagoId: e.target.value === "" ? undefined : e.target.value })}
-                >
-                    <option value="">Todos los medios de pago</option>
-                    {mediosPago.map((medioPago) => (
-                        <option key={medioPago.id} value={medioPago.id}>
-                            {medioPago.nombre}
-                        </option>
-                    ))}
-                </Selector>
+                {filtrosTemporales.tipo !== 'INGRESO' && (
+                    <Selector
+                        label="Medio de pago"
+                        value={filtrosTemporales.medioPagoId ?? ""}
+                        onChange={(e) => setFiltrosTemporales({ ...filtrosTemporales, medioPagoId: e.target.value === "" ? undefined : e.target.value })}
+                    >
+                        <option value="">Todos los medios de pago</option>
+                        {mediosPago.map((medioPago) => (
+                            <option key={medioPago.id} value={medioPago.id}>
+                                {medioPago.nombre}
+                            </option>
+                        ))}
+                    </Selector>
+                )}
                 <Boton variante="primary" onClick={aplicarFiltros}>Aplicar Filtros</Boton>
                 <Boton variante="secondary" onClick={vaciarFiltros}>Limpiar Filtros</Boton>
             </Tarjeta>
