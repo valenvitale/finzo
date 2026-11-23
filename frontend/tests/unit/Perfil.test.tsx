@@ -1,9 +1,18 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as monedaService from '../../src/services/moneda.service';
 import * as perfilService from '../../src/services/perfil.service';
 import Perfil from '../../src/pages/Perfil';
 import { toast } from '../../src/components/common';
+import { PageContainer } from '../../src/components/layout/PageContainer';
+
+vi.mock('../../src/hooks/useAuth', () => ({
+  useAuth: () => ({
+    user: { id: 'perfil-1', user_metadata: { nombre: 'Nombre de registro' } },
+    logout: vi.fn(),
+  }),
+}));
 
 vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn() },
@@ -44,6 +53,18 @@ const monedasAsignadas = [
   { ...monedasDisponibles[0], esPrincipal: true },
 ];
 
+function renderizarPerfil() {
+  render(
+    <MemoryRouter initialEntries={['/perfil']}>
+      <Routes>
+        <Route element={<PageContainer />}>
+          <Route path="/perfil" element={<Perfil />} />
+        </Route>
+      </Routes>
+    </MemoryRouter>
+  );
+}
+
 describe('Perfil', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -65,8 +86,11 @@ describe('Perfil', () => {
     vi.mocked(monedaService.eliminarMonedaPerfil).mockResolvedValue();
   });
 
-  it('actualiza los datos personales enviando solo los campos modificados', async () => {
-    render(<Perfil />);
+  it('actualiza el encabezado al guardar el nombre y envía solo los campos modificados', async () => {
+    renderizarPerfil();
+    const encabezado = within(screen.getByRole('button', { name: 'Cerrar sesión' }).closest('header')!);
+    expect(await encabezado.findByText('Máximo')).toBeDefined();
+
     const campoNombre = await screen.findByLabelText('Nombre');
     fireEvent.change(campoNombre, { target: { value: 'Max' } });
     fireEvent.click(screen.getByRole('button', { name: 'Guardar cambios' }));
@@ -77,10 +101,12 @@ describe('Perfil', () => {
       });
     });
     expect(perfilService.actualizarPerfil).toHaveBeenCalledTimes(1);
+    expect(await encabezado.findByText('Max')).toBeDefined();
+    expect(perfilService.obtenerPerfil).toHaveBeenCalledTimes(1);
   });
 
   it('envía la contraseña actual al cambiar correo y contraseña', async () => {
-    render(<Perfil />);
+    renderizarPerfil();
     fireEvent.change(await screen.findByLabelText('Correo electrónico'), {
       target: { value: 'nuevo@example.com' },
     });
@@ -102,7 +128,7 @@ describe('Perfil', () => {
   });
 
   it('agrega una moneda seleccionada al perfil', async () => {
-    render(<Perfil />);
+    renderizarPerfil();
     const selector = await screen.findByLabelText('Agregar moneda');
     fireEvent.change(selector, { target: { value: 'eur-id' } });
     fireEvent.click(screen.getByRole('button', { name: 'Agregar moneda' }));
@@ -121,7 +147,7 @@ describe('Perfil', () => {
       .mockRejectedValueOnce(new Error('Error de conexión'))
       .mockResolvedValueOnce([...monedasAsignadas, { ...monedasDisponibles[1], esPrincipal: false }]);
 
-    render(<Perfil />);
+    renderizarPerfil();
     fireEvent.change(await screen.findByLabelText('Agregar moneda'), {
       target: { value: 'eur-id' },
     });
@@ -142,7 +168,7 @@ describe('Perfil', () => {
       monedasAsignadas[0],
       { ...monedasDisponibles[1], esPrincipal: false },
     ]);
-    render(<Perfil />);
+    renderizarPerfil();
     fireEvent.click(
       await screen.findByRole('button', { name: 'Definir como principal' })
     );

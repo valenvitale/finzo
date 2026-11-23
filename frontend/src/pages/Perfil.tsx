@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Check, Coins, Plus, Star, Trash2 } from 'lucide-react';
+import { useOutletContext } from 'react-router-dom';
 import { Boton, Cargando, InputTexto, MensajeError, Selector, toast } from '../components/common';
 import GestionMediosPago from '../components/medios-pago/GestionMediosPago';
 import { useApi } from '../hooks/useApi';
@@ -10,10 +11,10 @@ import {
   listarMonedasDisponibles,
   listarMonedasPerfil,
 } from '../services/moneda.service';
-import { actualizarPerfil, obtenerPerfil } from '../services/perfil.service';
+import { actualizarPerfil } from '../services/perfil.service';
 import type { ApiResponse } from '../types/api.types';
 import type { MonedaPerfilResponseDTO, MonedaResponseDTO } from '../types/moneda.types';
-import type { ActualizarPerfilDTO, PerfilResponseDTO } from '../types/perfil.types';
+import type { ActualizarPerfilDTO, ContextoPerfil, PerfilResponseDTO } from '../types/perfil.types';
 
 interface MonedasData {
   disponibles: MonedaResponseDTO[];
@@ -28,19 +29,24 @@ function mensajeDeError(error: unknown, alternativo: string): string {
   return error instanceof Error ? error.message : alternativo;
 }
 
-function FormularioPerfil({ perfilInicial }: { perfilInicial: PerfilResponseDTO }) {
-  const [nombre, setNombre] = useState(perfilInicial.nombre);
-  const [apellido, setApellido] = useState(perfilInicial.apellido);
-  const [email, setEmail] = useState(perfilInicial.email);
+function FormularioPerfil({
+  perfil,
+  alActualizar,
+}: {
+  perfil: PerfilResponseDTO;
+  alActualizar: (perfil: PerfilResponseDTO) => void;
+}) {
+  const [nombre, setNombre] = useState(perfil.nombre);
+  const [apellido, setApellido] = useState(perfil.apellido);
+  const [email, setEmail] = useState(perfil.email);
   const [contrasenaActual, setContrasenaActual] = useState('');
   const [contrasenaNueva, setContrasenaNueva] = useState('');
-  const [perfilBase, setPerfilBase] = useState(perfilInicial);
   const [guardandoPerfil, setGuardandoPerfil] = useState(false);
 
   const hayCambiosPerfil =
-    nombre.trim() !== perfilBase.nombre ||
-    apellido.trim() !== perfilBase.apellido ||
-    email.trim() !== perfilBase.email ||
+    nombre.trim() !== perfil.nombre ||
+    apellido.trim() !== perfil.apellido ||
+    email.trim() !== perfil.email ||
     contrasenaNueva.length > 0;
 
   async function guardarPerfil(event: FormEvent<HTMLFormElement>) {
@@ -60,7 +66,7 @@ function FormularioPerfil({ perfilInicial }: { perfilInicial: PerfilResponseDTO 
       return;
     }
 
-    const emailCambio = emailLimpio !== perfilBase.email;
+    const emailCambio = emailLimpio !== perfil.email;
     const cambiaContrasena = contrasenaNueva.length > 0;
     if (cambiaContrasena && contrasenaNueva.length < 8) {
       toast.error('La nueva contraseña debe tener al menos 8 caracteres.');
@@ -72,8 +78,8 @@ function FormularioPerfil({ perfilInicial }: { perfilInicial: PerfilResponseDTO 
     }
 
     const datos: ActualizarPerfilDTO = {};
-    if (nombreLimpio !== perfilBase.nombre) datos.nombre = nombreLimpio;
-    if (apellidoLimpio !== perfilBase.apellido) datos.apellido = apellidoLimpio;
+    if (nombreLimpio !== perfil.nombre) datos.nombre = nombreLimpio;
+    if (apellidoLimpio !== perfil.apellido) datos.apellido = apellidoLimpio;
     if (emailCambio) datos.email = emailLimpio;
     if (emailCambio || cambiaContrasena) {
       datos.currentPassword = contrasenaActual;
@@ -84,7 +90,7 @@ function FormularioPerfil({ perfilInicial }: { perfilInicial: PerfilResponseDTO 
     setGuardandoPerfil(true);
     try {
       const actualizado = await actualizarPerfil(datos);
-      setPerfilBase(actualizado);
+      alActualizar(actualizado);
       setNombre(actualizado.nombre);
       setApellido(actualizado.apellido);
       setEmail(actualizado.email);
@@ -171,8 +177,7 @@ export default function Perfil() {
   const [monedaSeleccionada, setMonedaSeleccionada] = useState('');
   const [guardandoMoneda, setGuardandoMoneda] = useState(false);
 
-  const perfilApi = useApi(obtenerPerfil);
-  const { ejecutar: ejecutarPerfil } = perfilApi;
+  const { perfil, cargando, error, cargar, actualizarPerfilLocal } = useOutletContext<ContextoPerfil>();
   const cargarMonedas = useCallback(async (): Promise<MonedasData> => {
     const [disponibles, asignadas] = await Promise.all([
       listarMonedasDisponibles(),
@@ -182,10 +187,6 @@ export default function Perfil() {
   }, []);
   const monedasApi = useApi(cargarMonedas);
   const { ejecutar: ejecutarMonedas } = monedasApi;
-
-  useEffect(() => {
-    void ejecutarPerfil().catch(() => undefined);
-  }, [ejecutarPerfil]);
 
   useEffect(() => {
     void ejecutarMonedas().catch(() => undefined);
@@ -199,7 +200,7 @@ export default function Perfil() {
 
   async function recargarPerfil() {
     try {
-      await ejecutarPerfil();
+      await cargar();
     } catch {
       // El hook conserva el error para mostrarlo en la vista.
     }
@@ -258,17 +259,17 @@ export default function Perfil() {
         </p>
       </header>
 
-      {perfilApi.error !== null && (
+      {error !== null && (
         <MensajeError
           titulo="No se pudo cargar el perfil"
-          mensaje={mensajeDeError(perfilApi.error, 'Intentalo de nuevo.')}
+          mensaje={mensajeDeError(error, 'Intentalo de nuevo.')}
         />
       )}
 
-      {perfilApi.loading && !perfilApi.data ? (
+      {cargando && !perfil ? (
         <Cargando etiqueta="Cargando perfil..." />
-      ) : perfilApi.data ? (
-        <FormularioPerfil key={perfilApi.data.id} perfilInicial={perfilApi.data} />
+      ) : perfil ? (
+        <FormularioPerfil key={perfil.id} perfil={perfil} alActualizar={actualizarPerfilLocal} />
       ) : (
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <Boton variante="secondary" onClick={() => void recargarPerfil()}>

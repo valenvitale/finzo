@@ -64,5 +64,5 @@ export function useApi<T, TArgs extends unknown[] = []>(
     return ejecutar(...argumentosRef.current);
   }, [ejecutar]);
 
-  return { data, loading, error, ejecutar, refetch };
+  return { data, loading, error, ejecutar, refetch, setData };
 }

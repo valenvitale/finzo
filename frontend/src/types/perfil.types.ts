@@ -16,3 +16,11 @@ export interface ActualizarPerfilDTO {
   currentPassword?: string;
   newPassword?: string;
 }
+
+export interface ContextoPerfil {
+  perfil?: PerfilResponseDTO;
+  cargando: boolean;
+  error: Error | null;
+  cargar: () => Promise<PerfilResponseDTO>;
+  actualizarPerfilLocal: (perfil: PerfilResponseDTO) => void;
+}
