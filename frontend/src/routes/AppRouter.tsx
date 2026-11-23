@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import Categorias from '../pages/Categorias';
 
 import { useAuth } from '../hooks/useAuth';
 import Login from '../pages/auth/Login';
@@ -7,6 +8,8 @@ import Register from '../pages/auth/Register';
 import TestPage from '../pages/test';
 import { PageContainer } from '../components/layout/PageContainer';
 import Dashboard from '../pages/Dashboard';
+import Perfil from '../pages/Perfil';
+import Movimientos from '../pages/Movimientos';
 
 function RutaProtegida({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -66,10 +69,10 @@ export default function AppRouter() {
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/movimientos" element={<h1>Movimientos</h1>} />
-          <Route path="/categorias" element={<h1>Categorías</h1>} />
+          <Route path="/movimientos" element={<Movimientos/>} />
+          <Route path="/categorias" element={<Categorias />} />
           <Route path="/estadisticas" element={<h1>Estadísticas</h1>} />
-          <Route path="/perfil" element={<h1>Perfil</h1>} />
+          <Route path="/perfil" element={<Perfil />} />
         </Route>
 
         <Route path="/test" element={<TestPage />} />

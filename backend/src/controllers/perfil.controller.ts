@@ -1,12 +1,8 @@
-import type { Response } from 'express';
+import type { NextFunction, Response } from 'express';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
 import type { ActualizarPerfilDTO } from '../types/perfil.types.js';
-import { PerfilRepository } from '../repositories/perfil.repository.js';
-import { PerfilAuthService } from '../services/perfil-auth.service.js';
-import { PerfilService } from '../services/perfil.service.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
-
-const perfilService = new PerfilService(new PerfilRepository(), new PerfilAuthService());
+import type { IPerfilService } from '../services/perfil.service.js';
 
 function obtenerIdentidad(req: AuthenticatedRequest): { id: string; email: string } {
   if (!req.user) {
@@ -15,16 +11,31 @@ function obtenerIdentidad(req: AuthenticatedRequest): { id: string; email: strin
   return req.user;
 }
 
-export async function obtenerPerfil(req: AuthenticatedRequest, res: Response): Promise<void> {
-  const usuario = obtenerIdentidad(req);
-  res.status(200).json({ exito: true, datos: await perfilService.obtenerPerfil(usuario.id, usuario.email) });
-}
+export class PerfilController {
+  constructor(private readonly perfilService: IPerfilService) {}
 
-export async function actualizarPerfil(req: AuthenticatedRequest, res: Response): Promise<void> {
-  const usuario = obtenerIdentidad(req);
-  const datos: ActualizarPerfilDTO = req.body;
-  res.status(200).json({
-    exito: true,
-    datos: await perfilService.actualizarPerfil(usuario.id, usuario.email, datos),
-  });
+  obtenerPerfil = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const usuario = obtenerIdentidad(req);
+      res.status(200).json({
+        exito: true,
+        datos: await this.perfilService.obtenerPerfil(usuario.id, usuario.email),
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  actualizarPerfil = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const usuario = obtenerIdentidad(req);
+      const datos: ActualizarPerfilDTO = req.body;
+      res.status(200).json({
+        exito: true,
+        datos: await this.perfilService.actualizarPerfil(usuario.id, usuario.email, datos),
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

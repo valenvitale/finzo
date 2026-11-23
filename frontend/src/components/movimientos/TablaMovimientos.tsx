@@ -9,15 +9,18 @@ import { ArrowDownLeft, ArrowUpRight, Pencil, Trash2 } from 'lucide-react';
 import type { MovimientoResponseDTO } from '../../types/movimiento.types';
 import { Tarjeta, EstadoVacio, Boton } from '../common';
 import { formatearMonto, formatearFecha } from '../../utils/formateadores';
+import { formatearNumero } from '../../utils/formato';
 
 interface TablaMovimientosProps {
   movimientos: MovimientoResponseDTO[];
+  codigosMoneda?: ReadonlyMap<string, string>;
   onEditar: (id: string) => void;
   onEliminar: (id: string) => void;
 }
 
 export function TablaMovimientos({ 
-  movimientos, 
+  movimientos,
+  codigosMoneda,
   onEditar, 
   onEliminar, 
 }: TablaMovimientosProps) {
@@ -46,6 +49,8 @@ export function TablaMovimientos({
           <tbody className="divide-y divide-slate-100">
             {movimientos.map((mov) => {
               const esIngreso = mov.tipo === 'INGRESO';
+              const codigo = codigosMoneda ? codigosMoneda.get(mov.monedaId) : 'ARS';
+              const importe = codigo ? formatearMonto(mov.monto, codigo) : formatearNumero(mov.monto);
 
               return (
                 <tr key={mov.id} className="transition-colors hover:bg-slate-50/75">
@@ -91,7 +96,7 @@ export function TablaMovimientos({
                       esIngreso ? 'text-ingreso' : 'text-gasto'
                     }`}
                   >
-                    {esIngreso ? `+ ${formatearMonto(mov.monto)}` : `- ${formatearMonto(mov.monto)}`}
+                    {esIngreso ? '+ ' : '- '}{importe}
                   </td>
 
                   {/* Acciones rapidas */}

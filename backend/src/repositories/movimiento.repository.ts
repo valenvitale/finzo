@@ -1,4 +1,5 @@
-import type { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
+import { ErrorDeConflicto } from '../errors/errores.js';
 import { prisma as prismaSingleton } from '../config/prisma.js';
 import type {
   CrearMovimientoDTO,
@@ -9,7 +10,7 @@ import type {
 
 export interface IMovimientoRepository {
   crear(perfilId: string, datosMovimiento: CrearMovimientoDTO): Promise<MovimientoResponseDTO>;
-  actualizar(id: string, datosActualizacion: ActualizarMovimientoDTO): Promise<MovimientoResponseDTO>;
+  actualizar(id: string, datosActualizacion: ActualizarMovimientoDTO, movimientoActual?: MovimientoResponseDTO): Promise<MovimientoResponseDTO>;
   eliminar(id: string): Promise<void>;
   obtenerPorId(id: string): Promise<MovimientoResponseDTO | null>;
   listarPorPerfil(perfilId: string, filtros?: FiltrosMovimientoDTO): Promise<MovimientoResponseDTO[]>;
@@ -64,9 +65,16 @@ export class MovimientoRepository implements IMovimientoRepository {
     return this.mapearADto(nuevoMovimiento);
   }
 
-  async actualizar(id: string, datosActualizacion: ActualizarMovimientoDTO): Promise<MovimientoResponseDTO> {
+  async actualizar(id: string, datosActualizacion: ActualizarMovimientoDTO, movimientoActual?: MovimientoResponseDTO): Promise<MovimientoResponseDTO> {
     const movimientoActualizado = await this.prisma.movimiento.update({
-      where: { id },
+      where: {
+        id,
+        ...(movimientoActual && {
+          updated_at: movimientoActual.updatedAt,
+          id_categoria: movimientoActual.categoriaId,
+          id_medio_pago: movimientoActual.medioPagoId,
+        }),
+      },
       data: {
         fecha: datosActualizacion.fecha,
         monto: datosActualizacion.monto,
@@ -78,6 +86,11 @@ export class MovimientoRepository implements IMovimientoRepository {
       include: {
         categoria: true,
       },
+    }).catch((error: unknown) => {
+      if (movimientoActual && error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+        throw new ErrorDeConflicto('El movimiento cambió durante la edición. Volvé a cargarlo e intentá nuevamente');
+      }
+      throw error;
     });
 
     return this.mapearADto(movimientoActualizado);

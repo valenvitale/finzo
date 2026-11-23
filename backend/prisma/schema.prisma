@@ -46,6 +46,7 @@ model Categoria {
   nombre String @db.VarChar(30)
   color String @db.VarChar(7)
   tipo TipoMovimiento
+  icono String @default("tag")
   // Nullable ya que las categorias globales no tienen un perfil asociado
   id_perfil String? // Columna en la BD
   // 
@@ -101,8 +102,8 @@ model Movimiento {
   moneda Moneda @relation(fields: [id_moneda], references: [id], onDelete: Restrict)
   id_categoria String
   categoria Categoria @relation(fields: [id_categoria], references: [id], onDelete: Restrict)
-  id_medio_pago String
-  medio_de_pago MedioPago @relation(fields: [id_medio_pago], references: [id], onDelete: Restrict)
+  id_medio_pago String?
+  medio_de_pago MedioPago? @relation(fields: [id_medio_pago], references: [id], onDelete: Restrict)
   
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

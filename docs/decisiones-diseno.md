@@ -1,7 +1,7 @@
 # Decisiones de Diseño y Registro de Refactorización — Finzo
 
 # Objetivo
-Analizamos dos módulos reales del backend de FINZO para mejorar la claridad del código, reducir el acoplamiento y facilitar las pruebas. Relacionamos los cambios con code smells, refactoring, Clean Code y SOLID, tal como se trabajó en clase.
+Analizamos casos del backend y del frontend de FINZO para mejorar la claridad del código, reducir el acoplamiento y facilitar las pruebas. Relacionamos los cambios con code smells, refactoring, Clean Code y SOLID, tal como se trabajó en clase.
 
 ---
 
@@ -114,37 +114,38 @@ El costo principal fue incorporar una interfaz, un esquema y una configuración 
 
 ## CASO 3 — Tipado Seguro en Express y Usuario Autenticado
 
-### Código Analizado:
-- [`backend/src/middlewares/auth.middleware.ts`](../backend/src/middlewares/auth.middleware.ts)
-- [`backend/src/types/express.d.ts`](../backend/src/types/express.d.ts)
-- [`backend/src/controllers/movimiento.controller.ts`](../backend/src/controllers/movimiento.controller.ts)
-- [`backend/src/controllers/categoria.controller.ts`](../backend/src/controllers/categoria.controller.ts)
+### El problema
 
-### Problemas detectados (Code Smells y Linter):
-- **Uso de `any`:** El `Request` original de Express no incluye los datos del usuario autenticado (`req.user`). Para resolverlo, se usaba un tipo personalizado con múltiples parámetros genéricos seteados en `any`, lo que disparaba advertencias de ESLint y reducía la seguridad del tipado.
-- **Tipos complejos e innecesarios:** Existían interfaces auxiliares intermedias que sobrecargaban las firmas de los controladores con tipos largos y difíciles de leer.
-- **Tipado impreciso de parámetros:** Por defecto, los parámetros de ruta (`req.params.id`) se interpretaban como texto o lista de textos (`string | string[]`), obligando a realizar conversiones manuales para enviarlos a los servicios.
+Al crear una categoría, el controlador necesita el cuerpo de la petición y el ID del usuario autenticado. Antes, usábamos `as` para decirle a TypeScript qué tipo debía asumir para el cuerpo.
 
-### Alternativas consideradas:
-1. **Desactivar la regla de ESLint (`eslint-disable`):** Ocultaba el aviso del linter, pero mantenía los `any` y la falta de control en el código.
-2. **Reemplazar `any` por `unknown`:** Resolvía la advertencia de ESLint, pero obligaba a escribir firmas kilométricas en cada método del controlador y a forzar conversiones (`as string`) manualmente.
-3. **Extender el `Request` nativo de Express (Opción elegida):** Agregar la propiedad opcional `user` directamente a Express mediante un archivo de definición de tipos y crear un alias simple para los parámetros de ruta.
+```typescript
+const datosCategoria = req.body as CrearCategoriaDTO;
+```
 
-### Cambios realizados:
-- **Extensión global de Express:** Creamos [`backend/src/types/express.d.ts`](../backend/src/types/express.d.ts) para que la propiedad `user?: { id: string; email: string }` esté disponible en el objeto `Request` en todo el proyecto.
-- **Simplificación del middleware:** En [`backend/src/middlewares/auth.middleware.ts`](../backend/src/middlewares/auth.middleware.ts) eliminamos los `any` y las interfaces intermedias. Dejamos un alias limpio (`AuthenticatedRequest`) que garantiza que los parámetros de ruta se lean directamente como `string`.
-- **Firmas más legibles en controladores:** Los métodos ahora reciben `req: AuthenticatedRequest` en una sola línea clara, sin genéricos redundantes ni conversiones forzadas.
+Esa instrucción solo afecta al compilador. Si llega un campo con un valor inválido, la comprobación tiene que ocurrir cuando se recibe la petición. Además, para incluir `req.user` en el tipo de Express habíamos creado una definición larga con varios `any`.
 
-### Relación con la materia:
-- **Clean Code:** Firmas simples, concisas y legibles a primera vista en todos los controladores, sin ruido de tipos innecesarios.
-- **Seguridad de Tipos (Type Safety):** Aprovechamos TypeScript para prevenir errores en tiempo de compilación sin apagar el linter con `any`.
-- **ISP (Segregación de Interfaces):** Los controladores reciben una estructura limpia y no dependen de parámetros genéricos que no necesitan.
+### Qué decidimos
 
-### Evidencia y costos:
-- `pnpm lint` ejecuta con 0 errores y 0 advertencias en todo el monorepo.
-- `pnpm --filter backend build` (`tsc`) compila exitosamente el 100% del código.
-- Los 102 tests unitarios y de integración continúan pasando en verde sin regresiones.
-- El costo fue incorporar un archivo de definición de tipos (`express.d.ts`), pero a cambio simplificó drásticamente el código de los controladores y eliminó tipos repetitivos.
+La ruta valida los datos con Zod antes de ejecutar el controlador. Por ejemplo, al crear una categoría, `validarCuerpo(crearCategoriaSchema)` comprueba el cuerpo de la petición. Si los datos son válidos, el middleware los deja en `req.body`. Si son inválidos, devuelve un error de validación. [Ruta de Categorías](../backend/src/routes/categoria.routes.ts) · [Middleware de validación](../backend/src/middlewares/validacion.middleware.ts)
+
+El controlador recibe el cuerpo validado y declara el tipo con el que lo va a usar.
+
+```typescript
+const datosCategoria: CrearCategoriaDTO = req.body;
+```
+
+Para los datos del usuario, agregamos `req.user` como propiedad opcional del tipo `Request`. El middleware de autenticación la completa y el controlador comprueba que esté presente antes de usar el ID. También simplificamos el tipo `AuthenticatedRequest` para leer parámetros de ruta como `req.params.id` directamente como texto. [Tipos de Express](../backend/src/types/express.d.ts) · [Middleware de autenticación](../backend/src/middlewares/auth.middleware.ts) · [Controlador de Categorías](../backend/src/controllers/categoria.controller.ts)
+
+Consideramos desactivar la regla de ESLint o usar `unknown` y agregar comprobaciones en cada controlador. Elegimos concentrar la validación en los middlewares y usar tipos simples en los controladores.
+
+### Relación con la materia
+
+- **Responsabilidad única (SRP).** El middleware valida la entrada HTTP y el controlador usa los datos para llamar al servicio.
+- **Clean Code.** Las firmas de los controladores quedan más fáciles de leer y el tipo del cuerpo aparece donde se usa.
+
+### Evidencia y costos
+
+La verificación original registró 102 pruebas aprobadas, compilación correcta del backend y cero errores o advertencias de ESLint. El cambio agregó un archivo de tipos compartido, `express.d.ts`, para simplificar las firmas de los controladores.
 
 ---
 
@@ -183,16 +184,59 @@ Al momento de construir la tabla de movimientos, surgió una duda de diseño fun
 
 ---
 
+## CASO 5 — Inyección de dependencias en Perfil y Monedas
+
+### Código analizado
+
+- Perfil ([controlador](../backend/src/controllers/perfil.controller.ts), [servicio](../backend/src/services/perfil.service.ts) y [rutas](../backend/src/routes/perfil.routes.ts)).
+- Monedas ([controlador](../backend/src/controllers/moneda.controller.ts), [servicio](../backend/src/services/moneda.service.ts) y [rutas](../backend/src/routes/moneda.routes.ts)).
+
+### Problemas detectados
+
+Los controladores eran funciones que usaban servicios instanciados al cargar el archivo. Eso los acoplaba a implementaciones concretas y dificultaba probarlos con servicios simulados. Además, delegaban los errores de manera implícita en Express, mientras que otros controladores del proyecto llamaban a `next(error)` de forma explícita.
+
+### Alternativas consideradas
+
+1. **Unificar solo el manejo de errores.** Alineaba el estilo de los controladores y mantenía la dependencia directa de los servicios concretos.
+2. **Inyectar los servicios desde las rutas y unificar el manejo de errores.** Elegimos esta opción porque sigue la estructura de Categorías y Resumen y permite probar los controladores por separado.
+
+### Cambios realizados
+
+Antes, el controlador de Perfil creaba su servicio al cargar el archivo.
+
+```typescript
+const perfilService = new PerfilService(new PerfilRepository(), new PerfilAuthService());
+```
+
+Ahora, el controlador declara qué contrato necesita y recibe el servicio por constructor.
+
+```typescript
+export class PerfilController {
+  constructor(private readonly perfilService: IPerfilService) {}
+}
+```
+
+Las rutas construyen e inyectan los servicios concretos. `MonedaController` sigue la misma estructura con `IMonedaService`. Los métodos de ambos controladores capturan los errores y los envían al manejador global con `next(error)`. La validación con Zod se mantiene en las rutas y los controladores conservan el tipado directo del cuerpo con `ActualizarPerfilDTO` y `AsignarMonedaDTO`, tal como se describe en el [caso 3](#caso-3--tipado-seguro-en-express-y-usuario-autenticado).
+
+### Relación con la materia
+
+- **DIP (inversión de dependencias).** Los controladores dependen de contratos que pueden implementar tanto los servicios reales como los simulados.
+- **SRP (responsabilidad única).** Las rutas conectan las dependencias y los middlewares validan la entrada. Los controladores coordinan la petición y los servicios ejecutan la lógica de negocio.
+
+### Evidencia y costos
+
+Las pruebas unitarias de [Perfil](../backend/tests/unit/perfil.controller.test.ts) y [Monedas](../backend/tests/unit/moneda.controller.test.ts) comprueban que cada controlador use el servicio inyectado y delegue sus errores a Express. Las cuatro pruebas pasaron al ejecutar ambos archivos. La refactorización agrega dos contratos y unas líneas de configuración en las rutas, y permite probar los controladores sin conectarse a la base de datos.
+
+---
+
 ## Conclusión
 
-En FINZO analizamos dos módulos reales del backend: **Categorías y Resumen**, con el objetivo de mejorar la calidad del código, facilitar su mantenimiento y conservar diseños similares entre los modulos.
-
-En ambos casos identificamos problemas de diseño, como el **acoplamiento entre componentes** y la **mezcla de responsabilidades**. Para resolverlos, realizamos refactorizaciones aplicando principalmente los principios **SRP (Responsabilidad Única)** y **DIP (Inversión de Dependencias)**.
+Los casos del backend y del frontend comparten problemas de diseño, como el **acoplamiento entre componentes** y la **mezcla de responsabilidades**. Para resolverlos, aplicamos principalmente los principios **SRP (Responsabilidad Única)** y **DIP (Inversión de Dependencias)**.
 
 También utilizamos **inyección de dependencias, interfaces, DTOs y validaciones con Zod** para organizar mejor el código y facilitar las pruebas.
 
 Evaluamos los patrones de diseño estudiados en clase, pero decidimos no incorporar patrones adicionales cuando no existía una necesidad concreta, evitando agregar complejidad innecesaria.
 
-Los cambios se respaldaron con pruebas automatizadas, alcanzando **102 tests aprobados** en la última ejecución.
+Las secciones de evidencia registran las pruebas automatizadas de los cambios del backend.
 
 **En conclusión, el objetivo no fue aplicar patrones por obligación, sino identificar problemas reales, evaluar alternativas y tomar decisiones fundamentadas para conseguir un código más claro, desacoplado, testeable y mantenible.**

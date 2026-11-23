@@ -4,12 +4,14 @@ export interface CrearCategoriaDTO {
   nombre: string;
   color: string;
   tipo: TipoMovimiento;
+  icono: string;
 }
 
 export interface ActualizarCategoriaDTO {
   nombre?: string;
   color?: string;
   tipo?: TipoMovimiento;
+  icono?: string;
 }
 
 export interface CategoriaResponseDTO {
@@ -17,6 +19,7 @@ export interface CategoriaResponseDTO {
   nombre: string;
   color: string;
   tipo: TipoMovimiento;
+  icono: string;
   perfilId: string | null; // null indica una categoría global, sin perfil asociado.
   createdAt: Date;
   updatedAt: Date;

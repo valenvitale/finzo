@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { MovimientoResponseDTO, FiltrosMovimientoDTO } from '../types/movimiento.types';
+import type { MovimientoResponseDTO, FiltrosMovimientoDTO, ActualizarMovimientoDTO, CrearMovimientoDTO } from '../types/movimiento.types';
 import * as movimientoService from '../services/movimiento.service';
 
 export function useMovimientos(filtrosIniciales?: FiltrosMovimientoDTO) {
@@ -34,15 +34,19 @@ export function useMovimientos(filtrosIniciales?: FiltrosMovimientoDTO) {
         cargar();
     }, [filtros, recarga]);
 
+    const crear = async (datos: CrearMovimientoDTO) => {
+        await movimientoService.crearMovimiento(datos);
+        recargar();
+    };
+
+    const actualizar = async (id: string, cambios: ActualizarMovimientoDTO) => {
+        await movimientoService.actualizarMovimiento(id, cambios);
+        recargar();
+    };
+
     const eliminar = async (id: string) => {
-        try {
             await movimientoService.eliminarMovimiento(id);
             setMovimientos((prev) => prev.filter((m) => m.id !== id));
-        } catch (err) {
-            const mensaje = err instanceof Error ? err.message : 'Error al eliminar el movimiento';
-            setError(mensaje);
-            throw err;
-        }
     };
-    return { movimientos, cargando, error, filtros, setFiltros, eliminar, recargar};
+    return { movimientos, cargando, error, filtros, setFiltros, eliminar, recargar, crear, actualizar };
 }
