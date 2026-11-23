@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { useApi } from './useApi';
+import { useApi } from '../../src/hooks/useApi';
 
 describe('useApi', () => {
   it('ejecuta operaciones y permite repetir la última consulta', async () => {

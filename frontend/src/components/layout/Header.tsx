@@ -1,6 +1,6 @@
 import { useAuth } from '../../hooks/useAuth';
 
-export default function Header(){
+export default function Header({ nombrePerfil }: { nombrePerfil?: string }){
     const { user, logout } = useAuth();
 
     const cerrarSesion = async () => {
@@ -19,7 +19,7 @@ export default function Header(){
                 className="mr-auto h-18 w-auto"
             />
             <span className="font-medium text-slate-700">
-                {user?.user_metadata?.nombre ?? 'Usuario'}
+                {nombrePerfil ?? user?.user_metadata?.nombre ?? 'Usuario'}
             </span>
             <button 
                 type="button" 

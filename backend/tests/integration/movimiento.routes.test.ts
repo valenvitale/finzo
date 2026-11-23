@@ -100,6 +100,7 @@ beforeEach(() => {
     id: categoriaId,
     perfilId,
     nombre: 'Supermercado',
+    tipo: 'GASTO',
   });
 
   mocks.obtenerMedioPagoPorId.mockResolvedValue({
@@ -147,6 +148,28 @@ describe('GET /api/movimientos (Status 200 y 401)', () => {
 });
 
 describe('POST /api/movimientos (Status 201 y 400)', () => {
+  it.each([undefined, null])('acepta ingresos con medio de pago %s', async (medioPagoId) => {
+    mocks.obtenerCategoriaPorId.mockResolvedValue({ id: categoriaId, perfilId, tipo: 'INGRESO' });
+    mocks.crearMovimiento.mockResolvedValue({ ...movimientoSimulado, tipo: 'INGRESO', medioPagoId: null });
+    const respuesta = await request(app).post('/api/movimientos')
+      .set('Authorization', 'Bearer token-valido')
+      .send({ fecha, monto: 1500, monedaId, categoriaId, medioPagoId });
+
+    expect(respuesta.status).toBe(201);
+    expect(respuesta.body.datos.medioPagoId).toBeNull();
+    expect(mocks.crearMovimiento).toHaveBeenCalledWith(perfilId, expect.objectContaining({ medioPagoId: null }));
+  });
+
+  it.each([undefined, null])('rechaza gastos con medio de pago %s', async (medioPagoId) => {
+    const respuesta = await request(app).post('/api/movimientos')
+      .set('Authorization', 'Bearer token-valido')
+      .send({ fecha, monto: 1500, monedaId, categoriaId, medioPagoId });
+
+    expect(respuesta.status).toBe(400);
+    expect(respuesta.body.mensaje).toBe('Los gastos requieren un medio de pago');
+    expect(mocks.crearMovimiento).not.toHaveBeenCalled();
+  });
+
   it('devuelve 201 al crear un movimiento con datos válidos', async () => {
     // Arrange (Preparación)
     const datosNuevoMovimiento = {

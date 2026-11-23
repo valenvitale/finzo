@@ -15,13 +15,18 @@ import {
 
 describe('Schemas del sistema', () => {
   it('valida categorías según los límites del modelo', () => {
-    expect(crearCategoriaSchema.safeParse({ nombre: ' Hogar ', color: '#aBc123', tipo: 'GASTO' }).success).toBe(true);
-    expect(crearCategoriaSchema.parse({ nombre: 'Hogar', color: '#A1B2C3', tipo: 'GASTO' }).icono).toBe('tag');
+    expect(crearCategoriaSchema.parse({ nombre: ' Hogar ', color: '#aBc123', tipo: 'GASTO' })).toEqual({
+      nombre: 'Hogar',
+      color: '#aBc123',
+      tipo: 'GASTO',
+      icono: 'tag',
+    });
     expect(crearCategoriaSchema.safeParse({ nombre: 'Hogar', color: 'rojo', tipo: 'GASTO' }).success).toBe(false);
     expect(
       crearCategoriaSchema.safeParse({ nombre: 'Hogar', color: '#A1B2C3', tipo: 'GASTO', extra: true }).success
     ).toBe(false);
-    expect(actualizarCategoriaSchema.safeParse({ color: '#A1B2C3' }).success).toBe(true);
+    expect(actualizarCategoriaSchema.parse({ color: '#A1B2C3' })).toEqual({ color: '#A1B2C3' });
+    expect(actualizarCategoriaSchema.parse({ icono: 'car' })).toEqual({ icono: 'car' });
     expect(actualizarCategoriaSchema.safeParse({}).success).toBe(false);
     expect(categoriaIdParamsSchema.safeParse({ id: '123e4567-e89b-12d3-a456-426614174000' }).success).toBe(true);
     expect(categoriaIdParamsSchema.safeParse({ id: 'id-invalido' }).success).toBe(false);

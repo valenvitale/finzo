@@ -74,7 +74,7 @@ export function Categorias() {
 
 ## 4. Formato de Montos, Fechas y Números (`src/utils`)
 
-Nunca formatees montos monetarios, fechas o números a mano con strings inventados. Usá las funciones basadas en `Intl`:
+Nunca formatear montos monetarios, fechas o números a mano con strings inventados. Usá las funciones basadas en `Intl`:
 
 - **Monedas:** `formatearMoneda(15000, 'ARS')` desde [`moneda.ts`](../frontend/src/utils/moneda.ts).
 - **Fechas:** `formatearFecha('2026-10-27T10:00:00Z')` desde [`fecha.ts`](../frontend/src/utils/fecha.ts).
@@ -115,11 +115,3 @@ Esto permite reutilizar el mismo componente visual (como una lista de movimiento
   - Componentes React: `PascalCase.tsx` (ej: `Tarjeta.tsx`, `PageContainer.tsx`).
   - Hooks: `useCamelCase.ts` (ej: `useMovimientos.ts`).
   - Servicios y tipos: `kebab-case.service.ts` y `kebab-case.types.ts`.
-
----
-
-## 8. Paquetes
-
-- **Gestor de paquetes:** Usar **siempre `pnpm`** (`pnpm add`, `pnpm run dev`, `pnpm test`). Nunca usar `npm`.
-
-

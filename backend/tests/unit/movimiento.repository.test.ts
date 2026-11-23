@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Prisma, type PrismaClient } from '@prisma/client';
 import { MovimientoRepository } from '../../src/repositories/movimiento.repository.js';
 import type { CrearMovimientoDTO, ActualizarMovimientoDTO } from '../../src/types/movimiento.types.js';
+import { ErrorDeConflicto } from '../../src/errors/errores.js';
 
 describe('MovimientoRepository', () => {
   const mockPrismaMovimiento = {
@@ -85,6 +86,35 @@ describe('MovimientoRepository', () => {
     });
     expect(resultado?.id).toBe('mov-1');
     expect(resultado?.tipo).toBe('GASTO');
+  });
+
+  it('mapea ingresos sin medio de pago', async () => {
+    const mockPrisma = {
+      movimiento: {
+        findUnique: vi.fn().mockResolvedValue({ ...mockPrismaMovimiento, id_medio_pago: null, categoria: { tipo: 'INGRESO' } }),
+      },
+    } as unknown as PrismaClient;
+    const resultado = await new MovimientoRepository(mockPrisma).obtenerPorId('mov-1');
+    expect(resultado?.medioPagoId).toBeNull();
+    expect(resultado?.tipo).toBe('INGRESO');
+  });
+
+  it('detecta una edición concurrente antes de guardar relaciones validadas', async () => {
+    const update = vi.fn().mockRejectedValue(new Prisma.PrismaClientKnownRequestError('Registro modificado', {
+      code: 'P2025', clientVersion: '7.10.0',
+    }));
+    const findUnique = vi.fn().mockResolvedValue(mockPrismaMovimiento);
+    const mockPrisma = { movimiento: { update, findUnique } } as unknown as PrismaClient;
+    const repository = new MovimientoRepository(mockPrisma);
+    const movimiento = await repository.obtenerPorId('mov-1');
+
+    await expect(repository.actualizar('mov-1', { medioPagoId: null }, movimiento!)).rejects.toThrow(ErrorDeConflicto);
+    expect(update).toHaveBeenCalledWith(expect.objectContaining({
+      where: {
+        id: 'mov-1', updated_at: movimiento!.updatedAt,
+        id_categoria: movimiento!.categoriaId, id_medio_pago: movimiento!.medioPagoId,
+      },
+    }));
   });
 
   it('retorna null si el movimiento no existe', async () => {

@@ -17,55 +17,6 @@
 
 ---
 
-### 🔴 1. Estandarizar Perfil y Monedas con Inyección de Dependencias (DIP)
-
-* **¿Qué pasa hoy?**  
-  En [`perfil.controller.ts`](../backend/src/controllers/perfil.controller.ts) y [`moneda.controller.ts`](../backend/src/controllers/moneda.controller.ts) se usan funciones sueltas y se instancia el servicio directamente arriba del archivo:
-  ```typescript
-  // ❌ Acoplamiento rígido actual:
-  const perfilService = new PerfilService(new PerfilRepository(), new PerfilAuthService());
-  ```
-  Esto es exactamente lo mismo que teníamos en Resumen antes del refactor.
-* **¿Por qué es un problema?**  
-  Rompe el principio **DIP**. Si queremos hacer pruebas unitarias del controlador sin que toque la base de datos real, no podemos "pasarle" un servicio falso o simulado (mock). Además, hace que la mitad del backend use clases con inyección (`CategoriaController`, `MovimientoController`, `ResumenController`) y la otra mitad use funciones estáticas.
-* **¿Cómo lo solucionamos?**  
-  1. Convertir `PerfilController` y `MonedaController` en clases.
-  2. Recibir sus servicios mediante el constructor:
-     ```typescript
-     export class PerfilController {
-       constructor(private readonly perfilService: IPerfilService) {}
-     }
-     ```
-  3. En las rutas (`perfil.routes.ts` y `moneda.routes.ts`), armar la inyección:
-     ```typescript
-     const repository = new PerfilRepository();
-     const authService = new PerfilAuthService();
-     const service = new PerfilService(repository, authService);
-     const controller = new PerfilController(service);
-     ```
-* **Principio SOLID involucrado:** **DIP** (Inversión de Dependencias) y **SRP** (Responsabilidad Única).
-
----
-
-### 🔴 2. Manejo uniforme de errores en los Controladores (`try/catch` con `next`)
-
-* **¿Qué pasa hoy?**  
-  En `movimiento.controller.ts` y `resumen.controller.ts` todos los métodos tienen:
-  ```typescript
-  try {
-    // ... lógica
-  } catch (error) {
-    next(error);
-  }
-  ```
-  Pero en `perfil.controller.ts` y `moneda.controller.ts` no hay ningún `try/catch`.
-* **¿Por qué es un problema?**  
-  Aunque Express 5 captura promesas rechazadas automáticamente, tener estilos distintos confunde al equipo y puede ocasionar respuestas no controladas si alguna excepción sincrónica no llega al `errorHandler` global.
-* **¿Cómo lo solucionamos?**  
-  Estandarizar todos los controladores con la misma estructura `try/catch` delegando en `next(error)`.
-
----
-
 ### 🟢 3. Evitar "Type Assertions" (`as`) en Controladores (Estandarizado)
 
 * **¿Qué pasaba anteriormente?**  
@@ -100,29 +51,6 @@
   2. Cero uso de `any` en interfaces y middlewares (linter 100% limpio).
   3. Firmas uniformes, legibles y de una sola línea en toda la capa de presentación.
   4. Autocompletado y tipado estricto garantizado al interactuar con los servicios.
-
-#### Aplicación del refactoring en Perfil y Monedas (antes / después)
-
-Antes, los controladores de Perfil y Monedas construían sus servicios al importar el módulo. Eso acoplaba los controladores a las implementaciones concretas y dificultaba sustituir los servicios por dobles de prueba:
-
-```typescript
-const perfilService = new PerfilService(new PerfilRepository(), new PerfilAuthService());
-```
-
-Después, cada controlador recibe un contrato (`IPerfilService` o `IMonedaService`) y las rutas construyen e inyectan las implementaciones concretas. Por ejemplo:
-
-```typescript
-const perfilService = new PerfilService(perfilRepository, perfilAuthService);
-const perfilController = new PerfilController(perfilService);
-```
-
-Los handlers también usan `try/catch` y delegan los errores a `next(error)`. Los datos validados se tipan directamente, sin `as`:
-
-```typescript
-const datos: ActualizarPerfilDTO = req.body;
-```
-
-Así, la validación de entrada sigue a cargo del middleware Zod, el controlador depende de una abstracción y los errores llegan al manejador global de Express.
 
 ---
 
