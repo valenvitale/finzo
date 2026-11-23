@@ -5,11 +5,22 @@ import { Cargando, MensajeError, Boton, toast } from '../components/common';
 import { TablaMovimientos } from '../components/movimientos/TablaMovimientos';
 import { FiltrosMovimiento } from '../components/movimientos/FiltrosMovimiento';
 import { FormularioMovimiento } from '../components/movimientos/FormularioMovimiento';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { MovimientoResponseDTO, ActualizarMovimientoDTO, CrearMovimientoDTO } from '../types/movimiento.types';
+import { listarMonedasDisponibles, listarMonedasPerfil } from '../services/moneda.service';
+import { useApi } from '../hooks/useApi';
+
+async function obtenerMonedas() {
+    const [asignadas, catalogo] = await Promise.all([
+        listarMonedasPerfil(),
+        listarMonedasDisponibles(),
+    ]);
+
+    return { asignadas, catalogo };
+}
 
 export default function Movimientos() {
-    const { movimientos, cargando, error, filtros, setFiltros, eliminar, actualizar } = useMovimientos({});
+    const { movimientos, cargando, error, filtros, setFiltros, eliminar, crear, actualizar } = useMovimientos({});
     const { categorias } = useCategorias();
     const { mediosPago } = useMediosPago();
     const [formularioAbierto, setFormularioAbierto] = useState(false);
@@ -23,8 +34,13 @@ export default function Movimientos() {
         setFormularioAbierto(true);
     }
 
-    async function guardarEdicion(datos: Omit<CrearMovimientoDTO, 'monedaId'>) {
-        if (!movimientoEditado) return;
+    async function guardarMovimiento(datos: CrearMovimientoDTO) {
+        if (!movimientoEditado) {
+            await crear(datos);
+            toast.success('Movimiento creado.');
+            setFormularioAbierto(false);
+            return;
+        }
 
         const cambios: ActualizarMovimientoDTO = {};
 
@@ -33,6 +49,7 @@ export default function Movimientos() {
         if (datos.descripcion !== movimientoEditado.descripcion) cambios.descripcion = datos.descripcion;
         if (datos.categoriaId !== movimientoEditado.categoriaId) cambios.categoriaId = datos.categoriaId;
         if (datos.medioPagoId !== movimientoEditado.medioPagoId) cambios.medioPagoId = datos.medioPagoId;
+        if (datos.monedaId !== movimientoEditado.monedaId) cambios.monedaId = datos.monedaId;
 
         if (Object.keys(cambios).length > 0) {
             await actualizar(movimientoEditado.id, cambios);
@@ -53,6 +70,17 @@ export default function Movimientos() {
         }
     }
 
+    const { data: monedas, error: errorMonedas, ejecutar: cargarMonedas } = useApi(obtenerMonedas);
+
+    useEffect(() => {
+        void cargarMonedas().catch(() => undefined);
+    }, [cargarMonedas]);
+
+    const monedasAsignadas = monedas?.asignadas ?? [];
+    const codigosMoneda = new Map(
+        (monedas?.catalogo ?? []).map((moneda) => [moneda.id, moneda.codigo])
+    );
+
     if (cargando) {
         return <Cargando />;
     }
@@ -68,21 +96,46 @@ export default function Movimientos() {
             <p>{categorias.length} categorías registradas</p>
             <p>{mediosPago.length} medios de pago registrados</p>
             <FiltrosMovimiento filtros={filtros ?? {}} cambiarFiltros={setFiltros} limpiarFiltros={() => setFiltros({})} categorias={categorias} mediosPago={mediosPago} />
-            <Boton onClick={ () => {
-                setMovimientoEditado(null);
-                setFormularioAbierto(true);
-                }}> + Nuevo Movimiento </Boton>
+            <Boton
+                disabled={monedasAsignadas.length === 0}
+                onClick={() => {
+                    setMovimientoEditado(null);
+                    setFormularioAbierto(true);
+                }}
+            >
+                + Nuevo Movimiento
+            </Boton>
+            {errorMonedas && (
+                <>
+                    <MensajeError mensaje="No se pudieron cargar las monedas." />
+                    <Boton
+                        variante="secondary"
+                        onClick={() => void cargarMonedas().catch(() => undefined)}
+                    >
+                        Reintentar carga de monedas
+                    </Boton>
+                </>
+            )}
+            {!errorMonedas && monedas && monedasAsignadas.length === 0 && (
+                <p>Agregá una moneda en Perfil para registrar movimientos.</p>
+            )}
             {formularioAbierto && (
                 <FormularioMovimiento
                     abierto={formularioAbierto}
                     movimiento={movimientoEditado ?? undefined}
                     categorias={categorias}
                     mediosPago={mediosPago}
+                    monedas={monedasAsignadas}
                     onCerrar={() => setFormularioAbierto(false)}
-                    onGuardar={guardarEdicion}
+                    onGuardar={guardarMovimiento}
                 />
             )}
-            <TablaMovimientos movimientos={movimientos} onEditar={abrirEdicion} onEliminar={(id) => manejarEliminacion(id)} />
+            <TablaMovimientos
+                movimientos={movimientos}
+                codigosMoneda={codigosMoneda}
+                onEditar={abrirEdicion}
+                onEliminar={(id) => void manejarEliminacion(id)}
+            />
         </div>
     )
 }

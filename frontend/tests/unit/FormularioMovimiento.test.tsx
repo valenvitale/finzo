@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { FormularioMovimiento } from './FormularioMovimiento';
-import type { CategoriaResponseDTO } from '../../types/categoria.types';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { FormularioMovimiento } from '../../src/components/movimientos/FormularioMovimiento';
+import type { CategoriaResponseDTO } from '../../src/types/categoria.types';
 
 afterEach(cleanup);
 
 describe('FormularioMovimiento', () => {
-  it('exige medio para gastos, lo oculta para ingresos y limpia la selección al cambiar de tipo', () => {
+  it('exige medio para gastos, lo oculta para ingresos y limpia la selección al cambiar de tipo', async () => {
     const onGuardar = vi.fn().mockResolvedValue(undefined);
     const categorias: CategoriaResponseDTO[] = [
       { id: 'categoria-gasto', nombre: 'Alimentos', tipo: 'GASTO', color: '#000000', icono: 'tag', perfilId: null, createdAt: '', updatedAt: '' },
@@ -19,6 +19,7 @@ describe('FormularioMovimiento', () => {
         onGuardar={onGuardar}
         categorias={categorias}
         mediosPago={[{ id: 'efectivo', nombre: 'Efectivo', icono: 'cash', id_perfil: null, created_at: '', updated_at: '' }]}
+        monedas={[{ id: 'ars', nombre: 'Peso argentino', codigo: 'ARS', simbolo: '$' }]}
       />
     );
 
@@ -37,10 +38,11 @@ describe('FormularioMovimiento', () => {
     fireEvent.change(screen.getByLabelText('Fecha'), { target: { value: '2026-11-22' } });
     fireEvent.change(screen.getByLabelText('Categoría'), { target: { value: 'categoria-ingreso' } });
     fireEvent.change(screen.getByLabelText('Descripción'), { target: { value: '  Sueldo mensual  ' } });
-    fireEvent.submit(screen.getByLabelText('Monto').closest('form')!);
+    fireEvent.change(screen.getByLabelText('Moneda'), { target: { value: 'ars' } });
+    await act(async () => fireEvent.submit(screen.getByLabelText('Monto').closest('form')!));
     expect(onGuardar).toHaveBeenCalledExactlyOnceWith({
       fecha: '2026-11-22', monto: 125.5, descripcion: 'Sueldo mensual',
-      categoriaId: 'categoria-ingreso', medioPagoId: null,
+      categoriaId: 'categoria-ingreso', medioPagoId: null, monedaId: 'ars',
     });
 
     fireEvent.change(screen.getByLabelText('Tipo'), { target: { value: 'GASTO' } });

@@ -3,6 +3,7 @@ import { useState, type SubmitEvent } from 'react';
 import type { CategoriaResponseDTO } from '../../types/categoria.types';
 import type { MedioPagoResponseDTO } from '../../types/medio-pago.types';
 import type { CrearMovimientoDTO, TipoMovimiento, MovimientoResponseDTO } from '../../types/movimiento.types';
+import type { MonedaResponseDTO } from '../../types/moneda.types';
 
 interface FormularioMovimientoProps {
     abierto: boolean;
@@ -10,21 +11,31 @@ interface FormularioMovimientoProps {
     onCerrar: () => void;
     categorias: CategoriaResponseDTO[];
     mediosPago: MedioPagoResponseDTO[];
-    onGuardar: (datos: Omit<CrearMovimientoDTO, 'monedaId'>) => Promise<void>;
+    monedas: MonedaResponseDTO[];
+    onGuardar: (datos: CrearMovimientoDTO) => Promise<void>;
 }
 
-export function FormularioMovimiento({abierto, movimiento, categorias, mediosPago, onCerrar, onGuardar}: FormularioMovimientoProps) {
+export function FormularioMovimiento({
+    abierto, movimiento, categorias, mediosPago, monedas, onCerrar, onGuardar,
+}: FormularioMovimientoProps) {
     const [descripcion, setDescripcion] = useState(movimiento?.descripcion ?? '');
     const [monto, setMonto] = useState(movimiento ? String(movimiento.monto) : '');
     const [fecha, setFecha] = useState(movimiento?.fecha.slice(0, 10) ?? '');
     const [categoriaId, setCategoriaId] = useState(movimiento?.categoriaId ?? '');
     const [medioPagoId, setMedioPagoId] = useState(movimiento?.medioPagoId ?? '');
+    const [monedaId, setMonedaId] = useState(movimiento?.monedaId ?? '');
     const [tipo, setTipo] = useState<TipoMovimiento>(movimiento?.tipo ?? 'GASTO');
     const [error, setError] = useState('');
+    const [guardando, setGuardando] = useState(false);
     const categoriasDisponibles = categorias.filter((categoria) => categoria.tipo === tipo);
 
-    async function manejarSubmit(evento: SubmitEvent<HTMLFormElement>){
+    function cerrarFormulario() {
+        if (!guardando) onCerrar();
+    }
+
+    async function manejarSubmit(evento: SubmitEvent<HTMLFormElement>) {
         evento.preventDefault();
+        if (guardando) return;
         setError('');
 
         const montoNumerico = Number(monto);
@@ -43,23 +54,32 @@ export function FormularioMovimiento({abierto, movimiento, categorias, mediosPag
             return;
         }
 
-        const datosMovimiento = {
+        if (!monedaId) {
+            setError('Seleccioná una moneda');
+            return;
+        }
+
+        const datosMovimiento: CrearMovimientoDTO = {
             fecha,
             monto: montoNumerico,
             descripcion: descripcion.trim() || null,
             categoriaId,
             medioPagoId: tipo === 'GASTO' ? medioPagoId : null,
+            monedaId,
         };
 
+        setGuardando(true);
         try {
             await onGuardar(datosMovimiento);
         } catch {
             setError('No se pudo guardar el movimiento. Intentá de nuevo.');
+        } finally {
+            setGuardando(false);
         }
     }
     
     return (
-        <Modal abierto={abierto} onCerrar={onCerrar} titulo={movimiento? 'Editar Movimiento' : 'Nuevo Movimiento'}>
+        <Modal abierto={abierto} onCerrar={cerrarFormulario} titulo={movimiento ? 'Editar Movimiento' : 'Nuevo Movimiento'}>
             <form className="space-y-4" onSubmit={manejarSubmit}>
                 <InputTexto
                     label="Descripción"
@@ -76,6 +96,24 @@ export function FormularioMovimiento({abierto, movimiento, categorias, mediosPag
                     onChange={(evento) => setMonto(evento.target.value)}
                     required
                 />
+                <Selector
+                    label="Moneda"
+                    value={monedaId}
+                    onChange={(evento) => setMonedaId(evento.target.value)}
+                    required
+                >
+                    <option value="" disabled>Seleccionar moneda</option>
+
+                    {movimiento && !monedas.some((moneda) => moneda.id === movimiento.monedaId) && (
+                        <option value={movimiento.monedaId}>Moneda actual</option>
+                    )}
+
+                    {monedas.map((moneda) => (
+                        <option key={moneda.id} value={moneda.id}>
+                            {moneda.codigo} — {moneda.nombre}
+                        </option>
+                    ))}
+                </Selector>
                 <InputTexto
                     label="Fecha"
                     type="date"
@@ -123,10 +161,10 @@ export function FormularioMovimiento({abierto, movimiento, categorias, mediosPag
                 )}
                 {error && <MensajeError mensaje={error} />}
                 <div className="flex justify-end gap-3 pt-2">
-                    <Boton type="button" variante="secondary" onClick={onCerrar}>
+                    <Boton type="button" variante="secondary" onClick={cerrarFormulario} disabled={guardando}>
                         Cancelar
                     </Boton>
-                    <Boton type="submit">
+                    <Boton type="submit" cargando={guardando}>
                         Guardar
                     </Boton>
                 </div>
