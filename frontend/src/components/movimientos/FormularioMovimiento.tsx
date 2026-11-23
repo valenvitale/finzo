@@ -2,23 +2,24 @@ import { Boton, InputTexto, Modal, Selector, MensajeError } from '../common';
 import { useState, type SubmitEvent } from 'react';
 import type { CategoriaResponseDTO } from '../../types/categoria.types';
 import type { MedioPagoResponseDTO } from '../../types/medio-pago.types';
-import type { CrearMovimientoDTO, TipoMovimiento } from '../../types/movimiento.types';
+import type { CrearMovimientoDTO, TipoMovimiento, MovimientoResponseDTO } from '../../types/movimiento.types';
 
 interface FormularioMovimientoProps {
     abierto: boolean;
+    movimiento?: MovimientoResponseDTO;
     onCerrar: () => void;
     categorias: CategoriaResponseDTO[];
     mediosPago: MedioPagoResponseDTO[];
     onGuardar: (datos: Omit<CrearMovimientoDTO, 'monedaId'>) => Promise<void>;
 }
 
-export function FormularioMovimiento({abierto, categorias, mediosPago, onCerrar, onGuardar}: FormularioMovimientoProps) {
-    const [descripcion, setDescripcion] = useState('');
-    const [monto, setMonto] = useState('');
-    const [fecha, setFecha] = useState('');
-    const [categoriaId, setCategoriaId] = useState('');
-    const [medioPagoId, setMedioPagoId] = useState('');
-    const [tipo, setTipo] = useState<TipoMovimiento>('GASTO');
+export function FormularioMovimiento({abierto, movimiento, categorias, mediosPago, onCerrar, onGuardar}: FormularioMovimientoProps) {
+    const [descripcion, setDescripcion] = useState(movimiento?.descripcion ?? '');
+    const [monto, setMonto] = useState(movimiento ? String(movimiento.monto) : '');
+    const [fecha, setFecha] = useState(movimiento?.fecha.slice(0, 10) ?? '');
+    const [categoriaId, setCategoriaId] = useState(movimiento?.categoriaId ?? '');
+    const [medioPagoId, setMedioPagoId] = useState(movimiento?.medioPagoId ?? '');
+    const [tipo, setTipo] = useState<TipoMovimiento>(movimiento?.tipo ?? 'GASTO');
     const [error, setError] = useState('');
     const categoriasDisponibles = categorias.filter((categoria) => categoria.tipo === tipo);
 
@@ -50,11 +51,15 @@ export function FormularioMovimiento({abierto, categorias, mediosPago, onCerrar,
             medioPagoId: tipo === 'GASTO' ? medioPagoId : null,
         };
 
-        await onGuardar(datosMovimiento);
+        try {
+            await onGuardar(datosMovimiento);
+        } catch {
+            setError('No se pudo guardar el movimiento. Intentá de nuevo.');
+        }
     }
     
     return (
-        <Modal abierto={abierto} onCerrar={onCerrar} titulo="Nuevo movimiento">
+        <Modal abierto={abierto} onCerrar={onCerrar} titulo={movimiento? 'Editar Movimiento' : 'Nuevo Movimiento'}>
             <form className="space-y-4" onSubmit={manejarSubmit}>
                 <InputTexto
                     label="Descripción"
