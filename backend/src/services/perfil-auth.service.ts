@@ -1,4 +1,4 @@
-import { AppError, ErrorNoAutorizado } from '../errors/errores.js';
+import { AppError, ErrorProhibido } from '../errors/errores.js';
 import { supabase, supabasePublic } from '../config/supabase.js';
 
 export interface IPerfilAuthService {
@@ -24,7 +24,7 @@ export class PerfilAuthService implements IPerfilAuthService {
 
     if (errorVerificacion) {
       if (errorVerificacion.status === 400 || errorVerificacion.status === 401) {
-        throw new ErrorNoAutorizado('La contraseña actual es incorrecta');
+        throw new ErrorProhibido('La contraseña actual es incorrecta');
       }
       throw new AppError('No se pudo verificar la contraseña con el proveedor de autenticación', 502);
     }
