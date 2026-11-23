@@ -9,6 +9,7 @@ import TestPage from '../pages/test';
 import { PageContainer } from '../components/layout/PageContainer';
 // import Dashboard from '../pages/Dashboard';
 import Perfil from '../pages/Perfil';
+import Movimientos from '../pages/Movimientos';
 
 function DashboardTemporal() {
   const { logout } = useAuth();
@@ -91,7 +92,7 @@ export default function AppRouter() {
           }
         >
           <Route path="/dashboard" element={<DashboardTemporal />} />
-          <Route path="/movimientos" element={<h1>Movimientos</h1>} />
+          <Route path="/movimientos" element={<Movimientos/>} />
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/estadisticas" element={<h1>Estadísticas</h1>} />
           <Route path="/perfil" element={<Perfil />} />

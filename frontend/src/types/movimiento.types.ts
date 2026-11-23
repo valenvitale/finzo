@@ -6,7 +6,7 @@ export interface CrearMovimientoDTO {
   descripcion?: string | null;
   monedaId: string;
   categoriaId: string;
-  medioPagoId: string;
+  medioPagoId?: string | null;
 }
 
 export interface ActualizarMovimientoDTO {
@@ -15,7 +15,7 @@ export interface ActualizarMovimientoDTO {
   descripcion?: string | null;
   monedaId?: string;
   categoriaId?: string;
-  medioPagoId?: string;
+  medioPagoId?: string | null;
 }
 
 export interface FiltrosMovimientoDTO {
@@ -39,7 +39,7 @@ export interface MovimientoResponseDTO {
   perfilId: string;
   monedaId: string;
   categoriaId: string;
-  medioPagoId: string;
+  medioPagoId: string | null;
   tipo: TipoMovimiento;
   createdAt: string;
   updatedAt: string;

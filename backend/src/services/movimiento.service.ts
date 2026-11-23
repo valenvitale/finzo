@@ -6,6 +6,7 @@ import type {
   ActualizarMovimientoDTO,
   FiltrosMovimientoDTO,
   MovimientoResponseDTO,
+  TipoMovimiento,
 } from '../types/movimiento.types.js';
 import { ErrorDeValidacion, ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
 
@@ -18,7 +19,7 @@ export interface IMovimientoService {
 }
 export class MovimientoService implements IMovimientoService {
   private readonly movimientoRepository: IMovimientoRepository;
-  private readonly categoriaRepository?: ICategoriaRepository;
+  private readonly categoriaRepository: ICategoriaRepository;
   private readonly medioPagoRepository?: IMedioPagoRepository;
 
   /**
@@ -28,7 +29,7 @@ export class MovimientoService implements IMovimientoService {
    */
   constructor(
     movimientoRepository: IMovimientoRepository,
-    categoriaRepository?: ICategoriaRepository,
+    categoriaRepository: ICategoriaRepository,
     medioPagoRepository?: IMedioPagoRepository
   ) {
     this.movimientoRepository = movimientoRepository;
@@ -41,8 +42,13 @@ export class MovimientoService implements IMovimientoService {
    * @param datosMovimiento - Los datos del movimiento a validar.
    */
 
-  private async validarRelaciones(datosMovimiento: CrearMovimientoDTO | ActualizarMovimientoDTO, perfilId?: string) {
-    if (this.categoriaRepository && datosMovimiento.categoriaId) {
+  private async validarRelaciones(
+    datosMovimiento: CrearMovimientoDTO | ActualizarMovimientoDTO,
+    perfilId: string,
+    tipoActual?: TipoMovimiento
+  ): Promise<string | null> {
+    let tipo = tipoActual;
+    if (datosMovimiento.categoriaId) {
       const categoria = await this.categoriaRepository.obtenerPorId(datosMovimiento.categoriaId);
       if (!categoria) {
         throw new ErrorDeValidacion('La categoría especificada no existe');
@@ -50,6 +56,15 @@ export class MovimientoService implements IMovimientoService {
       if (categoria.perfilId !== null && perfilId && categoria.perfilId !== perfilId) {
         throw new ErrorProhibido('No tienes permiso para utilizar esta categoría');
       }
+      tipo = categoria.tipo;
+    }
+
+    if (tipo === 'INGRESO') {
+      return null;
+    }
+
+    if (!datosMovimiento.medioPagoId) {
+      throw new ErrorDeValidacion('Los gastos requieren un medio de pago');
     }
 
     if (this.medioPagoRepository && datosMovimiento.medioPagoId) {
@@ -61,6 +76,7 @@ export class MovimientoService implements IMovimientoService {
         throw new ErrorProhibido('No tienes permiso para utilizar este medio de pago');
       }
     }
+    return datosMovimiento.medioPagoId;
   }
 
   private async validarPertenenciaUsuario(movimientoId: string, perfilId: string) {
@@ -78,8 +94,8 @@ export class MovimientoService implements IMovimientoService {
   }
 
   async crear(perfilId: string, datosMovimiento: CrearMovimientoDTO): Promise<MovimientoResponseDTO> {
-    await this.validarRelaciones(datosMovimiento, perfilId);
-    return this.movimientoRepository.crear(perfilId, datosMovimiento);
+    const medioPagoId = await this.validarRelaciones(datosMovimiento, perfilId);
+    return this.movimientoRepository.crear(perfilId, { ...datosMovimiento, medioPagoId });
   }
 
   async obtenerPorId(id: string, perfilId: string): Promise<MovimientoResponseDTO> {
@@ -91,9 +107,14 @@ export class MovimientoService implements IMovimientoService {
     perfilId: string,
     datosActualizacion: ActualizarMovimientoDTO
   ): Promise<MovimientoResponseDTO> {
-    await this.validarPertenenciaUsuario(id, perfilId);
-    await this.validarRelaciones(datosActualizacion, perfilId);
-    return this.movimientoRepository.actualizar(id, datosActualizacion);
+    const movimiento = await this.validarPertenenciaUsuario(id, perfilId);
+    const medioPagoId = await this.validarRelaciones({
+      ...datosActualizacion,
+      medioPagoId: datosActualizacion.medioPagoId !== undefined
+        ? datosActualizacion.medioPagoId
+        : movimiento.medioPagoId,
+    }, perfilId, movimiento.tipo);
+    return this.movimientoRepository.actualizar(id, { ...datosActualizacion, medioPagoId }, movimiento);
   }
 
   async eliminar(id: string, perfilId: string): Promise<void> {
