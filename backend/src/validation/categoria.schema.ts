@@ -4,25 +4,26 @@ const camposCategoria = {
   nombre: z.string().trim().min(1, 'El nombre es obligatorio').max(30, 'El nombre no puede superar los 30 caracteres'),
   color: z.string().regex(/^#[\da-fA-F]{6}$/, 'El color debe ser un código hexadecimal válido, por ejemplo #A1B2C3'),
   tipo: z.enum(['INGRESO', 'GASTO'], { error: 'El tipo debe ser INGRESO o GASTO' }),
-  icono: z
-    .enum([
-      'briefcase-business',
-      'trending-up',
-      'shopping-bag',
-      'wallet',
-      'utensils',
-      'car',
-      'zap',
-      'heart-pulse',
-      'graduation-cap',
-      'gamepad-2',
-      'tag',
-    ])
-    .default('tag'),
+  icono: z.enum([
+    'briefcase-business',
+    'trending-up',
+    'shopping-bag',
+    'wallet',
+    'utensils',
+    'car',
+    'zap',
+    'heart-pulse',
+    'graduation-cap',
+    'gamepad-2',
+    'tag',
+  ]),
 };
 
 // Esquema de validación para crear una categoría
-export const crearCategoriaSchema = z.strictObject(camposCategoria);
+export const crearCategoriaSchema = z.strictObject({
+  ...camposCategoria,
+  icono: camposCategoria.icono.default('tag'),
+});
 
 // Esquema de validación para actualizar una categoría
 export const actualizarCategoriaSchema = z
