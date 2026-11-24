@@ -227,3 +227,101 @@ describe('POST /api/movimientos (Status 201 y 400)', () => {
     expect(mocks.crearMovimiento).not.toHaveBeenCalled();
   });
 });
+
+describe('GET /api/movimientos - Validación de filtros', () => {
+  it('rechaza un rango de fechas invertido', async () => {
+    mocks.listarMovimientos.mockResolvedValue([]);
+
+    const respuesta = await request(app)
+      .get('/api/movimientos')
+      .set('Authorization', 'Bearer token-valido')
+      .query({
+        fechaDesde: '2026-10-20',
+        fechaHasta: '2026-10-10',
+      });
+
+    expect(respuesta.status).toBe(400);
+    expect(respuesta.body.exito).toBe(false);
+    expect(respuesta.body.errores).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('fechaHasta:'),
+      ])
+    );
+    expect(mocks.listarMovimientos).not.toHaveBeenCalled();
+  });
+
+  it('rechaza un rango de montos invertido', async () => {
+    mocks.listarMovimientos.mockResolvedValue([]);
+
+    const respuesta = await request(app)
+      .get('/api/movimientos')
+      .set('Authorization', 'Bearer token-valido')
+      .query({
+        montoMinimo: 5000,
+        montoMaximo: 1000,
+      });
+
+    expect(respuesta.status).toBe(400);
+    expect(respuesta.body.exito).toBe(false);
+    expect(respuesta.body.errores).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('montoMaximo:'),
+      ])
+    );
+    expect(mocks.listarMovimientos).not.toHaveBeenCalled();
+  });
+
+  it('rechaza parámetros adicionales no permitidos', async () => {
+    mocks.listarMovimientos.mockResolvedValue([]);
+
+    const respuesta = await request(app)
+      .get('/api/movimientos')
+      .set('Authorization', 'Bearer token-valido')
+      .query({ parametroInvalido: 'valor' });
+
+    expect(respuesta.status).toBe(400);
+    expect(respuesta.body.exito).toBe(false);
+    expect(mocks.listarMovimientos).not.toHaveBeenCalled();
+  });
+
+  it('acepta rangos de fechas y montos válidos', async () => {
+    mocks.listarMovimientos.mockResolvedValue([]);
+
+    const respuesta = await request(app)
+      .get('/api/movimientos')
+      .set('Authorization', 'Bearer token-valido')
+      .query({
+        fechaDesde: '2026-10-01',
+        fechaHasta: '2026-10-31',
+        montoMinimo: 1000,
+        montoMaximo: 5000,
+      });
+
+    expect(respuesta.status).toBe(200);
+    expect(mocks.listarMovimientos).toHaveBeenCalledWith(
+      perfilId,
+      {
+        fechaDesde: new Date('2026-10-01'),
+        fechaHasta: new Date('2026-10-31'),
+        montoMinimo: 1000,
+        montoMaximo: 5000,
+      }
+    );
+  });
+
+  it('acepta fechas y montos iguales en ambos límites', async () => {
+    mocks.listarMovimientos.mockResolvedValue([]);
+
+    const respuesta = await request(app)
+      .get('/api/movimientos')
+      .set('Authorization', 'Bearer token-valido')
+      .query({
+        fechaDesde: '2026-10-16',
+        fechaHasta: '2026-10-16',
+        montoMinimo: 1500,
+        montoMaximo: 1500,
+      });
+
+    expect(respuesta.status).toBe(200);
+  });
+});
