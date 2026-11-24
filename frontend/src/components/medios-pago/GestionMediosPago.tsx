@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import type { SubmitEvent } from 'react';
 import { Banknote, Landmark, CreditCard, LockKeyhole, Pencil, Plus, Trash2 } from 'lucide-react';
 import { Boton } from '../common/Boton';
-import type { SubmitEvent } from 'react';
 import { useMediosPago } from '../../hooks/useMediosPago';
 import type { MedioPago } from '../../types/medio-pago.types';
 
@@ -32,6 +32,7 @@ export default function GestionMediosPago() {
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [nombre, setNombre] = useState('');
   const [icono, setIcono] = useState('');
+  const [selectorAbierto, setSelectorAbierto] = useState(false);
   const [idEditando, setIdEditando] = useState<string | null>(null);
 
   const mediosPropios = mediosPago.filter(
@@ -149,10 +150,50 @@ export default function GestionMediosPago() {
                 <label htmlFor="medio-nombre" className="text-sm font-medium text-slate-700">Nombre</label>
                 <input id="medio-nombre" className={campoClase} value={nombre} onChange={(event) => setNombre(event.target.value)} maxLength={40} required disabled={guardando} placeholder="Por ejemplo: Mi tarjeta" />
               </div>
-              <div>
-                <label htmlFor="medio-icono" className="text-sm font-medium text-slate-700">Ícono</label>
-                <input id="medio-icono" className={campoClase} value={icono} onChange={(event) => setIcono(event.target.value)} maxLength={20} required disabled={guardando} placeholder="Por ejemplo: credit-card" />
-              </div>
+              <fieldset className="relative">
+                <legend className="text-sm font-medium text-slate-700">Ícono</legend>
+
+                <Boton
+                  type="button"
+                  variante="primary"
+                  className="mt-1"
+                  aria-expanded={selectorAbierto}
+                  disabled={guardando}
+                  onClick={() => setSelectorAbierto((abierto) => !abierto)}
+                >
+                  {icono && <IconoMedioPago nombre={icono} />}
+                  {icono ? 'Cambiar ícono' : 'Elegir ícono'}
+                </Boton>
+
+                {selectorAbierto && (
+                  <div className="absolute z-10 mt-2 flex gap-2 rounded-xl border border-slate-200 bg-white p-2 shadow-md">
+                    {[
+                      { id: 'banknote', etiqueta: 'Efectivo' },
+                      { id: 'credit-card', etiqueta: 'Tarjeta' },
+                      { id: 'landmark', etiqueta: 'Transferencia' },
+                    ].map(({ id, etiqueta }) => (
+                      <button
+                        key={id}
+                        type="button"
+                        aria-label={etiqueta}
+                        aria-pressed={icono === id}
+                        disabled={guardando}
+                        onClick={() => {
+                          setIcono(id);
+                          setSelectorAbierto(false);
+                        }}
+                        className={`rounded-lg border p-2.5 text-oliva ${
+                          icono === id
+                            ? 'border-oliva bg-oliva-claro'
+                            : 'border-slate-200 hover:bg-slate-50'
+                        }`}
+                      >
+                        <IconoMedioPago nombre={id} />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </fieldset>
             </div>
             <div className="flex flex-wrap justify-end gap-2">
               <Boton variante="secondary" disabled={guardando} onClick={cancelarEdicion}>Cancelar</Boton>
