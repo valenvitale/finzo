@@ -147,4 +147,23 @@ describe('MedioPago routes', () => {
         expect(respuesta.status).toBe(403);
         expect(mocks.eliminarMedioPago).not.toHaveBeenCalled();
     });
+
+    it('devuelve 400 al editar con un ID inválido', async () => {
+        const respuesta = await request(app)
+            .patch('/api/medios-pago/no-es-uuid')
+            .set('Authorization', 'Bearer token-valido')
+            .send({ nombre: 'Otro nombre' });
+
+        expect(respuesta.status).toBe(400);
+        expect(mocks.obtenerMedioPagoPorId).not.toHaveBeenCalled();
+    });
+
+    it('devuelve 400 al eliminar con un ID inválido', async () => {
+        const respuesta = await request(app)
+            .delete('/api/medios-pago/no-es-uuid')
+            .set('Authorization', 'Bearer token-valido');
+
+        expect(respuesta.status).toBe(400);
+        expect(mocks.obtenerMedioPagoPorId).not.toHaveBeenCalled();
+    });
 });

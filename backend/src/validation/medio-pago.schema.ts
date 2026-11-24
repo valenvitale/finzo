@@ -21,3 +21,7 @@ export const actualizarMedioPagoSchema = z.strictObject({
 }).refine((data) => Object.keys(data).length > 0, {
   message: 'Debe enviar al menos un campo para actualizar',
 });
+
+export const medioPagoIdParamsSchema = z.strictObject({
+  id: z.uuid('El identificador del medio de pago debe ser un UUID válido'),
+});
