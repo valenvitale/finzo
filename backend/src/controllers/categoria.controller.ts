@@ -1,6 +1,6 @@
 import type { NextFunction, Response } from 'express';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
-import type { CategoriaService } from '../services/categoria.service.js';
+import type { ICategoriaService } from '../services/categoria.service.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
 import type { ActualizarCategoriaDTO, CrearCategoriaDTO } from '../types/categoria.types.js';
 
@@ -12,9 +12,9 @@ function obtenerPerfilId(req: AuthenticatedRequest): string {
 }
 
 export class CategoriaController {
-  private readonly categoriaService: CategoriaService;
+  private readonly categoriaService: ICategoriaService;
 
-  constructor(categoriaService: CategoriaService) {
+  constructor(categoriaService: ICategoriaService) {
     this.categoriaService = categoriaService;
   }
 
