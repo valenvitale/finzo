@@ -2,7 +2,6 @@ import type { NextFunction, Response } from 'express';
 import type { AuthenticatedRequest } from '../middlewares/auth.middleware.js';
 import { ErrorNoAutorizado } from '../errors/errores.js';
 import type { IMedioPagoService, CrearMedioPagoDTO, ActualizarMedioPagoDTO } from '../types/medio-pago.types.js';
-import { promises } from 'node:dns';
 
 export class MedioPagoController {
   constructor(private readonly medioPagoService: IMedioPagoService) {}
