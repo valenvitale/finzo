@@ -10,6 +10,7 @@ import { PageContainer } from '../components/layout/PageContainer';
 import Dashboard from '../pages/Dashboard';
 import Perfil from '../pages/Perfil';
 import Movimientos from '../pages/Movimientos';
+import Estadisticas from '../pages/Estadisticas';
 
 function RutaProtegida({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -71,7 +72,7 @@ export default function AppRouter() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/movimientos" element={<Movimientos/>} />
           <Route path="/categorias" element={<Categorias />} />
-          <Route path="/estadisticas" element={<h1>Estadísticas</h1>} />
+          <Route path="/estadisticas" element={<Estadisticas />} />
           <Route path="/perfil" element={<Perfil />} />
         </Route>
 
