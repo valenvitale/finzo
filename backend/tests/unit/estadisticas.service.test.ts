@@ -42,11 +42,11 @@ describe('EstadisticasService', () => {
       .fn()
       .mockResolvedValue(totalesMensuales);
 
-    const repository = {
+    const repository: IEstadisticasRepository = {
       obtenerMovimientos,
       obtenerTotalesPorCategoria,
       obtenerTotalesMensuales,
-    } as unknown as IEstadisticasRepository;
+    };
 
     const service = new EstadisticasService(repository);
 

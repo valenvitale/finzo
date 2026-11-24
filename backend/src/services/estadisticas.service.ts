@@ -1,9 +1,8 @@
-import {
-  EstadisticasRepository,
-  type IEstadisticasRepository,
-  type MovimientoEstadistica,
-  type TotalPorCategoria,
-  type TotalMensual,
+import type {
+  IEstadisticasRepository,
+  MovimientoEstadistica,
+  TotalPorCategoria,
+  TotalMensual,
 } from '../repositories/estadisticas.repository.js';
 
 import type {
@@ -14,12 +13,17 @@ import type {
   EstadisticasResponseDTO,
 } from '../types/estadisticas.types.js';
 
-export class EstadisticasService {
-  constructor(
-    private readonly repository: IEstadisticasRepository =
-      new EstadisticasRepository()
-  ) {}
+export interface IEstadisticasService {
+  obtenerEstadisticas(
+    perfilId: string,
+    filtros?: FiltrosEstadisticasDTO
+  ): Promise<EstadisticasResponseDTO>;
+}
 
+export class EstadisticasService implements IEstadisticasService {
+  constructor(
+    private readonly repository: IEstadisticasRepository
+  ) {}
   // Obtiene las estadísticas financieras de un perfil.
   async obtenerEstadisticas(
     perfilId: string,
