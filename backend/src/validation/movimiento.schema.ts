@@ -1,8 +1,30 @@
 import { z } from 'zod';
 
+function obtenerFechaActual(): string {
+  const partes = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date());
+
+  const { year, month, day } = Object.fromEntries(
+    partes.map(({ type, value }) => [type, value])
+  );
+
+  return `${year}-${month}-${day}`;
+}
+
 // Esquema de validación para crear un movimiento
 export const crearMovimientoSchema = z.strictObject({
-  fecha: z.coerce.date('La fecha no es válida'),
+  fecha: z.coerce.date('La fecha no es válida').refine(
+    (fecha) =>
+        fecha.getTime() <=
+        new Date(`${obtenerFechaActual()}T23:59:59.999Z`).getTime(),
+    {
+        message: 'La fecha no puede ser posterior al día de hoy',
+    }
+  ),
   monto: z.number('El monto debe ser un número')
     .positive('El monto debe ser un número positivo'),
   descripcion: z.string()

@@ -4,6 +4,7 @@ import type { CategoriaResponseDTO } from '../../types/categoria.types';
 import type { MedioPagoResponseDTO } from '../../types/medio-pago.types';
 import type { CrearMovimientoDTO, TipoMovimiento, MovimientoResponseDTO } from '../../types/movimiento.types';
 import type { MonedaResponseDTO } from '../../types/moneda.types';
+import { obtenerFechaActual } from '../../utils/fecha';
 
 interface FormularioMovimientoProps {
     abierto: boolean;
@@ -44,8 +45,14 @@ export function FormularioMovimiento({
             setError('El monto debe ser un número mayor a cero');
             return;
         }
+
         if (!fecha || !categoriaId) {
             setError('Seleccioná una fecha y una categoría');
+            return;
+        }
+
+        if (Date.parse(fecha) > Date.parse(obtenerFechaActual())) {
+            setError('La fecha no puede ser posterior al día de hoy');
             return;
         }
 
@@ -118,6 +125,7 @@ export function FormularioMovimiento({
                     label="Fecha"
                     type="date"
                     value={fecha}
+                    max={obtenerFechaActual()}
                     onChange={(evento) => setFecha(evento.target.value)}
                     required
                 />
