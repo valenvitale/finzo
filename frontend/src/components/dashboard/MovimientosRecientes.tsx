@@ -4,17 +4,18 @@ import { ArrowDownLeft, ArrowUpRight, ArrowRight } from 'lucide-react';
 import type { MovimientoResponseDTO } from '../../types/movimiento.types';
 import { Tarjeta } from '../common/Tarjeta';
 import { formatearMonto, formatearFecha } from '../../utils/formateadores';
+import { formatearNumero } from '../../utils/formato';
 
 interface MovimientosRecientesProps {
   movimientos: MovimientoResponseDTO[];
+  codigosMoneda: ReadonlyMap<string, string>;
 }
 
 export function MovimientosRecientes({
-  movimientos
+  movimientos,
+  codigosMoneda,
 }: MovimientosRecientesProps) {
-
-  // Ordenamos por fecha, del más reciente al más antiguo
-  // y mostramos solamente los primeros cinco.
+  // Ordenamos por fecha y mostramos los primeros cinco movimientos.
   const ultimosMovimientos = [...movimientos]
     .sort((a, b) => {
       const diferenciaFechas =
@@ -22,7 +23,8 @@ export function MovimientosRecientes({
 
       return diferenciaFechas !== 0
         ? diferenciaFechas
-        : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        : new Date(b.createdAt).getTime() -
+            new Date(a.createdAt).getTime();
     })
     .slice(0, 5);
 
@@ -50,6 +52,12 @@ export function MovimientosRecientes({
         <div className="divide-y divide-slate-100">
           {ultimosMovimientos.map((movimiento) => {
             const esIngreso = movimiento.tipo === 'INGRESO';
+
+            const codigo = codigosMoneda.get(movimiento.monedaId);
+
+            const importe = codigo
+              ? formatearMonto(movimiento.monto, codigo)
+              : formatearNumero(movimiento.monto);
 
             return (
               <div
@@ -85,8 +93,8 @@ export function MovimientosRecientes({
                     esIngreso ? 'text-green-600' : 'text-red-600'
                   }`}
                 >
-                  {esIngreso ? '+' : '-'}
-                  {formatearMonto(movimiento.monto)}
+                  {esIngreso ? '+ ' : '- '}
+                  {importe}
                 </span>
               </div>
             );

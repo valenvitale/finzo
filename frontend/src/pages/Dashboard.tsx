@@ -1,8 +1,12 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Tags, RefreshCw } from 'lucide-react';
 
 import { useResumen } from '../hooks/useResumen';
 import { useMovimientos } from '../hooks/useMovimientos';
+import { useApi } from '../hooks/useApi';
+
+import { listarMonedasDisponibles } from '../services/moneda.service';
 
 import { ResumenFinanciero } from '../components/dashboard/ResumenFinanciero';
 import { MovimientosRecientes } from '../components/dashboard/MovimientosRecientes';
@@ -17,6 +21,21 @@ export default function Dashboard() {
     error: errorMovimientos,
     recargar: recargarMovimientos,
   } = useMovimientos();
+
+  const {
+    data: monedas,
+    error: errorMonedas,
+    ejecutar: cargarMonedas,
+  } = useApi(listarMonedasDisponibles);
+
+  useEffect(() => {
+    void cargarMonedas().catch(() => undefined);
+  }, [cargarMonedas]);
+
+  // Relacionamos cada ID de moneda con su código.
+  const codigosMoneda = new Map(
+    (monedas ?? []).map((moneda) => [moneda.id, moneda.codigo])
+  );
 
   return (
     <section className="space-y-6">
@@ -111,7 +130,26 @@ export default function Dashboard() {
             </button>
           </div>
         ) : (
-          <MovimientosRecientes movimientos={movimientos} />
+          <>
+            {errorMonedas && (
+              <p className="text-sm text-red-600">
+                No se pudieron cargar los códigos de moneda.
+
+                <button
+                  type="button"
+                  onClick={() => void cargarMonedas().catch(() => undefined)}
+                  className="ml-2 text-blue-600 hover:underline"
+                >
+                  Reintentar
+                </button>
+              </p>
+            )}
+
+            <MovimientosRecientes
+              movimientos={movimientos}
+              codigosMoneda={codigosMoneda}
+            />
+          </>
         )}
       </div>
     </section>
