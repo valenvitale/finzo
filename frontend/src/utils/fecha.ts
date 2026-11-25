@@ -10,3 +10,18 @@ export function formatearFecha(
     ...opciones,
   }).format(new Date(fecha));
 }
+
+export function obtenerFechaActual(): string {
+  const partes = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date());
+
+  const { year, month, day } = Object.fromEntries(
+    partes.map(({ type, value }) => [type, value])
+  );
+
+  return `${year}-${month}-${day}`;
+}

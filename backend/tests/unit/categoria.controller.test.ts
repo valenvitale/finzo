@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { Response } from 'express';
 import type { AuthenticatedRequest } from '../../src/middlewares/auth.middleware.js';
 import { CategoriaController } from '../../src/controllers/categoria.controller.js';
-import type { CategoriaService } from '../../src/services/categoria.service.js';
+import type { ICategoriaService } from '../../src/services/categoria.service.js';
 import { ErrorNoAutorizado } from '../../src/errors/errores.js';
 
 describe('CategoriaController', () => {
@@ -11,19 +11,20 @@ describe('CategoriaController', () => {
     nombre: 'Servicios',
     color: '#123456',
     tipo: 'GASTO' as const,
+    icono: 'tag',
     perfilId: 'perfil-1',
     createdAt: new Date('2026-10-12T12:00:00Z'),
     updatedAt: new Date('2026-10-12T12:00:00Z'),
   };
 
   function preparar() {
-    const mockService = {
+    const mockService: ICategoriaService = {
       crear: vi.fn().mockResolvedValue(mockCategoria),
       obtenerPorId: vi.fn().mockResolvedValue(mockCategoria),
       actualizar: vi.fn().mockResolvedValue(mockCategoria),
       eliminar: vi.fn().mockResolvedValue(undefined),
       listarPorPerfil: vi.fn().mockResolvedValue([mockCategoria]),
-    } as unknown as CategoriaService;
+    };
 
     const controller = new CategoriaController(mockService);
     const json = vi.fn();

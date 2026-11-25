@@ -2,7 +2,29 @@ import type { ICategoriaRepository } from '../repositories/categoria.repository.
 import type { CrearCategoriaDTO, ActualizarCategoriaDTO, CategoriaResponseDTO } from '../types/categoria.types.js';
 import { ErrorDeConflicto, ErrorNoEncontrado, ErrorProhibido } from '../errors/errores.js';
 
-export class CategoriaService {
+export interface ICategoriaService {
+  crear(
+    perfilId: string,
+    datosCategoria: CrearCategoriaDTO
+  ): Promise<CategoriaResponseDTO>;
+
+  obtenerPorId(
+    id: string,
+    perfilId: string
+  ): Promise<CategoriaResponseDTO>;
+
+  actualizar(
+    id: string,
+    perfilId: string,
+    datosActualizacion: ActualizarCategoriaDTO
+  ): Promise<CategoriaResponseDTO>;
+
+  eliminar(id: string, perfilId: string): Promise<void>;
+
+  listarPorPerfil(perfilId: string): Promise<CategoriaResponseDTO[]>;
+}
+
+export class CategoriaService implements ICategoriaService {
   private readonly categoriaRepository: ICategoriaRepository;
 
   constructor(categoriaRepository: ICategoriaRepository) {
