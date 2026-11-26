@@ -172,7 +172,7 @@ export default function Estadisticas() {
             codigoMoneda={monedaActual.codigoMoneda}
           />
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 [&_svg.recharts-surface:focus:not(:focus-visible)]:outline-none">
             <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
               <h2 className="mb-4 text-lg font-semibold text-oliva">
                 Gastos por categoría
