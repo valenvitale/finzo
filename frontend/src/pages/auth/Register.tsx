@@ -73,8 +73,14 @@ export default function Register() {
         className="w-full max-w-md space-y-5 rounded-2xl bg-white p-8 shadow-sm border border-slate-200"
       >
         <div className="text-center">
-          <h1 className="text-3xl font-extrabold tracking-tight text-oliva">FINZO</h1>
-          <h2 className="mt-2 text-xl font-semibold text-slate-900">Crear cuenta</h2>
+          <div className="relative mx-auto size-14 overflow-hidden">
+            <img
+              src="/images/finzo-logo.png"
+              alt="Finzo"
+              className="absolute top-1/2 left-1/2 size-22 max-w-none -translate-x-1/2 -translate-y-1/2"
+            />
+          </div>
+          <h1 className="mt-2 text-xl font-semibold text-slate-900">Crear cuenta</h1>
         </div>
 
         <InputTexto
