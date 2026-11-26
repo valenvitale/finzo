@@ -87,14 +87,16 @@ export function FormularioMovimiento({
     
     return (
         <Modal abierto={abierto} onCerrar={cerrarFormulario} titulo={movimiento ? 'Editar Movimiento' : 'Nuevo Movimiento'}>
-            <form className="space-y-4" onSubmit={manejarSubmit}>
-                <InputTexto
-                    label="Descripción"
-                    type="text"
-                    value={descripcion}
-                    maxLength={100}
-                    onChange={(evento) => setDescripcion(evento.target.value)}
-                />
+            <form className="grid grid-cols-2 gap-x-3 gap-y-3 sm:gap-x-4" onSubmit={manejarSubmit}>
+                <div className="col-span-full">
+                    <InputTexto
+                        label="Descripción"
+                        type="text"
+                        value={descripcion}
+                        maxLength={100}
+                        onChange={(evento) => setDescripcion(evento.target.value)}
+                    />
+                </div>
                 <InputTexto
                     label="Monto"
                     type="number"
@@ -109,7 +111,7 @@ export function FormularioMovimiento({
                     onChange={(evento) => setMonedaId(evento.target.value)}
                     required
                 >
-                    <option value="" disabled>Seleccionar moneda</option>
+                    <option value="" disabled>Elegí…</option>
 
                     {movimiento && !monedas.some((moneda) => moneda.id === movimiento.monedaId) && (
                         <option value={movimiento.monedaId}>Moneda actual</option>
@@ -146,14 +148,21 @@ export function FormularioMovimiento({
                     <option value="GASTO">Gasto</option>
                     <option value="INGRESO">Ingreso</option>
                 </Selector>
-                <Selector label="Categoría" value={categoriaId} onChange={(evento) => setCategoriaId(evento.target.value)} required>
-                    <option value="" disabled hidden>Seleccionar categoría</option>
-                    {categoriasDisponibles.map((categoria) => (
-                        <option key={categoria.id} value={categoria.id}>
-                            {categoria.nombre}
-                        </option>
-                    ))}
-                </Selector>
+                <div className={tipo === 'INGRESO' ? 'col-span-full' : undefined}>
+                    <Selector
+                        label="Categoría"
+                        value={categoriaId}
+                        onChange={(evento) => setCategoriaId(evento.target.value)}
+                        required
+                    >
+                        <option value="" disabled hidden>Elegí…</option>
+                        {categoriasDisponibles.map((categoria) => (
+                            <option key={categoria.id} value={categoria.id}>
+                                {categoria.nombre}
+                            </option>
+                        ))}
+                    </Selector>
+                </div>
                 {tipo === 'GASTO' && (
                     <Selector
                         label="Medio de pago"
@@ -161,14 +170,18 @@ export function FormularioMovimiento({
                         onChange={(evento) => setMedioPagoId(evento.target.value)}
                         required
                     >
-                        <option value="" disabled hidden>Seleccionar medio de pago</option>
+                        <option value="" disabled hidden>Elegí…</option>
                         {mediosPago.map((medio) => (
                             <option key={medio.id} value={medio.id}>{medio.nombre}</option>
                         ))}
                     </Selector>
                 )}
-                {error && <MensajeError mensaje={error} />}
-                <div className="flex justify-end gap-3 pt-2">
+                {error && (
+                    <div className="col-span-full">
+                        <MensajeError mensaje={error} />
+                    </div>
+                )}
+                <div className="col-span-full flex flex-wrap justify-end gap-3 pt-1">
                     <Boton type="button" variante="secondary" onClick={cerrarFormulario} disabled={guardando}>
                         Cancelar
                     </Boton>
