@@ -1,13 +1,24 @@
 import type { ReactNode } from 'react';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { createMemoryRouter, MemoryRouter, RouterProvider } from 'react-router-dom';
 import { expect, it, vi } from 'vitest';
 import Movimientos from '../../src/pages/Movimientos';
 import * as movimientoService from '../../src/services/movimiento.service';
 import type { MovimientoResponseDTO } from '../../src/types/movimiento.types';
 
 vi.mock('../../src/components/common/Modal', () => ({
-    Modal: ({ abierto, titulo, children }: { abierto: boolean; titulo: string; children: ReactNode }) =>
-        abierto ? <div role="dialog" aria-label={titulo}>{children}</div> : null,
+    Modal: ({ abierto, titulo, children, onCerrar }: {
+        abierto: boolean;
+        titulo: string;
+        children: ReactNode;
+        onCerrar: () => void;
+    }) =>
+        abierto ? (
+            <div role="dialog" aria-label={titulo}>
+                <button type="button" onClick={onCerrar}>Cerrar</button>
+                {children}
+            </div>
+        ) : null,
 }));
 
 vi.mock('../../src/hooks/useCategorias', () => ({
@@ -59,7 +70,7 @@ it('registra un ingreso y muestra la moneda actualizada después de editarlo', a
     vi.mocked(movimientoService.crearMovimiento).mockResolvedValue(creado);
     vi.mocked(movimientoService.actualizarMovimiento).mockResolvedValue(editado);
 
-    render(<Movimientos />);
+    render(<MemoryRouter><Movimientos /></MemoryRouter>);
     const nuevo = await screen.findByRole('button', { name: 'Nuevo movimiento' });
     await waitFor(() => expect(nuevo).toHaveProperty('disabled', false));
     fireEvent.click(nuevo);
@@ -90,4 +101,20 @@ it('registra un ingreso y muestra la moneda actualizada después de editarlo', a
     expect(movimientoService.actualizarMovimiento).toHaveBeenCalledExactlyOnceWith('movimiento-1', {
         monedaId: 'eur',
     });
+});
+
+it('abre el alta desde el Dashboard y limpia el parámetro al cerrar', async () => {
+    vi.mocked(movimientoService.listarMovimientos).mockResolvedValue([]);
+    const router = createMemoryRouter(
+        [{ path: '/movimientos', element: <Movimientos /> }],
+        { initialEntries: ['/movimientos?nuevo=1'] },
+    );
+
+    render(<RouterProvider router={router} />);
+
+    const formulario = await screen.findByRole('dialog', { name: 'Nuevo Movimiento' });
+    fireEvent.click(within(formulario).getByRole('button', { name: 'Cerrar' }));
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(router.state.location.search).toBe('');
 });

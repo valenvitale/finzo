@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Tags, RefreshCw } from 'lucide-react';
+import { Plus, RefreshCw } from 'lucide-react';
 
 import { useResumen } from '../hooks/useResumen';
 import { useMovimientos } from '../hooks/useMovimientos';
@@ -38,11 +38,10 @@ export default function Dashboard() {
   );
 
   return (
-    <section className="space-y-6">
-      {/* Encabezado del Dashboard */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mx-auto max-w-6xl space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-oliva sm:text-3xl">
             Dashboard
           </h1>
 
@@ -51,24 +50,13 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Acciones rápidas */}
-        <div className="flex flex-wrap gap-3">
-          <Link
-            to="/movimientos"
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            <Plus size={18} />
-            Nuevo movimiento
-          </Link>
-
-          <Link
-            to="/categorias"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-          >
-            <Tags size={18} />
-            Categorías
-          </Link>
-        </div>
+        <Link
+          to="/movimientos?nuevo=1"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-oliva px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-oliva-oscuro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oliva"
+        >
+          <Plus size={18} aria-hidden="true" />
+          Nuevo movimiento
+        </Link>
       </div>
 
       {/* Resumen financiero */}
@@ -124,7 +112,7 @@ export default function Dashboard() {
             <button
               type="button"
               onClick={recargarMovimientos}
-              className="mt-3 text-sm font-medium text-blue-600 hover:underline"
+              className="mt-3 text-sm font-medium text-oliva hover:underline"
             >
               Reintentar
             </button>
@@ -138,7 +126,7 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={() => void cargarMonedas().catch(() => undefined)}
-                  className="ml-2 text-blue-600 hover:underline"
+                  className="ml-2 text-oliva hover:underline"
                 >
                   Reintentar
                 </button>

@@ -6,6 +6,7 @@ import { TablaMovimientos } from '../components/movimientos/TablaMovimientos';
 import { FiltrosMovimiento } from '../components/movimientos/FiltrosMovimiento';
 import { FormularioMovimiento } from '../components/movimientos/FormularioMovimiento';
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import type { MovimientoResponseDTO, ActualizarMovimientoDTO, CrearMovimientoDTO } from '../types/movimiento.types';
 import { listarMonedasDisponibles, listarMonedasPerfil } from '../services/moneda.service';
@@ -24,8 +25,21 @@ export default function Movimientos() {
     const { movimientos, cargando, error, filtros, setFiltros, eliminar, crear, actualizar } = useMovimientos({});
     const { categorias } = useCategorias();
     const { mediosPago } = useMediosPago();
+    const [parametros, setParametros] = useSearchParams();
     const [formularioAbierto, setFormularioAbierto] = useState(false);
     const [movimientoEditado, setMovimientoEditado] = useState<MovimientoResponseDTO | null>(null);
+    const formularioSolicitado = parametros.get('nuevo') === '1';
+
+    function cerrarFormulario() {
+        setFormularioAbierto(false);
+        setMovimientoEditado(null);
+
+        if (formularioSolicitado) {
+            const siguientesParametros = new URLSearchParams(parametros);
+            siguientesParametros.delete('nuevo');
+            setParametros(siguientesParametros, { replace: true });
+        }
+    }
 
     function abrirEdicion(id: string) {
         const seleccionado = movimientos.find((movimiento) => movimiento.id === id);
@@ -39,7 +53,7 @@ export default function Movimientos() {
         if (!movimientoEditado) {
             await crear(datos);
             toast.success('Movimiento creado.');
-            setFormularioAbierto(false);
+            cerrarFormulario();
             return;
         }
 
@@ -57,7 +71,7 @@ export default function Movimientos() {
             toast.success('Movimiento actualizado.');
         }
 
-        setFormularioAbierto(false);
+        cerrarFormulario();
     }
 
     async function manejarEliminacion(id: string) {
@@ -133,14 +147,14 @@ export default function Movimientos() {
                 categorias={categorias}
                 mediosPago={mediosPago}
             />
-            {formularioAbierto && (
+            {(formularioAbierto || (formularioSolicitado && monedasAsignadas.length > 0)) && (
                 <FormularioMovimiento
-                    abierto={formularioAbierto}
+                    abierto
                     movimiento={movimientoEditado ?? undefined}
                     categorias={categorias}
                     mediosPago={mediosPago}
                     monedas={monedasAsignadas}
-                    onCerrar={() => setFormularioAbierto(false)}
+                    onCerrar={cerrarFormulario}
                     onGuardar={guardarMovimiento}
                 />
             )}

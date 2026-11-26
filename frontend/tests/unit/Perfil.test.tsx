@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as monedaService from '../../src/services/moneda.service';
@@ -88,8 +88,7 @@ describe('Perfil', () => {
 
   it('actualiza el encabezado al guardar el nombre y envía solo los campos modificados', async () => {
     renderizarPerfil();
-    const encabezado = within(screen.getByRole('button', { name: 'Cerrar sesión' }).closest('header')!);
-    expect(await encabezado.findByText('Máximo')).toBeDefined();
+    expect(await screen.findByRole('button', { name: 'Cuenta de Máximo' })).toBeDefined();
 
     const campoNombre = await screen.findByLabelText('Nombre');
     fireEvent.change(campoNombre, { target: { value: 'Max' } });
@@ -101,7 +100,7 @@ describe('Perfil', () => {
       });
     });
     expect(perfilService.actualizarPerfil).toHaveBeenCalledTimes(1);
-    expect(await encabezado.findByText('Max')).toBeDefined();
+    expect(await screen.findByRole('button', { name: 'Cuenta de Max' })).toBeDefined();
     expect(perfilService.obtenerPerfil).toHaveBeenCalledTimes(1);
   });
 

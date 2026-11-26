@@ -37,7 +37,7 @@ export function MovimientosRecientes({
 
         <Link
           to="/movimientos"
-          className="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+          className="inline-flex shrink-0 items-center gap-1 rounded-sm text-sm font-medium text-oliva hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oliva"
         >
           Ver más
           <ArrowRight size={16} />
