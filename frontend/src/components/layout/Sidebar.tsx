@@ -24,7 +24,20 @@ export default function Sidebar({ ref, onClose }: SidebarProps) {
       onClick={(event) => {
         if (event.target === event.currentTarget) event.currentTarget.close();
       }}
-      className="fixed inset-[0_auto_0_0] m-0 h-dvh max-h-none w-72 max-w-[calc(100%-2rem)] bg-white text-slate-800 shadow-xl backdrop:bg-slate-950/35"
+      className="
+        fixed inset-[0_auto_0_0] m-0 h-dvh max-h-none w-72 max-w-[calc(100%-2rem)]
+        bg-white text-slate-800 shadow-xl backdrop:bg-slate-950/35
+        not-open:pointer-events-none not-open:backdrop:pointer-events-none
+        motion-safe:translate-x-[calc(-100%-2rem)] motion-safe:open:translate-x-0
+        motion-safe:starting:open:translate-x-[calc(-100%-2rem)]
+        motion-safe:transition-[translate,display,overlay] motion-safe:transition-discrete
+        motion-safe:duration-240 motion-safe:ease-[cubic-bezier(0.2,0.75,0.25,1)]
+        motion-safe:backdrop:opacity-0 motion-safe:open:backdrop:opacity-100
+        motion-safe:starting:open:backdrop:opacity-0
+        motion-safe:backdrop:transition-[opacity,display,overlay]
+        motion-safe:backdrop:transition-discrete motion-safe:backdrop:duration-240
+        motion-safe:backdrop:ease-[ease]
+      "
     >
       <div className="min-h-full">
         <div className="flex h-[60px] items-center justify-between border-b border-slate-200 pr-3 pl-5">
