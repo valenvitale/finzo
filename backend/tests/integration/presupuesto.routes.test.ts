@@ -8,6 +8,9 @@ const mocks = vi.hoisted(() => ({
   findPrincipal: vi.fn(),
   findMany: vi.fn(),
   groupBy: vi.fn(),
+  aggregate: vi.fn(),
+  findMeta: vi.fn(),
+  upsertMeta: vi.fn(),
   create: vi.fn(),
   update: vi.fn(),
   deleteBudget: vi.fn(),
@@ -23,7 +26,8 @@ vi.mock('../../src/config/prisma.js', () => ({
   prisma: {
     categoria: { findUnique: mocks.findCategory },
     perfilMoneda: { findFirst: mocks.findPrincipal },
-    movimiento: { groupBy: mocks.groupBy },
+    movimiento: { groupBy: mocks.groupBy, aggregate: mocks.aggregate },
+    metaAhorro: { findUnique: mocks.findMeta, upsert: mocks.upsertMeta },
     presupuesto: {
       findMany: mocks.findMany,
       create: mocks.create,
@@ -37,6 +41,7 @@ vi.mock('../../src/config/prisma.js', () => ({
 const perfilId = '11111111-1111-4111-8111-111111111111';
 const categoriaId = '22222222-2222-4222-8222-222222222222';
 const presupuestoId = '33333333-3333-4333-8333-333333333333';
+const monedaId = '44444444-4444-4444-8444-444444444444';
 const fecha = new Date('2026-05-01T00:00:00.000Z');
 const decimal = (valor: number) => ({ toNumber: () => valor });
 const categoria = {
@@ -54,6 +59,7 @@ function crearPresupuesto(limite: number) {
     id: presupuestoId,
     id_perfil: perfilId,
     id_categoria: categoriaId,
+    id_moneda: '44444444-4444-4444-8444-444444444444',
     limite_mensual: decimal(limite),
     mes: 5,
     anio: 2026,
@@ -75,6 +81,9 @@ beforeEach(() => {
   });
   mocks.findMany.mockResolvedValue([crearPresupuesto(10000)]);
   mocks.groupBy.mockResolvedValue([{ id_categoria: categoriaId, _sum: { monto: decimal(7500) } }]);
+  mocks.aggregate.mockResolvedValue({ _sum: { monto: null } });
+  mocks.findMeta.mockResolvedValue(null);
+  mocks.upsertMeta.mockResolvedValue({});
 });
 
 describe('/api/presupuestos', () => {
@@ -94,14 +103,16 @@ describe('/api/presupuestos', () => {
     expect(respuesta.body.datos).toMatchObject({
       mes: 5,
       anio: 2026,
-      moneda: { codigo: 'ARS', simbolo: '$' },
+      moneda: { id: monedaId, codigo: 'ARS', simbolo: '$' },
       totalLimiteMensual: 10000,
       totalGastado: 7500,
       totalDisponible: 2500,
       porcentajeUsado: 75,
     });
     expect(mocks.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id_perfil: perfilId, mes: 5, anio: 2026 } })
+      expect.objectContaining({
+        where: { id_perfil: perfilId, id_moneda: '44444444-4444-4444-8444-444444444444', mes: 5, anio: 2026 },
+      })
     );
     expect(mocks.groupBy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -117,7 +128,7 @@ describe('/api/presupuestos', () => {
     const respuesta = await request(app)
       .post('/api/presupuestos')
       .set('Authorization', 'Bearer token-valido')
-      .send({ categoriaId, limiteMensual: 8000, mes: 5, anio: 2026 });
+      .send({ categoriaId, monedaId, limiteMensual: 8000, mes: 5, anio: 2026 });
 
     expect(respuesta.status).toBe(201);
     expect(respuesta.body.datos).toMatchObject({
@@ -130,6 +141,7 @@ describe('/api/presupuestos', () => {
       data: {
         id_perfil: perfilId,
         id_categoria: categoriaId,
+        id_moneda: '44444444-4444-4444-8444-444444444444',
         limite_mensual: 8000,
         mes: 5,
         anio: 2026,
@@ -144,9 +156,50 @@ describe('/api/presupuestos', () => {
     const respuesta = await request(app)
       .post('/api/presupuestos')
       .set('Authorization', 'Bearer token-valido')
-      .send({ categoriaId, limiteMensual: 8000, mes: 5, anio: 2026 });
+      .send({ categoriaId, monedaId, limiteMensual: 8000, mes: 5, anio: 2026 });
 
     expect(respuesta.status).toBe(409);
     expect(mocks.create).not.toHaveBeenCalled();
+  });
+
+  it('guarda una meta mensual vinculada al perfil y la moneda', async () => {
+    const respuesta = await request(app)
+      .put('/api/presupuestos/meta')
+      .set('Authorization', 'Bearer token-valido')
+      .send({ monedaId, monto: 5000, mes: 5, anio: 2026 });
+
+    expect(respuesta.status).toBe(204);
+    expect(mocks.upsertMeta).toHaveBeenCalledWith({
+      where: {
+        id_perfil_id_moneda_mes_anio: {
+          id_perfil: perfilId,
+          id_moneda: '44444444-4444-4444-8444-444444444444',
+          mes: 5,
+          anio: 2026,
+        },
+      },
+      create: {
+        id_perfil: perfilId,
+        id_moneda: '44444444-4444-4444-8444-444444444444',
+        mes: 5,
+        anio: 2026,
+        monto: 5000,
+      },
+      update: { monto: 5000 },
+    });
+  });
+
+  it('rechaza una meta inválida o sin autenticación', async () => {
+    const sinToken = await request(app)
+      .put('/api/presupuestos/meta')
+      .send({ monedaId, monto: 5000, mes: 5, anio: 2026 });
+    const invalida = await request(app)
+      .put('/api/presupuestos/meta')
+      .set('Authorization', 'Bearer token-valido')
+      .send({ monedaId, monto: 0, mes: 5, anio: 2026 });
+
+    expect(sinToken.status).toBe(401);
+    expect(invalida.status).toBe(400);
+    expect(mocks.upsertMeta).not.toHaveBeenCalled();
   });
 });

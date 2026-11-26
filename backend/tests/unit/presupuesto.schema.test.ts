@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   actualizarPresupuestoSchema,
   crearPresupuestoSchema,
+  guardarMetaAhorroSchema,
   listarPresupuestosQuerySchema,
   presupuestoIdParamsSchema,
 } from '../../src/validation/presupuesto.schema.js';
@@ -13,6 +14,7 @@ describe('schemas de presupuestos', () => {
     expect(
       crearPresupuestoSchema.safeParse({
         categoriaId,
+        monedaId: categoriaId,
         limiteMensual: 1200.5,
         mes: 11,
         anio: 2026,
@@ -21,6 +23,7 @@ describe('schemas de presupuestos', () => {
     expect(
       crearPresupuestoSchema.safeParse({
         categoriaId,
+        monedaId: categoriaId,
         limiteMensual: 1200.555,
         mes: 11,
         anio: 2026,
@@ -29,6 +32,7 @@ describe('schemas de presupuestos', () => {
     expect(
       crearPresupuestoSchema.safeParse({
         categoriaId,
+        monedaId: categoriaId,
         limiteMensual: 0,
         mes: 11,
         anio: 2026,
@@ -44,5 +48,20 @@ describe('schemas de presupuestos', () => {
     expect(listarPresupuestosQuerySchema.safeParse({ inesperado: '1' }).success).toBe(false);
     expect(presupuestoIdParamsSchema.safeParse({ id: categoriaId }).success).toBe(true);
     expect(presupuestoIdParamsSchema.safeParse({ id: 'no-es-uuid' }).success).toBe(false);
+  });
+
+  it('requiere una meta positiva con precisión monetaria y período válido', () => {
+    expect(
+      guardarMetaAhorroSchema.safeParse({ monedaId: categoriaId, monto: 1200.5, mes: 11, anio: 2026 }).success
+    ).toBe(true);
+    expect(guardarMetaAhorroSchema.safeParse({ monedaId: categoriaId, monto: 0, mes: 11, anio: 2026 }).success).toBe(
+      false
+    );
+    expect(
+      guardarMetaAhorroSchema.safeParse({ monedaId: categoriaId, monto: 0.001, mes: 11, anio: 2026 }).success
+    ).toBe(false);
+    expect(guardarMetaAhorroSchema.safeParse({ monedaId: categoriaId, monto: 5, mes: 13, anio: 2026 }).success).toBe(
+      false
+    );
   });
 });

@@ -7,6 +7,7 @@ import { PresupuestoService } from '../../src/services/presupuesto.service.js';
 const moneda = { id: 'moneda-1', codigo: 'ARS', simbolo: '$' };
 const presupuesto: PresupuestoDTO = {
   id: 'presupuesto-1',
+  monedaId: 'moneda-1',
   categoriaId: 'categoria-1',
   categoriaNombre: 'Comida',
   categoriaColor: '#A1B2C3',
@@ -35,6 +36,9 @@ function crearRepositorio(): IPresupuestoRepository {
     obtenerPorId: vi.fn().mockResolvedValue(presupuesto),
     actualizar: vi.fn().mockResolvedValue(presupuesto),
     eliminar: vi.fn().mockResolvedValue(undefined),
+    obtenerMeta: vi.fn().mockResolvedValue(10000),
+    guardarMeta: vi.fn().mockResolvedValue(undefined),
+    obtenerAhorro: vi.fn().mockResolvedValue(4000),
   };
 }
 
@@ -54,12 +58,52 @@ describe('PresupuestoService', () => {
     expect(resumen).toMatchObject({
       mes: 5,
       anio: 2026,
-      moneda: { codigo: 'ARS', simbolo: '$' },
+      moneda: { id: 'moneda-1', codigo: 'ARS', simbolo: '$' },
       totalLimiteMensual: 10000,
       totalGastado: 7500,
       totalDisponible: 2500,
       porcentajeUsado: 75,
+      metaAhorro: { monto: 10000, ahorroActual: 4000, porcentajeCumplido: 40 },
     });
+  });
+
+  it('guarda la meta en la moneda principal y el período elegido', async () => {
+    await service.guardarMeta('perfil-1', 'moneda-1', 5, 2026, 10000);
+    expect(repository.guardarMeta).toHaveBeenCalledWith('perfil-1', 'moneda-1', 5, 2026, 10000);
+  });
+
+  it('rechaza una meta si cambió la moneda principal', async () => {
+    await expect(service.guardarMeta('perfil-1', 'otra-moneda', 5, 2026, 10000)).rejects.toBeInstanceOf(
+      ErrorDeConflicto
+    );
+    expect(repository.guardarMeta).not.toHaveBeenCalled();
+  });
+
+  it('rechaza crear un presupuesto si cambió la moneda principal', async () => {
+    await expect(
+      service.crear('perfil-1', {
+        categoriaId: 'categoria-1',
+        monedaId: 'otra-moneda',
+        limiteMensual: 500,
+        mes: 5,
+        anio: 2026,
+      })
+    ).rejects.toBeInstanceOf(ErrorDeConflicto);
+    expect(repository.crear).not.toHaveBeenCalled();
+  });
+
+  it('no muestra un porcentaje negativo si los gastos superan los ingresos', async () => {
+    vi.mocked(repository.obtenerAhorro).mockResolvedValue(-500);
+    const resumen = await service.listarPorPeriodo('perfil-1', 5, 2026);
+    expect(resumen.metaAhorro).toEqual({ monto: 10000, ahorroActual: -500, porcentajeCumplido: 0 });
+  });
+
+  it('no modifica un presupuesto de otra moneda', async () => {
+    vi.mocked(repository.obtenerPorId).mockResolvedValue({ ...presupuesto, monedaId: 'otra-moneda' });
+    await expect(service.actualizar('presupuesto-1', 'perfil-1', { limiteMensual: 500 })).rejects.toBeInstanceOf(
+      ErrorDeConflicto
+    );
+    expect(repository.actualizar).not.toHaveBeenCalled();
   });
 
   it('rechaza consultas que envían solo una parte del período', async () => {
@@ -79,6 +123,7 @@ describe('PresupuestoService', () => {
     await expect(
       service.crear('perfil-1', {
         categoriaId: 'categoria-1',
+        monedaId: 'moneda-1',
         limiteMensual: 10000,
         mes: 5,
         anio: 2026,
@@ -99,6 +144,7 @@ describe('PresupuestoService', () => {
     await expect(
       service.crear('perfil-1', {
         categoriaId: 'categoria-1',
+        monedaId: 'moneda-1',
         limiteMensual: 10000,
         mes: 5,
         anio: 2026,

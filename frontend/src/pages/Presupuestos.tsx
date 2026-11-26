@@ -11,6 +11,7 @@ import {
   actualizarPresupuesto,
   crearPresupuesto,
   eliminarPresupuesto,
+  guardarMetaAhorro,
   listarPresupuestos,
 } from '../services/presupuesto.service';
 import type { CategoriaResponseDTO } from '../types/categoria.types';
@@ -89,6 +90,7 @@ export default function Presupuestos() {
     (categoria: CategoriaResponseDTO) =>
       !resumen?.presupuestos.some((presupuesto) => presupuesto.categoriaId === categoria.id)
   );
+  const resumenActual = !loading && !error && resumen?.mes === mes && resumen.anio === anio ? resumen : undefined;
 
   return (
     <section className="mx-auto max-w-6xl space-y-6 pb-6">
@@ -99,7 +101,10 @@ export default function Presupuestos() {
             Definí límites de gasto por categoría y seguí tu progreso mensual.
           </p>
         </div>
-        <Boton onClick={abrirCrear} disabled={cargandoCategorias || categoriasDisponibles.length === 0}>
+        <Boton
+          onClick={abrirCrear}
+          disabled={!resumenActual || cargandoCategorias || categoriasDisponibles.length === 0}
+        >
           <Plus size={17} aria-hidden="true" /> Nuevo presupuesto
         </Boton>
       </header>
@@ -135,6 +140,13 @@ export default function Presupuestos() {
       {error && (
         <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {mensajeError(error)}
+          <button
+            type="button"
+            className="ml-2 underline"
+            onClick={() => void ejecutar({ mes, anio }).catch(() => undefined)}
+          >
+            Reintentar
+          </button>
         </div>
       )}
       {errorCategorias && (
@@ -143,24 +155,36 @@ export default function Presupuestos() {
         </div>
       )}
 
-      {loading && !resumen ? (
+      {loading ? (
         <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-500">
           Cargando presupuestos...
         </div>
-      ) : resumen ? (
+      ) : resumenActual ? (
         <>
-          <ResumenMetaGlobal resumen={resumen} />
+          <ResumenMetaGlobal
+            key={`${mes}-${anio}-${resumenActual.moneda.codigo}`}
+            resumen={resumenActual}
+            onGuardarMeta={async (monto) => {
+              await guardarMetaAhorro(resumenActual.moneda.id, mes, anio, monto);
+              await ejecutar({ mes, anio });
+              toast.success('Meta de ahorro guardada.');
+            }}
+          />
+          <p className="text-sm text-slate-500">
+            Se muestran los presupuestos y la meta de tu moneda principal ({resumenActual.moneda.codigo}). Al cambiarla,
+            los importes anteriores permanecen en su moneda original.
+          </p>
           <section aria-labelledby="titulo-presupuestos" className="space-y-4">
             <h2 id="titulo-presupuestos" className="text-lg font-semibold text-oliva">
               Límites por categoría
             </h2>
-            {resumen.presupuestos.length > 0 ? (
+            {resumenActual.presupuestos.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {resumen.presupuestos.map((presupuesto) => (
+                {resumenActual.presupuestos.map((presupuesto) => (
                   <TarjetaPresupuesto
                     key={presupuesto.id}
                     presupuesto={presupuesto}
-                    codigoMoneda={resumen.moneda.codigo}
+                    codigoMoneda={resumenActual.moneda.codigo}
                     onEditar={abrirEditar}
                     onEliminar={(item) => void eliminar(item)}
                   />
@@ -176,11 +200,12 @@ export default function Presupuestos() {
         </>
       ) : null}
 
-      {formularioAbierto && (
+      {formularioAbierto && resumenActual && (
         <FormularioPresupuesto
           key={presupuestoSeleccionado?.id ?? `${mes}-${anio}-nuevo`}
           abierto={formularioAbierto}
           categorias={categoriasDisponibles}
+          monedaId={resumenActual.moneda.id}
           mes={mes}
           anio={anio}
           presupuesto={presupuestoSeleccionado}

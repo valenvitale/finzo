@@ -7,6 +7,7 @@ import { PresupuestoService } from '../services/presupuesto.service.js';
 import {
   actualizarPresupuestoSchema,
   crearPresupuestoSchema,
+  guardarMetaAhorroSchema,
   listarPresupuestosQuerySchema,
   presupuestoIdParamsSchema,
 } from '../validation/presupuesto.schema.js';
@@ -17,6 +18,7 @@ const router = Router();
 router.use(authMiddleware);
 router.get('/', validarQuery(listarPresupuestosQuerySchema), presupuestoController.listar);
 router.post('/', validarCuerpo(crearPresupuestoSchema), presupuestoController.crear);
+router.put('/meta', validarCuerpo(guardarMetaAhorroSchema), presupuestoController.guardarMeta);
 router.patch(
   '/:id',
   validarParametros(presupuestoIdParamsSchema),

@@ -12,6 +12,16 @@ function obtenerPerfilId(req: AuthenticatedRequest): string {
 export class PresupuestoController {
   constructor(private readonly presupuestoService: IPresupuestoService) {}
 
+  guardarMeta = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { monedaId, mes, anio, monto }: { monedaId: string; mes: number; anio: number; monto: number } = req.body;
+      await this.presupuestoService.guardarMeta(obtenerPerfilId(req), monedaId, mes, anio, monto);
+      res.sendStatus(204);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   listar = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { mes, anio } = req.query as { mes?: number; anio?: number };

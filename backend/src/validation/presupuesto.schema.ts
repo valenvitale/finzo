@@ -26,6 +26,7 @@ export const listarPresupuestosQuerySchema = z.strictObject({
 
 export const crearPresupuestoSchema = z.strictObject({
   categoriaId: z.uuid('El identificador de categoría debe ser un UUID válido'),
+  monedaId: z.uuid('El identificador de moneda debe ser un UUID válido'),
   limiteMensual,
   mes: z.number().int().min(1).max(12),
   anio: z.number().int().min(1900).max(9999),
@@ -33,6 +34,13 @@ export const crearPresupuestoSchema = z.strictObject({
 
 export const actualizarPresupuestoSchema = z.strictObject({
   limiteMensual,
+});
+
+export const guardarMetaAhorroSchema = z.strictObject({
+  monto: limiteMensual,
+  monedaId: z.uuid('El identificador de moneda debe ser un UUID válido'),
+  mes: z.number().int().min(1).max(12),
+  anio: z.number().int().min(1900).max(9999),
 });
 
 export const presupuestoIdParamsSchema = z.strictObject({

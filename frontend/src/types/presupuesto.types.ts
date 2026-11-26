@@ -1,5 +1,6 @@
 export interface CrearPresupuestoDTO {
   categoriaId: string;
+  monedaId: string;
   limiteMensual: number;
   mes: number;
   anio: number;
@@ -11,6 +12,7 @@ export interface ActualizarPresupuestoDTO {
 
 export interface PresupuestoDTO {
   id: string;
+  monedaId: string;
   categoriaId: string;
   categoriaNombre: string;
   categoriaColor: string;
@@ -28,6 +30,7 @@ export interface ResumenPresupuestosDTO {
   mes: number;
   anio: number;
   moneda: {
+    id: string;
     codigo: string;
     simbolo: string;
   };
@@ -36,4 +39,9 @@ export interface ResumenPresupuestosDTO {
   totalDisponible: number;
   porcentajeUsado: number;
   presupuestos: PresupuestoDTO[];
+  metaAhorro: {
+    monto: number;
+    ahorroActual: number;
+    porcentajeCumplido: number;
+  } | null;
 }

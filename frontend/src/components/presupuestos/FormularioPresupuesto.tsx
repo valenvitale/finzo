@@ -8,6 +8,7 @@ type DatosPresupuesto = CrearPresupuestoDTO | ActualizarPresupuestoDTO;
 interface FormularioPresupuestoProps {
   abierto: boolean;
   categorias: CategoriaResponseDTO[];
+  monedaId: string;
   mes: number;
   anio: number;
   presupuesto?: PresupuestoDTO;
@@ -18,6 +19,7 @@ interface FormularioPresupuestoProps {
 export function FormularioPresupuesto({
   abierto,
   categorias,
+  monedaId,
   mes,
   anio,
   presupuesto,
@@ -45,7 +47,7 @@ export function FormularioPresupuesto({
       if (presupuesto) {
         await onGuardar({ limiteMensual: limite });
       } else {
-        await onGuardar({ categoriaId, limiteMensual: limite, mes, anio });
+        await onGuardar({ categoriaId, monedaId, limiteMensual: limite, mes, anio });
       }
       onCerrar();
     } catch (errorCapturado) {

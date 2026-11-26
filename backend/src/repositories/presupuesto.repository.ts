@@ -25,10 +25,13 @@ export interface IPresupuestoRepository {
   obtenerCategoria(id: string): Promise<ICategoriaParaPresupuesto | null>;
   obtenerMonedaPrincipal(perfilId: string): Promise<IMonedaPrincipal | null>;
   listarPorPeriodo(perfilId: string, mes: number, anio: number, monedaId: string): Promise<PresupuestoDTO[]>;
-  crear(perfilId: string, datos: CrearPresupuestoDTO): Promise<PresupuestoDTO>;
+  crear(perfilId: string, monedaId: string, datos: CrearPresupuestoDTO): Promise<PresupuestoDTO>;
   obtenerPorId(id: string, perfilId: string): Promise<PresupuestoDTO | null>;
   actualizar(id: string, perfilId: string, datos: ActualizarPresupuestoDTO): Promise<PresupuestoDTO>;
   eliminar(id: string, perfilId: string): Promise<void>;
+  obtenerMeta(perfilId: string, monedaId: string, mes: number, anio: number): Promise<number | null>;
+  guardarMeta(perfilId: string, monedaId: string, mes: number, anio: number, monto: number): Promise<void>;
+  obtenerAhorro(perfilId: string, monedaId: string, mes: number, anio: number): Promise<number>;
 }
 
 function mapearPresupuesto(presupuesto: PresupuestoConCategoria, gastoActual: number): PresupuestoDTO {
@@ -36,6 +39,7 @@ function mapearPresupuesto(presupuesto: PresupuestoConCategoria, gastoActual: nu
 
   return {
     id: presupuesto.id,
+    monedaId: presupuesto.id_moneda,
     categoriaId: presupuesto.id_categoria,
     categoriaNombre: presupuesto.categoria.nombre,
     categoriaColor: presupuesto.categoria.color,
@@ -85,7 +89,7 @@ export class PresupuestoRepository implements IPresupuestoRepository {
     const fin = new Date(Date.UTC(anio, mes, 1));
     const [presupuestos, gastos] = await Promise.all([
       this.prisma.presupuesto.findMany({
-        where: { id_perfil: perfilId, mes, anio },
+        where: { id_perfil: perfilId, id_moneda: monedaId, mes, anio },
         include: { categoria: true },
         orderBy: { categoria: { nombre: 'asc' } },
       }),
@@ -110,12 +114,13 @@ export class PresupuestoRepository implements IPresupuestoRepository {
     );
   }
 
-  async crear(perfilId: string, datos: CrearPresupuestoDTO): Promise<PresupuestoDTO> {
+  async crear(perfilId: string, monedaId: string, datos: CrearPresupuestoDTO): Promise<PresupuestoDTO> {
     try {
       const presupuesto = await this.prisma.presupuesto.create({
         data: {
           id_perfil: perfilId,
           id_categoria: datos.categoriaId,
+          id_moneda: monedaId,
           limite_mensual: datos.limiteMensual,
           mes: datos.mes,
           anio: datos.anio,
@@ -167,5 +172,33 @@ export class PresupuestoRepository implements IPresupuestoRepository {
       }
       throw error;
     }
+  }
+
+  async obtenerMeta(perfilId: string, monedaId: string, mes: number, anio: number): Promise<number | null> {
+    const meta = await this.prisma.metaAhorro.findUnique({
+      where: { id_perfil_id_moneda_mes_anio: { id_perfil: perfilId, id_moneda: monedaId, mes, anio } },
+    });
+    return meta ? meta.monto.toNumber() : null;
+  }
+
+  async guardarMeta(perfilId: string, monedaId: string, mes: number, anio: number, monto: number): Promise<void> {
+    await this.prisma.metaAhorro.upsert({
+      where: { id_perfil_id_moneda_mes_anio: { id_perfil: perfilId, id_moneda: monedaId, mes, anio } },
+      create: { id_perfil: perfilId, id_moneda: monedaId, mes, anio, monto },
+      update: { monto },
+    });
+  }
+
+  async obtenerAhorro(perfilId: string, monedaId: string, mes: number, anio: number): Promise<number> {
+    const fecha = { gte: new Date(Date.UTC(anio, mes - 1, 1)), lt: new Date(Date.UTC(anio, mes, 1)) };
+    const [ingresos, gastos] = await Promise.all(
+      (['INGRESO', 'GASTO'] as const).map((tipo) =>
+        this.prisma.movimiento.aggregate({
+          where: { id_perfil: perfilId, id_moneda: monedaId, fecha, categoria: { tipo } },
+          _sum: { monto: true },
+        })
+      )
+    );
+    return (ingresos._sum.monto?.toNumber() ?? 0) - (gastos._sum.monto?.toNumber() ?? 0);
   }
 }

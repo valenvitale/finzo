@@ -35,3 +35,7 @@ export async function actualizarPresupuesto(id: string, datos: ActualizarPresupu
 export async function eliminarPresupuesto(id: string): Promise<void> {
   await apiClient.delete(`/presupuestos/${encodeURIComponent(id)}`);
 }
+
+export async function guardarMetaAhorro(monedaId: string, mes: number, anio: number, monto: number): Promise<void> {
+  await apiClient.put('/presupuestos/meta', { monedaId, mes, anio, monto });
+}
