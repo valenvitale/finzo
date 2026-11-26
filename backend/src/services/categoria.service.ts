@@ -86,6 +86,11 @@ export class CategoriaService implements ICategoriaService {
       if (cantidadMovimientos > 0) {
         throw new ErrorDeConflicto('No podés cambiar el tipo de una categoría con movimientos asociados');
       }
+
+      const cantidadPresupuestos = await this.categoriaRepository.contarPresupuestosAsociados(id);
+      if (cantidadPresupuestos > 0) {
+        throw new ErrorDeConflicto('No podés cambiar el tipo de una categoría con presupuestos asociados');
+      }
     }
 
     return this.categoriaRepository.actualizar(id, datosActualizacion);
@@ -98,6 +103,11 @@ export class CategoriaService implements ICategoriaService {
 
     if (cantidadMovimientos > 0) {
       throw new ErrorDeConflicto('No podés eliminar una categoría con movimientos asociados');
+    }
+
+    const cantidadPresupuestos = await this.categoriaRepository.contarPresupuestosAsociados(id);
+    if (cantidadPresupuestos > 0) {
+      throw new ErrorDeConflicto('No podés eliminar una categoría con presupuestos asociados');
     }
 
     await this.categoriaRepository.eliminar(id);

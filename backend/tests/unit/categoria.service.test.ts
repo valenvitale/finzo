@@ -33,6 +33,7 @@ describe('CategoriaService', () => {
       listarPorPerfil: vi.fn().mockResolvedValue([mockCategoriaPredeterminada, mockCategoriaPropia]),
       contarPersonalizadasPorPerfil: vi.fn().mockResolvedValue(2),
       contarMovimientosAsociados: vi.fn().mockResolvedValue(0),
+      contarPresupuestosAsociados: vi.fn().mockResolvedValue(0),
       ...mockRepoOverrides,
     };
     const service = new CategoriaService(mockRepo);
@@ -96,6 +97,17 @@ describe('CategoriaService', () => {
       });
       await expect(service.actualizar('cat-propia', 'perfil-1', { tipo: 'INGRESO' })).rejects.toThrow(ErrorDeConflicto);
     });
+
+    it('impide cambiar el tipo si la categoría tiene presupuestos asociados', async () => {
+      const { service, mockRepo } = preparar({
+        contarPresupuestosAsociados: vi.fn().mockResolvedValue(1),
+      });
+
+      await expect(service.actualizar('cat-propia', 'perfil-1', { tipo: 'INGRESO' })).rejects.toThrow(
+        ErrorDeConflicto
+      );
+      expect(mockRepo.actualizar).not.toHaveBeenCalled();
+    });
   });
 
   describe('eliminar', () => {
@@ -110,6 +122,15 @@ describe('CategoriaService', () => {
         contarMovimientosAsociados: vi.fn().mockResolvedValue(2),
       });
       await expect(service.eliminar('cat-propia', 'perfil-1')).rejects.toThrow(ErrorDeConflicto);
+    });
+
+    it('impide eliminar una categoría con presupuestos asociados', async () => {
+      const { service, mockRepo } = preparar({
+        contarPresupuestosAsociados: vi.fn().mockResolvedValue(1),
+      });
+
+      await expect(service.eliminar('cat-propia', 'perfil-1')).rejects.toThrow(ErrorDeConflicto);
+      expect(mockRepo.eliminar).not.toHaveBeenCalled();
     });
 
     it('impide eliminar una categoría predeterminada', async () => {
