@@ -34,6 +34,7 @@ model Perfil {
   updated_at DateTime @updatedAt 
 
   categorias Categoria[]
+  presupuestos Presupuesto[]
   monedas PerfilMoneda[]
   medios_de_pago MedioPago[]
   movimientos Movimiento[]
@@ -55,6 +56,7 @@ model Categoria {
   updated_at DateTime @updatedAt
 
   movimientos Movimiento[]
+  presupuestos Presupuesto[]
 
   @@index([id_perfil])
   @@map("categorias")
@@ -117,4 +119,20 @@ model Movimiento {
   @@map("movimientos")
 }
 
+model Presupuesto {
+  id              String   @id @default(uuid())
+  id_perfil       String
+  perfil          Perfil   @relation(fields: [id_perfil], references: [id], onDelete: Cascade)
+  id_categoria    String
+  categoria       Categoria @relation(fields: [id_categoria], references: [id], onDelete: Cascade)
+  limite_mensual  Decimal  @db.Decimal(12, 2)
+  mes             Int
+  anio            Int
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@unique([id_perfil, id_categoria, mes, anio])
+  @@index([id_perfil, anio, mes])
+  @@map("presupuestos")
+}
 
