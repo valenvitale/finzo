@@ -34,7 +34,7 @@ export function TablaMovimientos({
   }
 
   return (
-    <Tarjeta className="overflow-hidden p-0">
+    <Tarjeta className="overflow-hidden p-0!">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-600">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase text-slate-500">
