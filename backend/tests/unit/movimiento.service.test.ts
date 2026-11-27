@@ -62,6 +62,7 @@ describe('MovimientoService', () => {
       listarPorPerfil: vi.fn(),
       contarPersonalizadasPorPerfil: vi.fn(),
       contarMovimientosAsociados: vi.fn(),
+      contarPresupuestosAsociados: vi.fn(),
       ...mockCatRepoOverrides,
     };
 

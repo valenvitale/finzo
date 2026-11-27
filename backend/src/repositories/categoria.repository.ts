@@ -10,6 +10,7 @@ export interface ICategoriaRepository {
   listarPorPerfil(perfilId: string): Promise<CategoriaResponseDTO[]>;
   contarPersonalizadasPorPerfil(perfilId: string): Promise<number>;
   contarMovimientosAsociados(categoriaId: string): Promise<number>;
+  contarPresupuestosAsociados(categoriaId: string): Promise<number>;
 }
 
 type CategoriaPrisma = Prisma.CategoriaGetPayload<Record<string, never>>;
@@ -104,6 +105,12 @@ export class CategoriaRepository implements ICategoriaRepository {
   // Cuenta la cantidad de movimientos asociados a una categoria
   async contarMovimientosAsociados(categoriaId: string): Promise<number> {
     return this.prisma.movimiento.count({
+      where: { id_categoria: categoriaId },
+    });
+  }
+
+  async contarPresupuestosAsociados(categoriaId: string): Promise<number> {
+    return this.prisma.presupuesto.count({
       where: { id_categoria: categoriaId },
     });
   }

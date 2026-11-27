@@ -1,12 +1,13 @@
 import type { Ref } from 'react';
 import { NavLink } from 'react-router-dom';
-import { ArrowLeftRight, ChartNoAxesColumn, LayoutDashboard, Tags, X } from 'lucide-react';
+import { ArrowLeftRight, ChartNoAxesColumn, LayoutDashboard, PiggyBank, Tags, X } from 'lucide-react';
 
 const secciones = [
   { ruta: '/dashboard', nombre: 'Dashboard', Icono: LayoutDashboard },
   { ruta: '/movimientos', nombre: 'Movimientos', Icono: ArrowLeftRight },
   { ruta: '/categorias', nombre: 'Categorías', Icono: Tags },
   { ruta: '/estadisticas', nombre: 'Estadísticas', Icono: ChartNoAxesColumn },
+  { ruta: '/presupuestos', nombre: 'Presupuestos', Icono: PiggyBank },
 ];
 
 interface SidebarProps {

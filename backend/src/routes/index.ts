@@ -6,6 +6,7 @@ import categoriaRouter from './categoria.routes.js';
 import medioPagoRouter  from './medio-pago.routes.js';
 import resumenRouter from './resumen.routes.js';
 import estadisticasRouter from './estadisticas.routes.js';
+import presupuestoRouter from './presupuesto.routes.js';
 
 const apiRouter = Router();
 
@@ -17,5 +18,6 @@ apiRouter.use('/categorias', categoriaRouter);
 apiRouter.use('/medios-pago', medioPagoRouter );
 apiRouter.use('/resumen', resumenRouter);
 apiRouter.use('/estadisticas', estadisticasRouter);
+apiRouter.use('/presupuestos', presupuestoRouter);
 
 export default apiRouter;

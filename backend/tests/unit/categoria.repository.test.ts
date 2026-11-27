@@ -178,4 +178,20 @@ describe('CategoriaRepository', () => {
     });
     expect(cantidad).toBe(5);
   });
+
+  it('cuenta presupuestos asociados a una categoría', async () => {
+    const mockPrisma = {
+      presupuesto: {
+        count: vi.fn().mockResolvedValue(2),
+      },
+    } as unknown as PrismaClient;
+
+    const repository = new CategoriaRepository(mockPrisma);
+    const cantidad = await repository.contarPresupuestosAsociados('cat-1');
+
+    expect(mockPrisma.presupuesto.count).toHaveBeenCalledWith({
+      where: { id_categoria: 'cat-1' },
+    });
+    expect(cantidad).toBe(2);
+  });
 });
