@@ -229,6 +229,38 @@ Las pruebas unitarias de [Perfil](../backend/tests/unit/perfil.controller.test.t
 
 ---
 
+## CASO 6 — Consolidación de DIP en Categorías y Estadísticas (Taller III)
+
+### Código analizado
+
+- [`categoria.service.ts`](../backend/src/services/categoria.service.ts) y [`categoria.controller.ts`](../backend/src/controllers/categoria.controller.ts).
+- [`estadisticas.service.ts`](../backend/src/services/estadisticas.service.ts) y [`estadisticas.controller.ts`](../backend/src/controllers/estadisticas.controller.ts).
+
+### Problema, alternativas y decisión
+
+Aunque ya habíamos introducido inyección de dependencias, quedaban controladores tipados contra servicios concretos y, en Estadísticas, una instancia de repositorio por defecto dentro del servicio. Podíamos conservar esa estructura o explicitar contratos en las capas superiores. Elegimos interfaces `ICategoriaService` e `IEstadisticasService` y una dependencia `IEstadisticasRepository` requerida por constructor, dejando la composición en las rutas. Eliminamos casteos innecesarios y tipamos los dobles de prueba según los contratos.
+
+### Relación con la materia y evidencia
+
+Aplicamos DIP para reducir dependencias rígidas y SRP para concentrar la construcción de colaboradores fuera del servicio. El costo es mantener contratos adicionales; el beneficio es poder sustituir dependencias sin forzar tipos. Los commits `c256e06` y `d476cb0` registran las refactorizaciones; las ejecuciones focalizadas aprobaron 22 pruebas de Categorías y 15 de Estadísticas. La suite completa de `develop` del 27/11/2026 aprobó 224 pruebas (PR #34 integrada).
+
+## CASO 7 — Validaciones de movimientos y pruebas de regresión
+
+### Problema y decisión
+
+Detectamos que la API admitía rangos invertidos y parámetros desconocidos, y que se podían registrar movimientos con fechas futuras. Decidimos centralizar la validación HTTP en `movimiento.schema.ts` usando un objeto estricto y refinamientos para los rangos y la fecha. En el formulario limitamos la fecha máxima y mostramos el error antes de enviar la petición. El criterio de día calendario es el de Argentina. No confiamos exclusivamente en las restricciones del frontend.
+
+Aplicamos el ciclo RED/GREEN: `434ea0b` y `4babc63` para filtros; `d7f50c6` y `c18d0ce` para fechas futuras. En los filtros pasamos de 10/13 a 13/13 pruebas y en el esquema de fechas de 4/6 a 6/6. Los tests con reloj controlado verifican la condición límite de hoy. Son correcciones funcionales, no refactoring puro; no registramos una fase REFACTOR independiente.
+
+En `MovimientosRecientes` corregimos el formato de importes según el código de la moneda y evitamos asumir ARS cuando el código no está disponible. Reutilizamos los formateadores existentes y agregamos pruebas de regresión (`62d9f44`). El costo es resolver el catálogo de monedas y mantener los casos de formato; el beneficio es evitar mostrar información financiera incorrecta.
+
+### Evidencia
+
+- [Filtros HTTP](../backend/tests/integration/movimiento.routes.test.ts).
+- [Esquema de movimientos](../backend/tests/unit/movimiento.schema.test.ts).
+- [Movimientos recientes](../frontend/tests/unit/MovimientosRecientes.test.tsx).
+- PR #34 integrada; 224 pruebas aprobadas, build exitoso y ESLint sin advertencias en `develop` al cierre del Sprint 3.
+
 ## Conclusión
 
 Los casos del backend y del frontend comparten problemas de diseño, como el **acoplamiento entre componentes** y la **mezcla de responsabilidades**. Para resolverlos, aplicamos principalmente los principios **SRP (Responsabilidad Única)** y **DIP (Inversión de Dependencias)**.

@@ -83,7 +83,7 @@ Nunca formatear montos monetarios, fechas o números a mano con strings inventad
 - **Números tabulares en tablas:** Al mostrar valores de dinero en tablas o resúmenes, agregá la clase `tabular-nums` de Tailwind para que los dígitos ocupen el mismo ancho y queden alineados verticalmente:
   ```tsx
   <span className="font-semibold tabular-nums text-ingreso">
-    + {formatearMonto(movimiento.monto)}
+    + {formatearMonto(movimiento.monto, codigoMoneda)}
   </span>
   ```
 
@@ -115,3 +115,15 @@ Esto permite reutilizar el mismo componente visual (como una lista de movimiento
   - Componentes React: `PascalCase.tsx` (ej: `Tarjeta.tsx`, `PageContainer.tsx`).
   - Hooks: `useCamelCase.ts` (ej: `useMovimientos.ts`).
   - Servicios y tipos: `kebab-case.service.ts` y `kebab-case.types.ts`.
+
+---
+
+## 8. Movimientos, presupuestos y metas
+
+- Al presentar importes, utilizar el código de la moneda del movimiento. Si no se conoce, mostrar el número sin atribuirle una moneda por defecto. El Dashboard y la tabla de movimientos deben mantener este criterio.
+- Para restringir fechas futuras, utilizar el día calendario de Argentina mediante `obtenerFechaActual()` en [`fecha.ts`](../frontend/src/utils/fecha.ts). La API conserva la validación definitiva; el formulario ayuda a prevenir errores de entrada.
+- La pantalla [`Presupuestos.tsx`](../frontend/src/pages/Presupuestos.tsx) organiza el módulo incorporado en Sprint 3. Reutilizar `FormularioPresupuesto`, `TarjetaPresupuesto` y `ResumenMetaGlobal` desde [`components/presupuestos`](../frontend/src/components/presupuestos/) y mantener la comunicación HTTP en el [servicio](../frontend/src/services/presupuesto.service.ts). Los límites y metas se distinguen por moneda y período.
+
+## 9. Pruebas del frontend
+
+Ejecutar `pnpm --filter frontend test`. Utilizamos Vitest y React Testing Library para comprobar comportamientos observables y controlar dependencias. En la PR #36 incorporamos pruebas de `Boton`, `Modal`, `InputTexto` y `EstadoVacio`, y estabilizamos la autenticación de `App.test.tsx`. Los archivos se encuentran en [`frontend/tests`](../frontend/tests/); también existe `frontend/src/utils/presupuesto.test.ts`. El 27/11/2026 la suite aprobó 35 pruebas en 15 archivos. No equivale a un porcentaje de cobertura ni a una prueba E2E completa.
