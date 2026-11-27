@@ -1,16 +1,18 @@
 import { useMovimientos } from '../hooks/useMovimientos';
 import { useCategorias } from '../hooks/useCategorias';
 import { useMediosPago } from '../hooks/useMediosPago';
-import { Cargando, MensajeError, Boton, toast } from '../components/common';
+import { Cargando, MensajeError, Boton, Paginador, toast } from '../components/common';
 import { TablaMovimientos } from '../components/movimientos/TablaMovimientos';
 import { FiltrosMovimiento } from '../components/movimientos/FiltrosMovimiento';
 import { FormularioMovimiento } from '../components/movimientos/FormularioMovimiento';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Plus } from 'lucide-react';
-import type { MovimientoResponseDTO, ActualizarMovimientoDTO, CrearMovimientoDTO } from '../types/movimiento.types';
+import type { MovimientoResponseDTO, ActualizarMovimientoDTO, CrearMovimientoDTO, FiltrosMovimientoDTO } from '../types/movimiento.types';
 import { listarMonedasDisponibles, listarMonedasPerfil } from '../services/moneda.service';
 import { useApi } from '../hooks/useApi';
+
+const MOVIMIENTOS_POR_PAGINA = 10;
 
 async function obtenerMonedas() {
     const [asignadas, catalogo] = await Promise.all([
@@ -28,7 +30,13 @@ export default function Movimientos() {
     const [parametros, setParametros] = useSearchParams();
     const [formularioAbierto, setFormularioAbierto] = useState(false);
     const [movimientoEditado, setMovimientoEditado] = useState<MovimientoResponseDTO | null>(null);
+    const [paginaSolicitada, setPagina] = useState(1);
     const formularioSolicitado = parametros.get('nuevo') === '1';
+
+    function cambiarFiltros(nuevosFiltros: FiltrosMovimientoDTO) {
+        setPagina(1);
+        setFiltros(nuevosFiltros);
+    }
 
     function cerrarFormulario() {
         setFormularioAbierto(false);
@@ -52,6 +60,7 @@ export default function Movimientos() {
     async function guardarMovimiento(datos: CrearMovimientoDTO) {
         if (!movimientoEditado) {
             await crear(datos);
+            setPagina(1);
             toast.success('Movimiento creado.');
             cerrarFormulario();
             return;
@@ -104,6 +113,10 @@ export default function Movimientos() {
         return <MensajeError mensaje={error} />;
     }
 
+    const totalPaginas = Math.max(1, Math.ceil(movimientos.length / MOVIMIENTOS_POR_PAGINA));
+    const pagina = Math.min(paginaSolicitada, totalPaginas);
+    const inicioPagina = (pagina - 1) * MOVIMIENTOS_POR_PAGINA;
+
     return (
         <div className="mx-auto max-w-6xl space-y-5 pb-6">
             <header className="flex flex-wrap items-center justify-between gap-x-5 gap-y-3">
@@ -142,8 +155,8 @@ export default function Movimientos() {
             )}
             <FiltrosMovimiento
                 filtros={filtros ?? {}}
-                cambiarFiltros={setFiltros}
-                limpiarFiltros={() => setFiltros({})}
+                cambiarFiltros={cambiarFiltros}
+                limpiarFiltros={() => cambiarFiltros({})}
                 categorias={categorias}
                 mediosPago={mediosPago}
             />
@@ -159,10 +172,16 @@ export default function Movimientos() {
                 />
             )}
             <TablaMovimientos
-                movimientos={movimientos}
+                movimientos={movimientos.slice(inicioPagina, inicioPagina + MOVIMIENTOS_POR_PAGINA)}
                 codigosMoneda={codigosMoneda}
                 onEditar={abrirEdicion}
                 onEliminar={(id) => void manejarEliminacion(id)}
+            />
+            <Paginador
+                pagina={pagina}
+                total={movimientos.length}
+                elementosPorPagina={MOVIMIENTOS_POR_PAGINA}
+                onCambiarPagina={setPagina}
             />
         </div>
     )
