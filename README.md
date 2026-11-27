@@ -2,10 +2,10 @@
   <a href="https://github.com/valenvitale/finzo">
     <img src="frontend/public/images/finzo-logo.png" alt="Logo de Finzo" width="180" />
   </a>
-  <h1>FINZO</h1>
+  <h1>Finzo</h1>
   <p><strong>Sistema de gestión de finanzas personales</strong></p>
   <p>Registrá tus ingresos y gastos, organizá tus movimientos y comprendé tus finanzas.</p>
-  <p>Proyecto integrador · Metodología de Sistemas II · Tecnicatura Universitaria en Programación · 2026</p>
+  <p>Proyecto Integrador · Metodología de Sistemas II · Tecnicatura Universitaria en Programación · 2026</p>
   <p>
     <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
     <img src="https://img.shields.io/badge/React-19-20232A?logo=react&logoColor=61DAFB" alt="React 19" />
@@ -27,13 +27,13 @@
 - [API REST](#api-rest)
 - [Pruebas automatizadas](#pruebas-automatizadas)
 - [Calidad del código](#calidad-del-código)
-- [Flujo de trabajo](#flujo-de-trabajo)
+- [Flujo de trabajo](CONTRIBUTING.md)
 - [Documentación complementaria](#documentación-complementaria)
 - [Equipo](#equipo)
 
 ## Descripción y alcance
 
-FINZO es una aplicación web de finanzas personales dirigida a personas que necesitan registrar y comprender sus ingresos y gastos sin recurrir a herramientas contables complejas ni conectar sus cuentas bancarias. Buscamos centralizar la información financiera y facilitar su consulta mediante categorías, filtros, monedas e indicadores.
+**Finzo** es una aplicación web de finanzas personales dirigida a personas que necesitan registrar y comprender sus ingresos y gastos sin recurrir a herramientas contables complejas ni conectar sus cuentas bancarias. Buscamos centralizar la información financiera y facilitar su consulta mediante categorías, filtros, monedas e indicadores.
 
 ### Funcionalidades
 
@@ -41,7 +41,7 @@ FINZO es una aplicación web de finanzas personales dirigida a personas que nece
 | --- | --- |
 | Autenticación | Registro, inicio y cierre de sesión mediante Supabase Auth y acceso a rutas protegidas. |
 | Perfil | Gestión de datos del perfil y preferencias de monedas. |
-| Movimientos | Creación, consulta, edición y eliminación de ingresos y gastos; filtros de búsqueda. |
+| Movimientos | Creación, edición y eliminación de ingresos y gastos. Listado con filtros y paginación. |
 | Categorías | Categorías del sistema y gestión de categorías personalizadas. |
 | Medios de pago | Consulta y gestión de medios de pago del usuario; los globales son de solo lectura para los usuarios. |
 | Resumen financiero | Consulta de ingresos, gastos y balance del período; dashboard de la aplicación. |
@@ -49,9 +49,13 @@ FINZO es una aplicación web de finanzas personales dirigida a personas que nece
 | Presupuestos | Límites mensuales de gasto por categoría y moneda, con seguimiento visual. |
 | Metas de ahorro | Seguimiento de metas mensuales por moneda. |
 
-Los movimientos se registran en una moneda y su tipo se determina a partir de la categoría. Los ingresos no llevan medio de pago; los gastos requieren uno válido. El sistema contempla ARS, USD y EUR como monedas iniciales y no suma importes de monedas distintas en las estadísticas.
+**Reglas de dominio clave:**
+* Los movimientos se registran en una moneda y su tipo se determina a partir de la categoría.
+* Los ingresos no llevan medio de pago (se normalizan a `null`); los gastos requieren uno válido.
+* El sistema contempla **ARS**, **USD** y **EUR** como monedas iniciales y **no suma importes de monedas distintas** en las estadísticas.
 
-Para el Taller III priorizamos completar y estabilizar las funcionalidades existentes, documentar la configuración y verificar el comportamiento del sistema. La integración continua y el despliegue productivo quedan fuera del alcance de esta entrega por decisión del equipo. Incorporamos presupuestos por categoría y metas de ahorro en el Sprint 3 (PR #35). Las exportaciones y otras ampliaciones permanecen fuera del alcance actual.
+> [!NOTE]
+> **Alcance de la entrega (Taller III):** Priorizamos completar y estabilizar las funcionalidades existentes, documentar la configuración y verificar el comportamiento del sistema mediante pruebas automatizadas y análisis estático local. La integración continua (CI/CD), el despliegue productivo y las exportaciones CSV permanecen fuera del alcance actual por decisión del equipo.
 
 ## Tecnologías
 
@@ -70,11 +74,11 @@ Las versiones exactas de las dependencias resueltas se encuentran en [`pnpm-lock
 
 ### 1. Requisitos previos
 
-- Git.
-- Node.js 24 o superior según `engines` del proyecto; recomendamos la versión 24 indicada en [`.nvmrc`](.nvmrc). Versión utilizada en la verificación: `24.16.0`.
-- pnpm instalado. Versión utilizada: `12.4.1`.
-- Un proyecto de Supabase accesible, con PostgreSQL y autenticación por correo electrónico y contraseña. Para una instalación independiente, utilizar un proyecto de desarrollo propio.
-- Puertos locales `3000` (backend) y `5173` (frontend) disponibles.
+* **Git**
+* **Node.js 24 o superior** según `engines` del proyecto. Recomendamos la versión principal indicada en [`.nvmrc`](.nvmrc) (`24`). La verificación se hizo con `24.16.0`.
+* **pnpm** instalado (verificado con `12.4.1`).
+* **Un proyecto de Supabase accesible**, con PostgreSQL y autenticación por correo electrónico y contraseña habilitada (para una instalación independiente, usar un proyecto de desarrollo propio).
+* **Puertos locales disponibles:** `3000` (backend) y `5173` (frontend).
 
 ### 2. Clonar e instalar dependencias
 
@@ -82,71 +86,68 @@ Las versiones exactas de las dependencias resueltas se encuentran en [`pnpm-lock
 git clone https://github.com/valenvitale/finzo.git
 cd finzo
 git switch develop
-pnpm install
+pnpm install --frozen-lockfile
 ```
 
-El repositorio utiliza un workspace de pnpm que contiene el frontend y el backend. Ejecutamos la instalación desde la raíz para resolver las dependencias de ambos proyectos. Para reproducir las versiones del lockfile sin actualizarlo, puede utilizarse `pnpm install --frozen-lockfile`.
+El comando instala desde la raíz las dependencias de `frontend` y `backend` con las versiones registradas en `pnpm-lock.yaml`.
 
 ### 3. Configurar el entorno
 
-Crear los archivos `.env` a partir de las plantillas incluidas en el repositorio.
+Crear los archivos `.env` a partir de las plantillas versionadas en el repositorio:
 
 **Windows (PowerShell):**
-
 ```powershell
 Copy-Item backend/.env.example backend/.env
 Copy-Item frontend/.env.example frontend/.env
 ```
 
 **Linux, macOS o Git Bash:**
-
 ```bash
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 ```
 
-Completar los valores de ejemplo con los datos del proyecto Supabase utilizado. Ambos archivos deben apuntar al mismo proyecto.
+Completar ambos archivos apuntando al **mismo proyecto de Supabase** (siguiendo el formato de ejemplo definido en `backend/.env.example` y `frontend/.env.example`):
 
-**Backend — `backend/.env`**
-
+**Backend (`backend/.env`):**
 ```dotenv
 PORT=3000
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
-SUPABASE_URL=https://your-project-id.supabase.co
-SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_ANON_KEY=<tu-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<tu-service-role-key>
+DATABASE_URL="<cadena-de-conexion-pooler-modo-transaccion-puerto-6543>"
+DIRECT_URL="<cadena-de-conexion-pooler-modo-sesion-puerto-5432>"
 ```
 
 | Variable | Propósito |
-| --- | --- |
+| ------ | ------ |
 | `PORT` | Puerto HTTP del backend. Predeterminado: `3000`. |
 | `NODE_ENV` | Entorno de ejecución: `development`, `production` o `test`. |
 | `CLIENT_URL` | Origen permitido por la configuración CORS. |
 | `SUPABASE_URL` | URL del proyecto Supabase. |
 | `SUPABASE_ANON_KEY` | Clave pública de acceso a Supabase. |
 | `SUPABASE_SERVICE_ROLE_KEY` | Clave privilegiada de uso exclusivo del backend. |
-| `DATABASE_URL` | Conexión de la aplicación a PostgreSQL mediante el pooler en modo transacción. |
-| `DIRECT_URL` | Conexión en modo sesión utilizada por Prisma CLI para las migraciones. |
+| `DATABASE_URL` | Conexión de la aplicación a PostgreSQL mediante el pooler en modo transacción (`?pgbouncer=true`). |
+| `DIRECT_URL` | Conexión en modo sesión utilizada por Prisma CLI para ejecutar migraciones. |
 
-**Frontend — `frontend/.env`**
-
+**Frontend (`frontend/.env`):**
 ```dotenv
 VITE_API_URL=http://localhost:3000/api
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
+VITE_SUPABASE_ANON_KEY=<tu-anon-key>
 ```
 
-`VITE_API_URL` define la URL base del cliente HTTP; las otras dos variables configuran el cliente de Supabase Auth. Si cambia el puerto del frontend o del backend, ajustar las URL correspondientes.
-
 > [!IMPORTANT]
-> No versionar archivos `.env` reales. Las variables `VITE_*` son visibles en el navegador: nunca incluir en ellas la contraseña de la base de datos ni la clave `service_role`. Los ejemplos son marcadores de posición, no credenciales válidas.
+> Nunca versionar archivos `.env` reales ni credenciales. Las variables `VITE_*` quedan expuestas en el navegador: jamás incluir en ellas la contraseña de la base de datos ni la clave `service_role`. Si se modifica el puerto del frontend o del backend, actualizar las URL correspondientes.
 
 ### 4. Preparar la base de datos
 
-Desde la raíz del repositorio, ingresar al workspace backend y ejecutar:
+> [!WARNING]
+> Si la base ya existe, consultar la [precaución al migrar una base existente](docs/configuracion-supabase.md#precaución-al-migrar-una-base-existente) antes de ejecutar `prisma migrate deploy`. La segunda migración se detiene si ya existen presupuestos. No reiniciar ni borrar una base compartida.
+
+Desde la raíz del repositorio, ingresar al workspace `backend`, generar el cliente Prisma y aplicar las migraciones:
 
 ```bash
 cd backend
@@ -154,51 +155,51 @@ pnpm exec prisma generate
 pnpm exec prisma migrate deploy
 ```
 
-`prisma generate` genera el cliente a partir del esquema actual; no modifica la base de datos. `prisma migrate deploy` aplica las migraciones pendientes versionadas, incluso en un entorno local de desarrollo. No equivale a desplegar la aplicación en producción.
+* `prisma generate` genera el cliente tipado a partir del esquema actual (no modifica la base de datos).
+* `prisma migrate deploy` aplica las migraciones pendientes versionadas (incluidas `20261126000100_agregar_presupuestos` y `20261126000200_metas_ahorro_moneda`).
 
-Las migraciones crean el esquema inicial, incorporan el icono de las categorías, permiten que el medio de pago de un movimiento sea nulo e incorporan presupuestos y metas de ahorro. Las migraciones `20261126000100_agregar_presupuestos` y `20261126000200_metas_ahorro_moneda` amplían el modelo financiero.
+A continuación, seguir la [guía de configuración de Supabase](docs/configuracion-supabase.md) para crear la función y el *trigger* de registro de perfiles y configurar las políticas RLS. La guía conserva las definiciones verificadas antes de incorporar presupuestos y metas de ahorro. Como las migraciones de esos módulos no habilitan RLS explícitamente, verificar las políticas efectivas de ambas tablas.
 
-A continuación, seguir la [guía de configuración de Supabase](docs/configuracion-supabase.md) para crear la función y el trigger de registro y configurar las políticas RLS. La guía conserva las definiciones de Auth y RLS verificadas antes de la incorporación de presupuestos y metas de ahorro. Las dos migraciones nuevas no habilitan RLS explícitamente. La segunda se detiene si ya existen presupuestos; consultar la guía antes de migrar una instancia existente y verificar las políticas efectivas de ambas tablas.
-
-Luego cargar los datos iniciales desde `backend/`:
+Luego, cargar los datos iniciales desde `backend/`:
 
 ```bash
 pnpm exec prisma db seed
 cd ..
 ```
 
-El seed carga tres monedas (ARS, USD, EUR), once categorías globales y cuatro medios de pago globales: Efectivo, Tarjeta de Débito, Tarjeta de Crédito y Transferencia. No crea usuarios ni movimientos. Está diseñado para poder volver a ejecutarse sin duplicar los registros iniciales en condiciones normales.
-
-Si se trabaja con una instancia ya configurada por el equipo, revisar las migraciones y políticas existentes antes de aplicar cambios. No reiniciar ni borrar una base compartida.
+El *seed* carga tres monedas (`ARS`, `USD`, `EUR`), once categorías globales y cuatro medios de pago globales (`Efectivo`, `Tarjeta de Débito`, `Tarjeta de Crédito` y `Transferencia`). No crea usuarios ni movimientos y es idempotente en condiciones normales.
 
 ### 5. Iniciar la aplicación
 
-Desde la raíz:
+Desde la raíz del proyecto:
 
 ```bash
 pnpm dev
 ```
 
 | Servicio | Dirección local |
-| --- | --- |
-| Frontend | <http://localhost:5173> |
-| Backend (comprobación HTTP) | <http://localhost:3000/> |
-| API REST (prefijo) | `http://localhost:3000/api` |
+| ------ | ------ |
+| **Frontend** | http://localhost:5173 |
+| **Backend (comprobación HTTP)** | http://localhost:3000/ |
+| **API REST (prefijo)** | http://localhost:3000/api |
 
-Abrir el frontend, registrar un usuario, confirmar el correo si el proyecto Supabase lo requiere e iniciar sesión. Configurar las monedas desde el perfil y comprobar que se puede registrar y consultar un movimiento propio. La respuesta de la ruta raíz del backend solo confirma que el servidor HTTP responde; no verifica por sí sola la conexión a PostgreSQL.
+*(Opcional)* Para ver los logs por separado en dos terminales: `pnpm --filter backend dev` y `pnpm --filter frontend dev`.
 
-Si el build informa que faltan campos de Prisma o que no coinciden los tipos del esquema, regenerar el cliente:
+Para validar el funcionamiento, abrir el frontend, registrar un usuario (confirmar correo si Supabase lo requiere), iniciar sesión, configurar monedas desde el perfil y registrar un movimiento. *(La ruta raíz del backend solo confirma que el servidor HTTP responde; no verifica por sí sola la conexión a PostgreSQL).*
+
+Si el `build` informa que faltan campos de Prisma o hay desajuste de tipos con el esquema, regenerar el cliente:
 
 ```bash
 pnpm --filter backend exec prisma generate
 pnpm build
 ```
 
-> **Estado de verificación:** el 24/11/2026 comprobamos la generación del cliente y la compilación en el entorno de desarrollo existente. La instalación completa desde un clon limpio y una instancia nueva de Supabase aún debe verificarse con estas instrucciones.
+> [!NOTE]
+> **Estado de verificación:** El 24/11/2026 comprobamos la generación del cliente Prisma y la compilación en el entorno de desarrollo existente. La instalación completa desde un clon limpio contra una instancia nueva de Supabase aún debe verificarse siguiendo estos pasos.
 
 ## Arquitectura
 
-Organizamos FINZO como una aplicación cliente-servidor en un monorepositorio. El frontend consume una API REST y utiliza Supabase Auth para gestionar la sesión. El backend valida las peticiones, aplica las reglas de negocio y accede a PostgreSQL mediante Prisma.
+Organizamos Finzo como una aplicación cliente-servidor en un monorepositorio. El frontend consume una API REST y utiliza Supabase Auth para gestionar la sesión. El backend valida las peticiones, aplica las reglas de negocio y accede a PostgreSQL mediante Prisma.
 
 ```mermaid
 flowchart TD
@@ -352,10 +353,6 @@ Código de las pruebas seleccionadas: [estadísticas](backend/tests/unit/estadis
 
 En la prueba de integración de resumen, el controlador, el servicio y los middlewares son reales, pero simulamos Supabase Auth y los repositorios. Las pruebas verifican las capas y reglas bajo condiciones controladas; no prueban por sí solas las políticas RLS reales ni el recorrido completo de un usuario en el navegador. Queda pendiente comprobar los escenarios de respuestas fuera de orden y desmontaje en `useApi`.
 
-### Ampliaciones del Sprint 3
-
-En la PR #34 aplicamos TDD para los filtros y las fechas futuras: registramos primero pruebas fallidas (`434ea0b`, `d7f50c6`) y luego las implementaciones que las hacen pasar (`4babc63`, `c18d0ce`). También incorporamos pruebas de regresión de monedas en el Dashboard (`62d9f44`). Las PR #35 y #36 incorporaron pruebas de presupuestos y metas, pruebas de componentes comunes (`Boton`, `Modal`, `InputTexto`, `EstadoVacio`) y la estabilización de la autenticación en `App.test.tsx`. La ejecución completa aprobó los 44 archivos; la salida resumida no permite confirmar la ausencia de todas las advertencias de React.
-
 ## Calidad del código
 
 ### Scripts disponibles
@@ -386,17 +383,12 @@ Detectamos errores de compilación asociados a tipos del cliente Prisma desactua
 
 La advertencia de ESLint fue resuelta en la PR #34. Las diferencias de formato y la optimización del tamaño del bundle siguen pendientes. Proponemos coordinar el formateo masivo en una tarea independiente para evitar cambios innecesarios en ramas de otros integrantes. No consideramos el proyecto libre de advertencias ni completamente optimizado.
 
-## Flujo de trabajo
-
-Seguimos las convenciones de trabajo colaborativo definidas en la propuesta: `develop` como rama de integración, `main` para versiones estables, ramas `feature/` para funcionalidades y ramas de preparación `release/` cuando correspondan. Los cambios de calidad, presupuestos y tests comunes fueron integrados mediante las PR #34, #35 y #36, respectivamente.
-
-Vinculamos las tareas con Jira, realizamos commits descriptivos y proponemos los cambios mediante Pull Requests hacia la rama de integración. Antes de integrar, revisamos el código, ejecutamos las verificaciones pertinentes y actualizamos la documentación afectada. Para el Taller III documentamos las verificaciones locales. La configuración de CI/CD no forma parte del alcance de esta revisión.
-
 ## Documentación complementaria
 
 | Documento | Contenido |
 | --- | --- |
 | [Propuesta del proyecto](PROPUESTA.md) | Objetivos y planificación original; no representa por sí sola el estado actual. |
+| [Guía de contribución](CONTRIBUTING.md) | Flujo de trabajo, ramas y revisión de cambios. |
 | [API REST](docs/API.md) | Contratos HTTP, entradas, respuestas, validaciones y errores. |
 | [Configuración de Supabase](docs/configuracion-supabase.md) | Preparación de Auth, trigger de perfiles y políticas RLS. |
 | [Decisiones de diseño](docs/decisiones-diseno.md) | Problemas, alternativas, refactorizaciones, costos y evidencias históricas. |
