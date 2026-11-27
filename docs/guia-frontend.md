@@ -1,0 +1,129 @@
+# Guía de Desarrollo Frontend — Finzo
+
+Esta guía define las reglas y estándares para que todos los integrantes del equipo desarrollemos pantallas y componentes con la misma coherencia visual, técnica y de código.
+
+---
+
+## 1. Identidad Visual y Colores (Tailwind v4)
+
+Los estilos globales y tokens de diseño están definidos en [`frontend/src/styles/globals.css`](../frontend/src/styles/globals.css).
+
+### Colores de Marca y Estados Financieros
+- **Naranja Finzo (Acento / Acción principal):** `bg-naranja`, `text-naranja`, `hover:bg-naranja-hover`, `bg-naranja-claro`.
+- **Oliva Finzo (Identidad secundaria / Navbar / Marca):** `bg-oliva`, `bg-oliva-oscuro`, `bg-oliva-claro`.
+- **Ingresos (Dinero que entra):** `text-ingreso`, `bg-ingreso-fondo`, `border-ingreso-borde`.
+- **Gastos (Dinero que sale):** `text-gasto`, `bg-gasto-fondo`, `border-gasto-borde`.
+- **Alertas / Advertencias (Límites de presupuesto, avisos):** `text-alerta`, `bg-alerta-fondo`, `border-alerta-borde`.
+
+### Escala de Neutros Oficial
+Para fondos, bordes y textos secundarios usamos **exclusivamente la escala `slate`** de Tailwind:
+- Fondo de pantalla general: `bg-slate-50` (`#f8fafc`).
+- Superficies y tarjetas: `bg-white` con `border-slate-200`.
+- Textos principales: `text-slate-900`.
+- Textos secundarios / placeholders: `text-slate-500` o `text-slate-400`.
+- Bordes de inputs / divisores: `border-slate-200` o `border-slate-300`.
+
+> **Regla:** No usar clases de `gray-`, `zinc-` ni `neutral-` para evitar mezclar tonalidades grises.
+
+---
+
+## 2. Componentes Comunes Obligatorios (`src/components/common`)
+
+Antes de crear un botón, modal o campo de texto con HTML nativo, revisá los componentes ya creados en [`frontend/src/components/common/`](../frontend/src/components/common/):
+
+| Componente | Para qué sirve | Ejemplo de uso |
+| :--- | :--- | :--- |
+| **`Boton`** | Botones con variantes (`primary`, `secondary`, `danger`) y estado `cargando`. | `<Boton variante="primary" cargando={guardando}>Guardar</Boton>` |
+| **`Tarjeta`** | Tarjeta contenedora con borde y sombra unificada. | `<Tarjeta className="p-6">Contenido</Tarjeta>` |
+| **`InputTexto`** | Input con etiqueta, texto de ayuda y mensaje de error accesible. | `<InputTexto label="Monto" error={errores.monto} />` |
+| **`Selector`** | Select desplegable accesible con opciones y validación. | `<Selector label="Categoría" opciones={[...]} />` |
+| **`Modal`** | Ventana modal centrada con backdrop, cierre y accesibilidad. | `<Modal abierto={abierto} alCerrar={cerrar}>...</Modal>` |
+| **`Cargando`** | Spinner con texto accesible para estados de carga. | `<Cargando mensaje="Cargando movimientos..." />` |
+| **`MensajeError`** | Cartel de error con botón de reintentar opcional. | `<MensajeError mensaje="Error al cargar" alReintentar={cargar} />` |
+| **`EstadoVacio`** | Mensaje con icono para cuando una lista o filtro no tiene datos. | `<EstadoVacio titulo="Sin movimientos" descripcion="..." />` |
+
+Se importan directamente desde el índice:
+```tsx
+import { Boton, Tarjeta, InputTexto, Cargando } from '../components/common';
+```
+
+---
+
+## 3. Estructura de Pantalla (`PageContainer`)
+
+Para que todas las páginas tengan el mismo ancho máximo, centrado y espaciado en desktop y mobile, usamos [`PageContainer`](../frontend/src/components/layout/PageContainer.tsx):
+
+```tsx
+import { PageContainer } from '../components/layout/PageContainer';
+import { Boton } from '../components/common';
+
+export function Categorias() {
+  return (
+    <PageContainer
+      titulo="Categorías"
+      descripcion="Administrá las categorías de tus ingresos y gastos"
+      acciones={<Boton onClick={abrirModal}>+ Nueva Categoría</Boton>}
+    >
+      {/* Contenido principal de la página */}
+    </PageContainer>
+  );
+}
+```
+
+---
+
+## 4. Formato de Montos, Fechas y Números (`src/utils`)
+
+Nunca formatear montos monetarios, fechas o números a mano con strings inventados. Usá las funciones basadas en `Intl`:
+
+- **Monedas:** `formatearMoneda(15000, 'ARS')` desde [`moneda.ts`](../frontend/src/utils/moneda.ts).
+- **Fechas:** `formatearFecha('2026-10-27T10:00:00Z')` desde [`fecha.ts`](../frontend/src/utils/fecha.ts).
+- **Números y porcentajes:** `formatearNumero(15000)` y `formatearPorcentaje(0.25)` desde [`formato.ts`](../frontend/src/utils/formato.ts).
+- **Compatibilidad:** [`formateadores.ts`](../frontend/src/utils/formateadores.ts) mantiene `formatearMonto` y `formatearFecha` para los usos existentes.
+- **Números tabulares en tablas:** Al mostrar valores de dinero en tablas o resúmenes, agregá la clase `tabular-nums` de Tailwind para que los dígitos ocupen el mismo ancho y queden alineados verticalmente:
+  ```tsx
+  <span className="font-semibold tabular-nums text-ingreso">
+    + {formatearMonto(movimiento.monto, codigoMoneda)}
+  </span>
+  ```
+
+---
+
+## 5. Hook HTTP genérico (`src/hooks/useApi.ts`)
+
+`useApi` recibe una función asíncrona y expone `data`, `loading`, `error`, `ejecutar` y `refetch`. La consulta se inicia llamando `ejecutar`; `refetch` repite la última ejecución con los mismos argumentos. El hook captura el error para mostrarlo en la vista y también lo vuelve a propagar a quien llamó `ejecutar`.
+
+Los tipos compartidos de respuesta y paginación están en [`api.types.ts`](../frontend/src/types/api.types.ts).
+
+---
+
+## 6. Arquitectura: Páginas Inteligentes vs Componentes Presentacionales
+
+Siguiendo la decisión de diseño del Caso 4:
+1. **La Página / Hook maneja la lógica:** Realiza las llamadas a los servicios con Axios, maneja los estados `cargando` y `error`, y abre los modales.
+2. **El Componente visual solo pinta datos:** Recibe la información por `props` y emite eventos (`onEditar`, `onEliminar`). No realiza peticiones directas a la API ni controla el spinner global.
+
+Esto permite reutilizar el mismo componente visual (como una lista de movimientos) en el Dashboard y en la pantalla de Movimientos sin duplicar código.
+
+---
+
+## 7. Iconos y Nombres
+
+- **Iconos:** Usar únicamente `lucide-react`. No instalar otras librerías de iconos.
+- **Idioma del código:** Componentes, funciones, variables y comentarios en **español** (`TablaMovimientos`, `formatearMonto`, `saldoTotal`).
+- **Nombres de archivos:**
+  - Componentes React: `PascalCase.tsx` (ej: `Tarjeta.tsx`, `PageContainer.tsx`).
+  - Hooks: `useCamelCase.ts` (ej: `useMovimientos.ts`).
+  - Servicios y tipos: `kebab-case.service.ts` y `kebab-case.types.ts`.
+
+---
+
+## 8. Movimientos, presupuestos y metas
+
+- Al presentar importes, utilizar el código de la moneda del movimiento. Si no se conoce, mostrar el número sin atribuirle una moneda por defecto. El Dashboard y la tabla de movimientos deben mantener este criterio.
+- Para restringir fechas futuras, utilizar el día calendario de Argentina mediante `obtenerFechaActual()` en [`fecha.ts`](../frontend/src/utils/fecha.ts). La API conserva la validación definitiva; el formulario ayuda a prevenir errores de entrada.
+- La pantalla [`Presupuestos.tsx`](../frontend/src/pages/Presupuestos.tsx) organiza el módulo incorporado en Sprint 3. Reutilizar `FormularioPresupuesto`, `TarjetaPresupuesto` y `ResumenMetaGlobal` desde [`components/presupuestos`](../frontend/src/components/presupuestos/) y mantener la comunicación HTTP en el [servicio](../frontend/src/services/presupuesto.service.ts). Los límites y metas se distinguen por moneda y período.
+
+## 9. Pruebas del frontend
+
+Ejecutar `pnpm --filter frontend test`. Utilizamos Vitest y React Testing Library para comprobar comportamientos observables y controlar dependencias. En la PR #36 incorporamos pruebas de `Boton`, `Modal`, `InputTexto` y `EstadoVacio`, y estabilizamos la autenticación de `App.test.tsx`. Los archivos se encuentran en [`frontend/tests`](../frontend/tests/); también existe `frontend/src/utils/presupuesto.test.ts`. El 27/11/2026 la suite aprobó 35 pruebas en 15 archivos. No equivale a un porcentaje de cobertura ni a una prueba E2E completa.

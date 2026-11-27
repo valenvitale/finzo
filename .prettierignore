@@ -1,0 +1,27 @@
+# Dependencias y módulos
+node_modules/
+.pnpm-store/
+
+# Builds y artefactos compilados
+dist/
+build/
+coverage/
+.next/
+.vite/
+*.tsbuildinfo
+.eslintcache
+
+# Lockfiles (no deben ser reformateados por Prettier)
+pnpm-lock.yaml
+package-lock.json
+
+# Migraciones generadas por Prisma (SQL no debe alterarse)
+backend/prisma/migrations/
+
+# Variables de entorno
+.env
+.env.*
+
+# Carpetas del editor / agentes
+.vscode/
+.agents/

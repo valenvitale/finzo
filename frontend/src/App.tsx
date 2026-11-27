@@ -1,9 +1,12 @@
+import { Toaster } from 'sonner';
+import AppRouter from './routes/AppRouter';
+
 function App() {
   return (
-    <div>
-      <h1>Finzo</h1>
-      <p>¡Frontend de Finzo funcionando! 🚀</p>
-    </div>
+    <>
+      <AppRouter />
+      <Toaster position="top-right" richColors />
+    </>
   );
 }
 

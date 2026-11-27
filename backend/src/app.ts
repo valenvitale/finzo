@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { env } from './config/env.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import apiRouter from './routes/index.js';
 
 const app = express();
 
@@ -9,10 +10,11 @@ app.use(
   cors({
     origin: env.CLIENT_URL,
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json());
+app.use('/api', apiRouter);
 
 app.get('/', (req, res) => {
   res.send('¡Finzo Backend funcionando! 🚀');

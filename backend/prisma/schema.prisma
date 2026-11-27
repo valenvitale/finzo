@@ -21,6 +21,8 @@ model Moneda {
 
     perfiles_monedas PerfilMoneda[]
     movimientos Movimiento[]
+    presupuestos Presupuesto[]
+    metas_ahorro MetaAhorro[]
 
     @@map("monedas")
 }
@@ -34,6 +36,8 @@ model Perfil {
   updated_at DateTime @updatedAt 
 
   categorias Categoria[]
+  presupuestos Presupuesto[]
+  metas_ahorro MetaAhorro[]
   monedas PerfilMoneda[]
   medios_de_pago MedioPago[]
   movimientos Movimiento[]
@@ -46,6 +50,7 @@ model Categoria {
   nombre String @db.VarChar(30)
   color String @db.VarChar(7)
   tipo TipoMovimiento
+  icono String @default("tag")
   // Nullable ya que las categorias globales no tienen un perfil asociado
   id_perfil String? // Columna en la BD
   // 
@@ -54,6 +59,7 @@ model Categoria {
   updated_at DateTime @updatedAt
 
   movimientos Movimiento[]
+  presupuestos Presupuesto[]
 
   @@index([id_perfil])
   @@map("categorias")
@@ -101,8 +107,8 @@ model Movimiento {
   moneda Moneda @relation(fields: [id_moneda], references: [id], onDelete: Restrict)
   id_categoria String
   categoria Categoria @relation(fields: [id_categoria], references: [id], onDelete: Restrict)
-  id_medio_pago String
-  medio_de_pago MedioPago @relation(fields: [id_medio_pago], references: [id], onDelete: Restrict)
+  id_medio_pago String?
+  medio_de_pago MedioPago? @relation(fields: [id_medio_pago], references: [id], onDelete: Restrict)
   
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -116,4 +122,37 @@ model Movimiento {
   @@map("movimientos")
 }
 
+model Presupuesto {
+  id              String   @id @default(uuid())
+  id_perfil       String
+  perfil          Perfil   @relation(fields: [id_perfil], references: [id], onDelete: Cascade)
+  id_categoria    String
+  categoria       Categoria @relation(fields: [id_categoria], references: [id], onDelete: Cascade)
+  id_moneda       String
+  moneda          Moneda   @relation(fields: [id_moneda], references: [id], onDelete: Restrict)
+  limite_mensual  Decimal  @db.Decimal(12, 2)
+  mes             Int
+  anio            Int
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
+  @@unique([id_perfil, id_categoria, id_moneda, mes, anio])
+  @@index([id_perfil, anio, mes])
+  @@map("presupuestos")
+}
+
+model MetaAhorro {
+  id         String   @id @default(uuid())
+  id_perfil  String
+  perfil     Perfil   @relation(fields: [id_perfil], references: [id], onDelete: Cascade)
+  id_moneda  String
+  moneda     Moneda   @relation(fields: [id_moneda], references: [id], onDelete: Restrict)
+  monto      Decimal  @db.Decimal(12, 2)
+  mes        Int
+  anio       Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([id_perfil, id_moneda, mes, anio])
+  @@map("metas_ahorro")
+}
