@@ -41,6 +41,19 @@ describe('schemas de presupuestos', () => {
     expect(actualizarPresupuestoSchema.safeParse({ limiteMensual: -1 }).success).toBe(false);
   });
 
+  it.each([
+    [0.000000001, false],
+    [0.01, true],
+    [0.29, true],
+    [0.290000001, false],
+    [9_999_999_999.99, true],
+  ])('valida el importe %s con precisión de centavos', (importe, valido) => {
+    const datos = { monedaId: categoriaId, mes: 11, anio: 2026 };
+    expect(crearPresupuestoSchema.safeParse({ ...datos, categoriaId, limiteMensual: importe }).success).toBe(valido);
+    expect(actualizarPresupuestoSchema.safeParse({ limiteMensual: importe }).success).toBe(valido);
+    expect(guardarMetaAhorroSchema.safeParse({ ...datos, monto: importe }).success).toBe(valido);
+  });
+
   it('valida el período opcional y el identificador de ruta', () => {
     expect(listarPresupuestosQuerySchema.safeParse({ mes: '11', anio: '2026' }).success).toBe(true);
     expect(listarPresupuestosQuerySchema.safeParse({ mes: '1', anio: '2030' }).success).toBe(true);

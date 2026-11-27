@@ -49,11 +49,15 @@ export default function Presupuestos() {
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [presupuestoSeleccionado, setPresupuestoSeleccionado] = useState<PresupuestoDTO>();
   const { categoriasGasto, cargando: cargandoCategorias, error: errorCategorias } = useCategorias();
-  const { data: resumen, loading, error, ejecutar } = useApi(listarPresupuestos);
+  const { data: resumen, loading, error, ejecutar, refetch } = useApi(listarPresupuestos);
 
   useEffect(() => {
     void ejecutar({ mes, anio }).catch(() => undefined);
   }, [ejecutar, mes, anio]);
+
+  function recargarResumen() {
+    void refetch().catch(() => undefined);
+  }
 
   function abrirCrear() {
     setPresupuestoSeleccionado(undefined);
@@ -71,16 +75,16 @@ export default function Presupuestos() {
     } else if (presupuestoSeleccionado) {
       await actualizarPresupuesto(presupuestoSeleccionado.id, datos);
     }
-    await ejecutar({ mes, anio });
     toast.success('Presupuesto guardado.');
+    recargarResumen();
   }
 
   async function eliminar(presupuesto: PresupuestoDTO) {
     if (!window.confirm(`¿Querés eliminar el presupuesto de ${presupuesto.categoriaNombre}?`)) return;
     try {
       await eliminarPresupuesto(presupuesto.id);
-      await ejecutar({ mes, anio });
       toast.success('Presupuesto eliminado.');
+      recargarResumen();
     } catch (errorCapturado) {
       toast.error(mensajeError(errorCapturado));
     }
@@ -139,12 +143,8 @@ export default function Presupuestos() {
 
       {error && (
         <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {mensajeError(error)}
-          <button
-            type="button"
-            className="ml-2 underline"
-            onClick={() => void ejecutar({ mes, anio }).catch(() => undefined)}
-          >
+          No se pudieron cargar los presupuestos. {mensajeError(error)}
+          <button type="button" className="ml-2 underline" onClick={recargarResumen}>
             Reintentar
           </button>
         </div>
@@ -166,8 +166,8 @@ export default function Presupuestos() {
             resumen={resumenActual}
             onGuardarMeta={async (monto) => {
               await guardarMetaAhorro(resumenActual.moneda.id, mes, anio, monto);
-              await ejecutar({ mes, anio });
               toast.success('Meta de ahorro guardada.');
+              recargarResumen();
             }}
           />
           <p className="text-sm text-slate-500">

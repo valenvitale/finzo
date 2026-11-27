@@ -150,6 +150,27 @@ describe('/api/presupuestos', () => {
     });
   });
 
+  it('rechaza importes inferiores a un centavo antes de persistir', async () => {
+    const importe = 0.000000001;
+    const alta = await request(app)
+      .post('/api/presupuestos')
+      .set('Authorization', 'Bearer token-valido')
+      .send({ categoriaId, monedaId, limiteMensual: importe, mes: 5, anio: 2026 });
+    const edicion = await request(app)
+      .patch(`/api/presupuestos/${presupuestoId}`)
+      .set('Authorization', 'Bearer token-valido')
+      .send({ limiteMensual: importe });
+    const meta = await request(app)
+      .put('/api/presupuestos/meta')
+      .set('Authorization', 'Bearer token-valido')
+      .send({ monedaId, monto: importe, mes: 5, anio: 2026 });
+
+    expect([alta.status, edicion.status, meta.status]).toEqual([400, 400, 400]);
+    expect(mocks.create).not.toHaveBeenCalled();
+    expect(mocks.update).not.toHaveBeenCalled();
+    expect(mocks.upsertMeta).not.toHaveBeenCalled();
+  });
+
   it('rechaza categorías de ingreso antes de persistir', async () => {
     mocks.findCategory.mockResolvedValue({ ...categoria, tipo: 'INGRESO' });
 

@@ -1,13 +1,10 @@
 import { z } from 'zod';
 
-const limiteMensual = z
-  .number('El límite mensual debe ser un número')
-  .positive('El límite mensual debe ser mayor que cero')
-  .max(9_999_999_999.99, 'El límite mensual es demasiado alto')
-  .refine(
-    (valor) => Math.abs(valor - Math.round(valor * 100) / 100) < 0.00000001,
-    'El límite mensual admite hasta dos decimales'
-  );
+const importe = z
+  .number('El importe debe ser un número')
+  .min(0.01, 'El importe debe ser de al menos 0,01')
+  .max(9_999_999_999.99, 'El importe es demasiado alto')
+  .refine((valor) => Number(valor.toFixed(2)) === valor, 'El importe admite hasta dos decimales');
 
 export const listarPresupuestosQuerySchema = z.strictObject({
   mes: z.coerce
@@ -27,17 +24,17 @@ export const listarPresupuestosQuerySchema = z.strictObject({
 export const crearPresupuestoSchema = z.strictObject({
   categoriaId: z.uuid('El identificador de categoría debe ser un UUID válido'),
   monedaId: z.uuid('El identificador de moneda debe ser un UUID válido'),
-  limiteMensual,
+  limiteMensual: importe,
   mes: z.number().int().min(1).max(12),
   anio: z.number().int().min(1900).max(9999),
 });
 
 export const actualizarPresupuestoSchema = z.strictObject({
-  limiteMensual,
+  limiteMensual: importe,
 });
 
 export const guardarMetaAhorroSchema = z.strictObject({
-  monto: limiteMensual,
+  monto: importe,
   monedaId: z.uuid('El identificador de moneda debe ser un UUID válido'),
   mes: z.number().int().min(1).max(12),
   anio: z.number().int().min(1900).max(9999),
