@@ -1,128 +1,40 @@
-# 🛠️ Hoja de Ruta: Oportunidades de Mejora y Refactorings Pendientes — Finzo
+# Hoja de ruta de mejoras pendientes — FINZO
 
-> **Contexto:** Evaluación de Taller II aprobada con éxito.  
-> **Objetivo de este documento:** Detallar **únicamente** lo que se puede y debe mejorar en el código, la arquitectura y los tests de cara al Sprint 3 (Taller III), explicado de forma clara, directa y sin rodeos técnicos innecesarios.
+**Actualización:** 27/11/2026 · Sprint 3 (Taller III) · `develop` (`d70bb6d`).
 
----
+Registramos oportunidades de mejora que siguen abiertas, diferenciándolas de las funcionalidades ya integradas. Priorizamos por impacto, riesgo y esfuerzo, no por alcanzar un puntaje perfecto.
 
-## 🚦 Semáforo de Prioridades
+## Prioridades
 
-- 🔴 **Prioridad Alta:** Impacta directamente en la mantenibilidad inmediata, evita errores al conectar frontend con backend o resuelve deuda técnica que rompe la consistencia del diseño.
-- 🟡 **Prioridad Media:** Mejora la calidad del código, evita duplicaciones y prepara el sistema para crecer sin dolores de cabeza.
-- 🟢 **Prioridad Baja / Deseable:** Buenas prácticas que dejan el proyecto impecable, pero no bloquean el funcionamiento.
+| Prioridad | Mejora | Motivo y criterio de cierre |
+| --- | --- | --- |
+| Alta | Verificar el aislamiento de datos y las políticas RLS de presupuestos y metas de ahorro. | Las dos migraciones revisadas no habilitan RLS ni crean políticas; comprobar la configuración efectiva de Supabase y sus permisos; probar con dos perfiles en una instancia de desarrollo que no puedan acceder a registros ajenos. No implica que exista una vulnerabilidad confirmada. |
+| Media | Unificar criterios de años en filtros y consultas financieras. | Acordar rangos coherentes entre movimientos, resumen, estadísticas y presupuestos antes de modificar los esquemas; cubrir límites y errores con tests. |
+| Media | Revisar la consistencia de totales y montos por moneda. | Comparar resumen, estadísticas, movimientos y presupuestos; no sumar monedas diferentes sin un criterio explícito. El resumen actual filtra por la moneda principal. |
+| Media | Verificar instalación desde cero. | Reproducir README y guía Supabase en una instancia independiente, incluyendo nuevas migraciones y datos iniciales. |
+| Media | Ampliar pruebas de escenarios de riesgo. | Evaluar respuestas fuera de orden y desmontaje en `useApi`, pruebas de persistencia real y recorridos críticos E2E. |
+| Baja | Unificar formato con Prettier. | Repetir `pnpm format:check` (91 archivos con diferencias el 24/11); coordinar un commit independiente para reducir ruido en las PR. |
+| Baja | Optimizar el tamaño del bundle. | Vite advierte sobre un chunk de 1.092,75 kB (310,95 kB gzip); analizar dependencias y división de código antes de modificarlo. El build termina correctamente. |
+| Baja | Evaluar medición de cobertura. | Priorizar comportamientos y aserciones relevantes antes que porcentajes; no contamos con una medición confirmada. |
 
----
+## Mejoras ya integradas
 
-## 1. ⚙️ Backend: Arquitectura, SOLID y Código
+- Dashboard real, páginas privadas, hooks y avisos de sesión: incorporados durante el MVP; ya no corresponden a los pendientes originales.
+- PR #34: eliminación de importación innecesaria, DIP y tipado en Categorías y Estadísticas, validación de filtros y fechas futuras, corrección de monedas en movimientos recientes y pruebas asociadas.
+- PR #35: presupuestos por categoría y moneda, metas mensuales de ahorro, nuevas migraciones y pruebas del módulo.
+- PR #36: estabilización de la autenticación en la prueba de App y tests de componentes comunes (`Boton`, `Modal`, `InputTexto`, `EstadoVacio`). La salida resumida de la suite no permite certificar la ausencia del warning `act()` en todos los tests; si reaparece, revisar el escenario específico.
 
----
+## Evidencia de cierre del Sprint 3
 
-### 🟢 3. Evitar "Type Assertions" (`as`) en Controladores (Estandarizado)
+| Verificación | Resultado |
+| --- | --- |
+| `pnpm test` | Backend: 189/189 en 29 archivos. Frontend: 35/35 en 15 archivos. Total: 224/224. |
+| `pnpm lint` | Sin errores ni advertencias. |
+| `pnpm build` | Correcto; advertencia por tamaño del chunk del frontend. |
+| `pnpm format:check` | Pendiente de repetir en la versión actual. |
 
-* **¿Qué pasaba anteriormente?**  
-  En los controladores se utilizaba casteo manual con el operador `as` para forzar los tipos del body, params y query:
-  ```typescript
-  // ❌ Antes: casteo manual que desactiva el chequeo estricto del compilador
-  const datosCategoria = req.body as CrearCategoriaDTO;
-  const categoriaId = req.params.id as string;
-  const { mes, anio } = req.query as unknown as { mes?: number; anio?: number };
-  ```
-* **¿Por qué es un problema?**  
-  El operador `as` de TypeScript le dice al compilador: *"confiá en mí, sé lo que hago"*, apagando la verificación de tipos. Si el esquema de Zod cambia y el DTO no, TypeScript no nos avisa del error en tiempo de compilación. Por otro lado, intentar resolver esto mediante tipos genéricos anidados en la firma (`RequestParamsBody<{ id: string }, ActualizarMovimientoDTO>`) generaba firmas verbosas de 5 líneas por método y propensas a usar defaults con `= any` en la interfaz `AuthenticatedRequest`, lo que disparaba la regla `@typescript-eslint/no-explicit-any`.
-* **¿Cómo se resolvió? (Estándar implementado)**  
-  1. **Declaration Merging en `backend/src/types/express.d.ts`:** Se extendió la interfaz nativa `Express.Request` de forma global para incluir `user?: { id: string; email: string }`, siguiendo las mejores prácticas oficiales del ecosistema DefinitelyTyped sin usar `any`.
-  2. **Alias simplificado sin `any` para parámetros (`auth.middleware.ts`):** Se definió `AuthenticatedRequest<P = Record<string, string>> = Request<P>`, garantizando que `req.params.id` sea tipado como `string` simple (evitando que Express 5 lo infiera como `string | string[]` y choque con los servicios) sin introducir `any`.
-  3. **Tipado interno asistido por Zod:** Mantener las firmas de los métodos limpias en una sola línea `(req: AuthenticatedRequest, res: Response, next: NextFunction)` y realizar la anotación de tipo directa en la variable interna, aprovechando que el middleware de Zod (`validarCuerpo` / `validarParametros` / `validarQuery`) ya verificó y saneó los datos en la ruta:
-  ```typescript
-  // ✅ Implementación limpia (sin "as", sin "any" y sin sobrecargar la firma del método):
-  crear = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const perfilId = obtenerPerfilId(req);
-      const datosCategoria: CrearCategoriaDTO = req.body; // Tipado directo sin "as"
-      const nuevaCategoria = await this.categoriaService.crear(perfilId, datosCategoria);
-      res.status(201).json({ exito: true, datos: nuevaCategoria });
-    } catch (error) {
-      next(error);
-    }
-  };
-  ```
-  **Beneficios del estándar unificado:**
-  1. Cero uso del operador `as` en los controladores.
-  2. Cero uso de `any` en interfaces y middlewares (linter 100% limpio).
-  3. Firmas uniformes, legibles y de una sola línea en toda la capa de presentación.
-  4. Autocompletado y tipado estricto garantizado al interactuar con los servicios.
+Los resultados corresponden a la ejecución local del 27/11/2026, no garantizan ausencia de defectos. Conservamos el historial de decisiones en [decisiones-diseno.md](decisiones-diseno.md).
 
----
+## Evolución futura
 
-## 2. 🖥️ Frontend: Conexión, Experiencia de Usuario y Pruebas
-
----
-
-### 🔴 4. Reemplazar el `DashboardTemporal` y Activar las Páginas Reales
-
-* **¿Qué pasa hoy?**  
-  En [`AppRouter.tsx`](../frontend/src/routes/AppRouter.tsx) está activa una función `DashboardTemporal` que solo tiene un cartel que dice *"FINZO - Sesión iniciada"* y un botón rojo de logout. La página real [`Dashboard.tsx`](../frontend/src/pages/Dashboard.tsx) está comentada.
-* **¿Cómo lo solucionamos?**  
-  Conectar `Dashboard.tsx` dentro del layout general (`PageContainer` con `Sidebar` y `Header`), montando las rutas privadas para:
-  - `/dashboard`
-  - `/movimientos`
-  - `/categorias`
-  - `/perfil`
-
----
-
-### 🔴 5. Crear Custom Hooks para Aislar la Lógica de las Vistas (SRP en React)
-
-* **¿Qué pasa hoy?**  
-  Actualmente solo existe `useAuth.ts`. Si escribimos las llamadas `apiClient.get('/movimientos')` directamente adentro de los componentes visuales (`Movimientos.tsx`), los componentes mezclarán maquetado con llamadas HTTP y manejo de errores.
-* **¿Cómo lo solucionamos?**  
-  Crear hooks especializados con una única responsabilidad:
-  - `useMovimientos`: se encarga de llamar al servicio, guardar la lista de movimientos, aplicar filtros y manejar estados de `cargando` y `error`.
-  - `useCategorias`: maneja la lista de categorías y el límite de 8 personalizadas.
-  - `useResumen`: consulta `/api/resumen` y devuelve totales calculados.
-  Las páginas solo llaman al hook y pintan la pantalla:
-  ```tsx
-  // Limpio, legible y fácil de probar:
-  const { movimientos, cargando, error, agregarMovimiento } = useMovimientos();
-  ```
-
----
-
-### 🟡 6. Integrar Toasts y Manejo Visual de Sesión Expirada
-
-* **¿Qué pasa hoy?**  
-  En [`frontend/src/services/api.ts`](../frontend/src/services/api.ts), cuando el backend devuelve `401 Unauthorized`, el interceptor de Axios hace `supabase.auth.signOut({ scope: 'local' })`. Pero el usuario no recibe ningún mensaje explicativo; simplemente es redirigido de golpe al login.
-* **¿Cómo lo solucionamos?**  
-  Ya tenemos instalada y configurada la librería `sonner` en `frontend/src/components/common/index.ts`. En el interceptor o en el `AuthContext`, disparar un mensaje amigable:
-  ```typescript
-  toast.error('Tu sesión ha expirado. Por favor, ingresa nuevamente.');
-  ```
-
----
-
-### 🟡 7. Corregir el Warning de `act(...)` y Aumentar la Cobertura en Frontend
-
-* **¿Qué pasa hoy?**  
-  Al correr los tests con `pnpm --filter frontend test`, solo corre 1 prueba (`App.test.tsx`), y arroja una advertencia en consola:
-  ```text
-  stderr | src/App.test.tsx > Frontend App > debe renderizar el título de Finzo
-  An update to AuthProvider inside a test was not wrapped in act(...).
-  ```
-* **¿Por qué es un problema?**  
-  Ocurre porque el `useEffect` de `AuthProvider` resuelve una promesa asíncrona de Supabase que actualiza el estado después de que el test ya hizo su verificación.
-* **¿Cómo lo solucionamos?**  
-  1. Envolver la renderización o esperar el estado con `await waitFor(...)` de React Testing Library.
-  2. Mockear `supabase.auth.onAuthStateChange` para controlar el estado inicial sin efectos secundarios.
-  3. Crear tests unitarios para los componentes comunes (`Boton.test.tsx`, `Modal.test.tsx`, `InputTexto.test.tsx`).
-
----
-
-## 3. 💡 Conclusión para el Equipo
-
-El backend de Finzo ya cuenta con una base sólida (103 tests funcionando, seguridad JWT, migraciones en Supabase y capas bien diferenciadas). 
-
-Aplicando estas mejoras:
-1. El backend quedará **100% simétrico y uniforme** (todos los controladores e interfaces estructurados bajo las mismas reglas).
-2. Se evitará duplicar validaciones.
-3. El frontend se conectará de manera limpia y modular mediante **Custom Hooks**, evitando componentes sobrecargados.
-
+Evaluar exportaciones, movimientos recurrentes y otras ampliaciones según las necesidades del usuario. Un pipeline de CI/CD y un despliegue productivo no forman parte de la evidencia obligatoria del Taller III.

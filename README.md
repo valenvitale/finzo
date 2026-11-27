@@ -1,518 +1,420 @@
 <div align="center">
-
-  <br />
-
   <a href="https://github.com/valenvitale/finzo">
-    <img src="frontend/public/images/finzo-logo.png" alt="Finzo Logo" width="180" style="max-width: 100%; height: auto;" />
+    <img src="frontend/public/images/finzo-logo.png" alt="Logo de Finzo" width="180" />
   </a>
-
-  <h1 align="center" style="border-bottom: none; margin-top: 12px; margin-bottom: 4px;">
-    Finzo
-  </h1>
-
-  <p align="center">
-    <strong>Sistema de gestión de finanzas personales</strong>
+  <h1>FINZO</h1>
+  <p><strong>Sistema de gestión de finanzas personales</strong></p>
+  <p>Registrá tus ingresos y gastos, organizá tus movimientos y comprendé tus finanzas.</p>
+  <p>Proyecto integrador · Metodología de Sistemas II · Tecnicatura Universitaria en Programación · 2026</p>
+  <p>
+    <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/React-19-20232A?logo=react&logoColor=61DAFB" alt="React 19" />
+    <img src="https://img.shields.io/badge/Node.js-24-339933?logo=nodedotjs&logoColor=white" alt="Node.js 24" />
+    <img src="https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white" alt="Express 5" />
+    <img src="https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white" alt="Prisma 7" />
+    <img src="https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase&logoColor=white" alt="Supabase y PostgreSQL" />
+    <img src="https://img.shields.io/badge/Vitest-5-729B1B?logo=vitest&logoColor=white" alt="Vitest 5" />
   </p>
-
-  <p align="center">
-    <em>Una aplicación web ágil para registrar, categorizar y analizar tus gastos cotidianos.</em>
-  </p>
-
-  <br />
-
-  <!-- Badges principales / Stack -->
-  <p align="center">
-    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-    <img src="https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-    <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
-    <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
-    <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
-    <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
-    <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
-    <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
-    <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="TailwindCSS" />
-    <img src="https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white" alt="pnpm" />
-    <img src="https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white" alt="Render" />
-    <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
-  </p>
-
-  <br />
-
-  <p align="center">
-    🎓 <strong>Trabajo Práctico Integrador — Metodología de Sistemas II</strong><br />
-    <em>Tecnicatura Universitaria en Programación</em>
-  </p>
-
-  <br />
-
 </div>
 
-## 📌 Tabla de Contenidos
+## Índice
 
-1. [Qué problema resuelve el proyecto](#-qué-problema-resuelve-el-proyecto)
-2. [Integrantes del equipo](#-integrantes-del-equipo)
-3. [Tecnología elegida](#-tecnología-elegida)
-4. [Cómo empezar](#-cómo-empezar)
-5. [Estado actual y pendientes conocidos](#-estado-actual-y-pendientes-conocidos)
-6. [Arquitectura, diseño y patrones](#-arquitectura-y-diseño)
-7. [Estructura del repositorio](#-estructura-del-repositorio)
-8. [Alcance del MVP y Roadmap](#-alcance-del-mvp-y-roadmap)
-9. [Metodología de trabajo y convenciones](#-metodología-de-trabajo-y-convenciones)
+- [Descripción y alcance](#descripción-y-alcance)
+- [Tecnologías](#tecnologías)
+- [Instalación y ejecución local](#instalación-y-ejecución-local)
+- [Arquitectura](#arquitectura)
+- [Estructura del repositorio](#estructura-del-repositorio)
+- [API REST](#api-rest)
+- [Pruebas automatizadas](#pruebas-automatizadas)
+- [Calidad del código](#calidad-del-código)
+- [Flujo de trabajo](#flujo-de-trabajo)
+- [Documentación complementaria](#documentación-complementaria)
+- [Equipo](#equipo)
 
----
+## Descripción y alcance
 
-## 💡 Qué problema resuelve el proyecto
+FINZO es una aplicación web de finanzas personales dirigida a personas que necesitan registrar y comprender sus ingresos y gastos sin recurrir a herramientas contables complejas ni conectar sus cuentas bancarias. Buscamos centralizar la información financiera y facilitar su consulta mediante categorías, filtros, monedas e indicadores.
 
-Llevar el control de la economía personal cotidiana suele ser frustrante y desordenado. La mayoría de las personas conocen su saldo bancario puntual, pero **desconocen con exactitud en qué gastan, cuánto destinan a gastos hormiga o no esenciales, y cómo evoluciona su capacidad de ahorro mes a mes**.
+### Funcionalidades
 
-Las soluciones habituales presentan barreras significativas:
+| Módulo | Alcance actual |
+| --- | --- |
+| Autenticación | Registro, inicio y cierre de sesión mediante Supabase Auth y acceso a rutas protegidas. |
+| Perfil | Gestión de datos del perfil y preferencias de monedas. |
+| Movimientos | Creación, consulta, edición y eliminación de ingresos y gastos; filtros de búsqueda. |
+| Categorías | Categorías del sistema y gestión de categorías personalizadas. |
+| Medios de pago | Consulta y gestión de medios de pago del usuario; los globales son de solo lectura para los usuarios. |
+| Resumen financiero | Consulta de ingresos, gastos y balance del período; dashboard de la aplicación. |
+| Estadísticas | Estadísticas por moneda, distribución de gastos por categoría, evolución mensual, promedio de gasto diario y tasa de ahorro. |
+| Presupuestos | Límites mensuales de gasto por categoría y moneda, con seguimiento visual. |
+| Metas de ahorro | Seguimiento de metas mensuales por moneda. |
 
-- **Planillas de cálculo (Excel / Sheets):** Requieren configuración manual, son propensas a errores de fórmula y resultan incómodas de usar desde dispositivos móviles o en el día a día.
-- **Sistemas contables tradicionales:** Son excesivamente complejos, con terminología técnica que sobrepasa al usuario común.
-- **Apps comerciales conectadas a bancos:** Suelen generar desconfianza por la privacidad de credenciales financieras y presentan poca flexibilidad para categorizaciones a medida.
+Los movimientos se registran en una moneda y su tipo se determina a partir de la categoría. Los ingresos no llevan medio de pago; los gastos requieren uno válido. El sistema contempla ARS, USD y EUR como monedas iniciales y no suma importes de monedas distintas en las estadísticas.
 
-### Nuestra Propuesta de Valor
+Para el Taller III priorizamos completar y estabilizar las funcionalidades existentes, documentar la configuración y verificar el comportamiento del sistema. La integración continua y el despliegue productivo quedan fuera del alcance de esta entrega por decisión del equipo. Incorporamos presupuestos por categoría y metas de ahorro en el Sprint 3 (PR #35). Las exportaciones y otras ampliaciones permanecen fuera del alcance actual.
 
-**Finzo** es una aplicación web intuitiva, ágil y segura diseñada para registrar, categorizar y analizar ingresos y gastos personales sin fricción. Transforma anotaciones dispersas en **información gráfica y procesable** para la toma de decisiones financieras responsables:
+## Tecnologías
 
-- ¿Cuánto dinero gasté este mes y cuánto me queda disponible?
-- ¿Cuáles son las categorías que más impactan en mi presupuesto?
-- ¿Cuál es mi balance neto y mi tasa de ahorro mensual?
+| Área | Tecnologías principales |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite 8, Tailwind CSS 4, React Router, Axios, Sonner y Lucide React. |
+| Backend | Node.js 24, Express 5, TypeScript, Zod 4 y Prisma 7.10.0 con adaptador PostgreSQL. |
+| Datos y autenticación | PostgreSQL alojado en Supabase, Supabase Auth y políticas Row Level Security (RLS). |
+| Testing | Vitest 5, Supertest, React Testing Library y jsdom. |
+| Calidad | ESLint 10, Prettier 3 y compilación con TypeScript. |
+| Gestión del código | Git, GitHub, Jira y pnpm workspaces. |
 
-### Enfoque Académico
+Las versiones exactas de las dependencias resueltas se encuentran en [`pnpm-lock.yaml`](pnpm-lock.yaml). Los manifiestos de cada workspace declaran las dependencias y sus rangos: [`backend/package.json`](backend/package.json) y [`frontend/package.json`](frontend/package.json).
 
-El proyecto se desarrolla bajo el marco de **Metodología de Sistemas II**, aplicando estándares de calidad de software de la industria:
+## Instalación y ejecución local
 
-- Arquitectura cliente-servidor con separación estricta de responsabilidades (capas).
-- Diseño guiado por principios **SOLID** y código limpio (_Clean Code_).
-- Testing automatizado (unitario y de integración).
-- Gestión colaborativa con Git/GitHub (ramas, issues, pull requests y revisiones de código).
-- Integración continua y documentación viva.
+### 1. Requisitos previos
 
----
+- Git.
+- Node.js 24 o superior según `engines` del proyecto; recomendamos la versión 24 indicada en [`.nvmrc`](.nvmrc). Versión utilizada en la verificación: `24.16.0`.
+- pnpm instalado. Versión utilizada: `12.4.1`.
+- Un proyecto de Supabase accesible, con PostgreSQL y autenticación por correo electrónico y contraseña. Para una instalación independiente, utilizar un proyecto de desarrollo propio.
+- Puertos locales `3000` (backend) y `5173` (frontend) disponibles.
 
-## 👥 Integrantes del equipo
-
-**Grupo 1 — Metodología de Sistemas II**
-
-| Integrante            | Usuario GitHub                                   | Rol principal en el equipo |
-| :-------------------- | :----------------------------------------------- | :------------------------- |
-| **Federico Heinrich** | [@fedeheinrich](https://github.com/fedeheinrich) | Fullstack Developer        |
-| **Máximo Messina**    | [@maxemessina](https://github.com/maxemessina)   | Fullstack Developer        |
-| **Valentina Vitale**  | [@valenvitale](https://github.com/valenvitale)   | Fullstack Developer        |
-| **Alessio Cragno**    | [@alesiocragno](https://github.com/alesiocragno) | Fullstack Developer        |
-
----
-
-## 🛠️ Tecnología Elegida
-
-La selección de tecnologías responde a la búsqueda de un stack moderno, fuertemente tipado de punta a punta (_end-to-end type safety_), con alto rendimiento y fácil mantenibilidad.
-
-### Frontend
-
-| Herramienta      | Versión / Tipo       | Justificación técnica                                                                                              |
-| :--------------- | :------------------- | :----------------------------------------------------------------------------------------------------------------- |
-| **React 19**     | Librería UI          | Estándar de la industria para SPAs declarativas, componentización y gestión de estado reactivo.                    |
-| **TypeScript**   | Lenguaje             | Tipado estático que previene errores en tiempo de compilación y acelera el desarrollo en equipo.                   |
-| **Vite**         | Build Tool / Bundler | Servidor de desarrollo instantáneo con HMR (_Hot Module Replacement_) y empaquetado optimizado con Rollup/esbuild. |
-| **Tailwind CSS** | Estilos              | Diseño ágil basado en utilidades, consistente para paletas de color, temas oscuros y componentes responsive.       |
-
-### Backend, Base de Datos e Infraestructura
-
-| Herramienta       | Tipo / Rol                  | Justificación técnica                                                                                                                       |
-| :---------------- | :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Node.js**       | Runtime                     | Plataforma base donde se ejecuta nuestro código.                                                                                            |
-| **Express 5**     | Framework HTTP              | Estructura nuestra API REST a medida (rutas, controladores y middlewares).                                                                  |
-| **TypeScript**    | Lenguaje                    | Consistencia de tipos con el frontend; facilita contratos de datos (_DTOs_, interfaces y validaciones).                                     |
-| **tsx**           | Ejecutor dev                | Ejecución en caliente del código TypeScript durante el desarrollo local, sin necesidad de compilación previa.                               |
-| **Render**        | Hosting de la API           | Servicio en la nube (Web Service) encargado exclusivamente de mantener corriendo nuestro servidor Node.js/Express.                          |
-| **PostgreSQL**    | Motor de Base de Datos      | Base de datos relacional donde crearemos nuestro esquema público (tablas de perfiles, movimientos, categorías y medios de pago).            |
-| **Prisma**        | ORM                         | Mapeador objeto-relacional tipado (type-safe) para definir modelos, migraciones y consultas a PostgreSQL.                                   |
-| **Supabase**      | Hosting de la Base de Datos | Plataforma en la nube que aloja y administra nuestra instancia de PostgreSQL.                                                               |
-| **Supabase Auth** | Autenticación & JWT         | Servicio prearmado que gestiona el registro, login y contraseñas de forma segura en un esquema privado, devolviendo los tokens para la API. |
-
-### Testing y Calidad de Código
-
-| Herramienta               | Tipo                   | Justificación técnica                                                                               |
-| :------------------------ | :--------------------- | :-------------------------------------------------------------------------------------------------- |
-| **Vitest**                | Test Runner            | Motor de pruebas ultrarrápido compatible de forma nativa con la configuración de Vite y TypeScript. |
-| **React Testing Library** | Testing de Componentes | Pruebas centradas en el comportamiento del usuario en la interfaz.                                  |
-| **ESLint**                | Linter                 | Detección temprana de errores de sintaxis y aplicación de reglas de estilo consistentes.            |
-| **Prettier**              | Formateador de Código  | Formateo consistente de estilos (comillas, sangrías, punto y coma) en todo el monorepo.             |
-
-### Entorno y Gestión de Paquetes
-
-| Herramienta         | Justificación técnica                                                                                                                               |
-| :------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **pnpm Workspaces** | Repositorio monorepo eficiente en disco, con resolución de dependencias compartidas y ejecución coordinada entre paquetes (`frontend` y `backend`). |
-
----
-
-## 🚀 Cómo empezar
-
-Seguí estos pasos para descargar, configurar y ejecutar el proyecto en tu entorno local.
-
-### Prerrequisitos
-
-Asegúrate de tener instalado en tu entorno local:
-
-- **[Node.js](https://nodejs.org/)** (versión especificada en el archivo `.nvmrc` — Node 24).
-- **[pnpm](https://pnpm.io/)** (versión 9 o superior). Si no lo tienes, puedes instalarlo con `npm install -g pnpm`.
-- **[Git](https://git-scm.com/)**.
-
-### Paso a paso
-
-#### 1. Clonar el repositorio
-
-Descarga el código fuente y posicionate en el directorio:
+### 2. Clonar e instalar dependencias
 
 ```bash
 git clone https://github.com/valenvitale/finzo.git
 cd finzo
-```
-
-#### 2. Instalar dependencias
-
-Al utilizar espacios de trabajo (`pnpm-workspace.yaml`), un único comando en la raíz instala automáticamente las dependencias compartidas, las del frontend y las del backend:
-
-```bash
+git switch develop
 pnpm install
 ```
 
-#### 3. Configurar variables de entorno
+El repositorio utiliza un workspace de pnpm que contiene el frontend y el backend. Ejecutamos la instalación desde la raíz para resolver las dependencias de ambos proyectos. Para reproducir las versiones del lockfile sin actualizarlo, puede utilizarse `pnpm install --frozen-lockfile`.
 
-Antes de iniciar las aplicaciones, es necesario crear los archivos `.env` a partir de las plantillas de ejemplo provistas.
+### 3. Configurar el entorno
 
-- **Backend (`backend/.env`):**
-  ```env
-  PORT=3000
-  NODE_ENV=development
-  CLIENT_URL=http://localhost:5173
-  SUPABASE_URL=https://tu-proyecto.supabase.co
-  SUPABASE_ANON_KEY=tu-anon-key
-  SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
-  # Conectar a Postgres a través del pooler compartido en modo transacción (solo IPv4)
-  DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
-  # Conectar a Postgres a través del pooler compartido en modo sesión (usado para migraciones)
-  DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
-  ```
-- **Frontend (`frontend/.env`):**
-  ```env
-  VITE_API_URL=http://localhost:3000/api
-  VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-  VITE_SUPABASE_ANON_KEY=tu-anon-key
-  ```
+Crear los archivos `.env` a partir de las plantillas incluidas en el repositorio.
 
-> [!WARNING]
-> Nunca comitear ni subir archivos `.env` reales al repositorio; asegúrate de que permanezcan en el `.gitignore`.
+**Windows (PowerShell):**
 
-#### 4. Ejecutar el Entorno de Desarrollo
+```powershell
+Copy-Item backend/.env.example backend/.env
+Copy-Item frontend/.env.example frontend/.env
+```
 
-Gracias a la configuración del monorepo, podés iniciar tanto el backend como el frontend simultáneamente con un solo comando desde la raíz del proyecto:
+**Linux, macOS o Git Bash:**
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+Completar los valores de ejemplo con los datos del proyecto Supabase utilizado. Ambos archivos deben apuntar al mismo proyecto.
+
+**Backend — `backend/.env`**
+
+```dotenv
+PORT=3000
+NODE_ENV=development
+CLIENT_URL=http://localhost:5173
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
+```
+
+| Variable | Propósito |
+| --- | --- |
+| `PORT` | Puerto HTTP del backend. Predeterminado: `3000`. |
+| `NODE_ENV` | Entorno de ejecución: `development`, `production` o `test`. |
+| `CLIENT_URL` | Origen permitido por la configuración CORS. |
+| `SUPABASE_URL` | URL del proyecto Supabase. |
+| `SUPABASE_ANON_KEY` | Clave pública de acceso a Supabase. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Clave privilegiada de uso exclusivo del backend. |
+| `DATABASE_URL` | Conexión de la aplicación a PostgreSQL mediante el pooler en modo transacción. |
+| `DIRECT_URL` | Conexión en modo sesión utilizada por Prisma CLI para las migraciones. |
+
+**Frontend — `frontend/.env`**
+
+```dotenv
+VITE_API_URL=http://localhost:3000/api
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+`VITE_API_URL` define la URL base del cliente HTTP; las otras dos variables configuran el cliente de Supabase Auth. Si cambia el puerto del frontend o del backend, ajustar las URL correspondientes.
+
+> [!IMPORTANT]
+> No versionar archivos `.env` reales. Las variables `VITE_*` son visibles en el navegador: nunca incluir en ellas la contraseña de la base de datos ni la clave `service_role`. Los ejemplos son marcadores de posición, no credenciales válidas.
+
+### 4. Preparar la base de datos
+
+Desde la raíz del repositorio, ingresar al workspace backend y ejecutar:
+
+```bash
+cd backend
+pnpm exec prisma generate
+pnpm exec prisma migrate deploy
+```
+
+`prisma generate` genera el cliente a partir del esquema actual; no modifica la base de datos. `prisma migrate deploy` aplica las migraciones pendientes versionadas, incluso en un entorno local de desarrollo. No equivale a desplegar la aplicación en producción.
+
+Las migraciones crean el esquema inicial, incorporan el icono de las categorías, permiten que el medio de pago de un movimiento sea nulo e incorporan presupuestos y metas de ahorro. Las migraciones `20261126000100_agregar_presupuestos` y `20261126000200_metas_ahorro_moneda` amplían el modelo financiero.
+
+A continuación, seguir la [guía de configuración de Supabase](docs/configuracion-supabase.md) para crear la función y el trigger de registro y configurar las políticas RLS. La guía conserva las definiciones de Auth y RLS verificadas antes de la incorporación de presupuestos y metas de ahorro. Las dos migraciones nuevas no habilitan RLS explícitamente. La segunda se detiene si ya existen presupuestos; consultar la guía antes de migrar una instancia existente y verificar las políticas efectivas de ambas tablas.
+
+Luego cargar los datos iniciales desde `backend/`:
+
+```bash
+pnpm exec prisma db seed
+cd ..
+```
+
+El seed carga tres monedas (ARS, USD, EUR), once categorías globales y cuatro medios de pago globales: Efectivo, Tarjeta de Débito, Tarjeta de Crédito y Transferencia. No crea usuarios ni movimientos. Está diseñado para poder volver a ejecutarse sin duplicar los registros iniciales en condiciones normales.
+
+Si se trabaja con una instancia ya configurada por el equipo, revisar las migraciones y políticas existentes antes de aplicar cambios. No reiniciar ni borrar una base compartida.
+
+### 5. Iniciar la aplicación
+
+Desde la raíz:
 
 ```bash
 pnpm dev
 ```
 
-> **Servicios iniciados:**
->
-> - **Frontend:** Disponible en `http://localhost:5173`
-> - **Backend (API):** Corriendo en `http://localhost:3000`
+| Servicio | Dirección local |
+| --- | --- |
+| Frontend | <http://localhost:5173> |
+| Backend (comprobación HTTP) | <http://localhost:3000/> |
+| API REST (prefijo) | `http://localhost:3000/api` |
 
-_(Opcional) Si necesitas realizar debug y prefieres ver los logs por separado, puedes abrir dos terminales e iniciar cada entorno individualmente usando `pnpm --filter backend dev` y `pnpm --filter frontend dev`._
+Abrir el frontend, registrar un usuario, confirmar el correo si el proyecto Supabase lo requiere e iniciar sesión. Configurar las monedas desde el perfil y comprobar que se puede registrar y consultar un movimiento propio. La respuesta de la ruta raíz del backend solo confirma que el servidor HTTP responde; no verifica por sí sola la conexión a PostgreSQL.
 
----
-
-#### 5. Calidad de Código y Formato
-
-El monorepo cuenta con scripts centralizados en la raíz para verificar la calidad, consistencia de estilo y compilación en ambos proyectos:
+Si el build informa que faltan campos de Prisma o que no coinciden los tipos del esquema, regenerar el cliente:
 
 ```bash
-# Analizar el código con ESLint en busca de posibles errores
-pnpm lint
-
-# Formatear automáticamente todos los archivos con Prettier
-pnpm format
-
-# Verificar el formato sin modificar los archivos
-pnpm format:check
-
-# Compilar ambos proyectos y validar tipos para producción
+pnpm --filter backend exec prisma generate
 pnpm build
 ```
 
-#### 6. Ejecución de Pruebas Automatizadas
+> **Estado de verificación:** el 24/11/2026 comprobamos la generación del cliente y la compilación en el entorno de desarrollo existente. La instalación completa desde un clon limpio y una instancia nueva de Supabase aún debe verificarse con estas instrucciones.
 
-El backend cuenta con una suite completa de **75 pruebas unitarias** implementadas con Vitest que validan controladores, servicios, repositorios, middlewares y esquemas de validación de forma aislada en memoria:
+## Arquitectura
 
-```bash
-# Ejecutar tests del backend (75 pruebas unitarias)
-pnpm --filter backend test
+Organizamos FINZO como una aplicación cliente-servidor en un monorepositorio. El frontend consume una API REST y utiliza Supabase Auth para gestionar la sesión. El backend valida las peticiones, aplica las reglas de negocio y accede a PostgreSQL mediante Prisma.
 
-# Ejecutar tests del frontend
-pnpm --filter frontend test
+```mermaid
+flowchart TD
+    UI["Frontend · React / Vite"] --> HTTP["Axios · servicios HTTP"]
+    UI --> AUTH["Supabase Auth"]
+    HTTP -->|"HTTP + Bearer JWT"| R["Express · Routes"]
+    R --> M["Middlewares · Auth y Zod"]
+    M -->|"Validación del token"| AUTH
+    M --> C["Controllers"]
+    C --> S["Services"]
+    S --> REPO["Repositories"]
+    REPO --> P["Prisma ORM"]
+    P --> DB[("PostgreSQL · Supabase")]
+    AUTH -->|"Trigger al registrar usuario"| DB
 ```
 
----
+En el backend, las rutas configuran las dependencias y middlewares; los controladores coordinan HTTP; los servicios contienen las reglas de negocio y los repositorios encapsulan la persistencia y los mapeos. El manejo global de errores se registra al final de Express. En el frontend separamos páginas, componentes presentacionales, hooks y servicios HTTP; `AuthContext` centraliza la sesión y `useApi` reutiliza el manejo de datos, carga, errores y reintentos explícitos mediante `refetch`.
 
-## 📊 Estado Actual y Pendientes Conocidos
+### Decisiones de diseño
 
-> [!NOTE]
-> **Fase Taller II (Diseño y Mantenibilidad):** El backend cuenta con su arquitectura central consolidada, patrones de diseño justificados, inyección de dependencias y una sólida suite de pruebas unitarias automatizadas. Esta sección documenta el estado real del repositorio y los próximos pasos hacia el MVP completo.
+Aplicamos SRP y DIP para separar responsabilidades y reducir el acoplamiento. En el módulo de movimientos, por ejemplo, el controlador recibe `IMovimientoService` y el servicio recibe interfaces de repositorios por constructor. Las rutas actúan como punto de composición de esas dependencias. Los repositorios transforman los modelos de persistencia a DTO y reutilizan la configuración de Prisma. El costo es incorporar interfaces y mapeos adicionales; el beneficio es poder reemplazar colaboradores en pruebas y mantener las capas por separado.
 
-### ✅ Estado Actual (Completado)
+Documentamos el contexto, las alternativas, los cambios y sus costos en [Decisiones de diseño y registro de refactorización](docs/decisiones-diseno.md). Allí también explicamos por qué evitamos incorporar patrones sin una necesidad concreta.
 
-- [x] **Monorepo configurado:** Estructura de espacios de trabajo (`pnpm-workspace.yaml`) integrando los paquetes `frontend` y `backend`.
-- [x] **Arquitectura en capas desacopladas:** Separación estricta de responsabilidades (`controllers`, `services`, `repositories`, `routes`, `middlewares`, `types`, `validation`).
-- [x] **Persistencia relacional con Prisma:** Esquema relacional completo en `backend/prisma/schema.prisma`, cliente tipado con pooler de PostgreSQL en Supabase y seed de datos base.
-- [x] **Tipos y DTOs fuertemente tipados:** Definidos en `backend/src/types/` (`*DTO`, interfaces de servicio e inputs/outputs) desacoplados del modelo físico de la base de datos.
-- [x] **Autenticación e identidad:** Integración con Supabase Auth, middleware de verificación JWT (`auth.middleware.ts`), extensión de tipos nativos con Declaration Merging (`backend/src/types/express.d.ts`) y servicio de credenciales (`perfil-auth.service.ts`).
-- [x] **Lógica de negocio y endpoints REST (CRUD):** Módulos completos para movimientos, categorías, monedas, medios de pago y perfiles.
-- [x] **Validación declarativa y DTOs:** Esquemas Zod en rutas con middlewares genéricos (`validacion.middleware.ts`) y tipado estricto con DTOs en TypeScript.
-- [x] **Patrones de diseño aplicados y justificados (Taller II):** Implementación de Singleton, Adapter, Data Mapper / ACL, Repository Pattern, Dependency Injection, Composition Root, Chain of Responsibility, Strategy y Facade.
-- [x] **Documentación técnica de diseño:** Análisis exhaustivo, diagnóstico, alternativas, evidencia y trade-offs registrado en [`docs/decisiones-diseno.md`](./docs/decisiones-diseno.md).
-- [x] **Testing automatizado (102 tests unitarios e integración):** Cobertura de pruebas unitarias y de integración 100% en verde con Vitest sin dependencia de base de datos externa.
+### Modelo de datos
 
-### ⏳ Pendientes Conocidos y Próximos Pasos (Hito MVP)
+El esquema de Prisma incluye ocho modelos: `Perfil`, `Moneda`, `PerfilMoneda`, `Categoria`, `MedioPago`, `Movimiento`, `Presupuesto` y `MetaAhorro`. Cada presupuesto pertenece a un perfil, una categoría y una moneda; su límite mensual es un `Decimal(12,2)` y la combinación perfil/categoría/moneda/mes/año es única. Cada meta de ahorro tiene un monto `Decimal(12,2)` y es única por perfil, moneda, mes y año. Consultar el [esquema Prisma](backend/prisma/schema.prisma) y las migraciones para conocer las relaciones y restricciones exactas.
 
-- [ ] **Desarrollo de pantallas del Dashboard en Frontend:** Integrar vistas de carga de movimientos, filtros, selector de categorías y medios de pago en React.
-- [ ] **Pipeline de CI:** Configurar flujos de trabajo en `.github/workflows/` para ejecución automática de linter y tests en cada Pull Request.
-- [ ] **Despliegue a producción:** Configurar servicio en **Render** para la API del backend y proyecto en **Vercel** para la SPA del frontend.
+### Autenticación y autorización
 
----
+Supabase Auth gestiona el registro y la sesión. El frontend incorpora el token de acceso a las peticiones mediante un interceptor de Axios. El middleware del backend comprueba el token con `supabase.auth.getUser(token)` y asigna la identidad autenticada a `req.user`. Las rutas protegidas del frontend mejoran la navegación, pero los controles de acceso efectivos corresponden al backend y a la base de datos.
 
-## 🏗️ Arquitectura y Diseño
+En movimientos, el servicio comprueba la pertenencia de los registros y el repositorio filtra el listado por perfil. Configuramos RLS sobre `perfiles`, `movimientos`, `categorias`, `medios_de_pago` y `perfiles_monedas`, permitiendo a los usuarios autenticados consultar categorías y medios globales sin modificarlos mediante esas políticas. El trigger de registro crea automáticamente el perfil correspondiente a cada nuevo usuario de Auth.
 
-### Arquitectura General del Sistema
+Las políticas RLS no sustituyen los controles del backend: las conexiones privilegiadas pueden eludirlas. Verificamos la existencia de las políticas originales y algunos controles de autorización mediante tests con mocks, pero aún no realizamos una prueba integral de aislamiento contra una instancia real de Supabase. La configuración RLS de `presupuestos` y `metas_ahorro` debe verificarse por separado; el esquema Prisma no prueba que RLS esté habilitado. La configuración y sus límites se detallan en la [guía de Supabase](docs/configuracion-supabase.md).
 
-El sistema implementa una arquitectura desacoplada **Cliente-Servidor (SPA + REST API)** con persistencia relacional en Supabase:
-
-```text
-┌──────────────────────────────────────────────────────────┐
-│          FRONTEND (SPA) — Alojado en Vercel              │
-│                                                          │
-│   React 19 + TypeScript + Vite + Tailwind CSS            │
-│   - Context API / Hooks personalizados                   │
-│   - Vistas (Dashboard, Movimientos, Categorías)          │
-│   - Cliente API / Supabase Client                        │
-└────────────────────────────┬─────────────────────────────┘
-                             │
-                             │ HTTP / JSON (REST)
-                             ▼
-┌──────────────────────────────────────────────────────────┐
-│      BACKEND (API REST) — Alojado en Render (Web Service)│
-│                                                          │
-│   Node.js + Express 5 + TypeScript                       │
-│                                                          │
-│   Routes          Mapeo de URLs y métodos HTTP           │
-│     │                                                    │
-│     ▼                                                    │
-│   Middlewares     Auth (JWT), validación y errores       │
-│     │                                                    │
-│     ▼                                                    │
-│   Controllers     Manejo de Request / Response HTTP      │
-│     │                                                    │
-│     ▼                                                    │
-│   Services        Reglas de negocio y cálculos           │
-│     │                                                    │
-│     ▼                                                    │
-│   Repositories    Acceso a datos y persistencia          │
-└────────────────────────────┬─────────────────────────────┘
-                             │
-                             ▼
-┌──────────────────────────────────────────────────────────┐
-│              PERSISTENCIA & AUTH — Supabase Cloud        │
-│                                                          │
-│   - PostgreSQL: Base de datos relacional transaccional   │
-│   - Supabase Auth: Gestión de usuarios y sesiones JWT    │
-└──────────────────────────────────────────────────────────┘
-```
-
-### Flujo de Datos por Capas
-
-Cada petición entrante atraviesa una secuencia de capas con responsabilidad única:
-
-```text
-Usuario en Frontend
-       │  (Envía formulario de movimiento)
-       ▼
-Cliente HTTP (Fetch / Axios / Service)
-       │  POST /api/movimientos
-       ▼
-Express Route (`movimiento.routes.ts`)
-       │
-       ▼
-Middlewares (`auth.middleware.ts`, `validacion.middleware.ts`)
-       │  Valida sesión y esquema de datos
-       ▼
-Controller (`movimiento.controller.ts`)
-       │  Extrae parámetros y delega
-       ▼
-Service (`movimiento.service.ts`)
-       │  Aplica lógica de negocio (validar montos, reglas)
-       ▼
-Repository (`movimiento.repository.ts`)
-       │  Ejecuta consulta a través de Prisma Client
-       ▼
-PostgreSQL / Supabase
-       │  Almacena y retorna el registro
-       ▼
-Respuesta JSON 201 Created → Renderizado en UI
-```
-
----
-
-## 📁 Estructura del Repositorio
-
-A continuación se detalla la distribución de archivos y directorios planificada para el proyecto:
+## Estructura del repositorio
 
 ```text
 finzo/
 ├── backend/
-│   ├── prisma/                 # Esquema de Prisma (schema.prisma), migraciones y seeds
+│   ├── prisma/                  # Esquema, migraciones y seed
 │   ├── src/
-│   │   ├── config/             # Configuración de entorno y clientes externos
-│   │   ├── controllers/        # Controladores que reciben peticiones HTTP
-│   │   ├── errors/             # Jerarquía de excepciones de dominio (AppError)
-│   │   ├── middlewares/        # Middlewares de autenticación, validación y error
-│   │   ├── repositories/       # Abstracción y acceso a la base de datos
-│   │   ├── routes/             # Definición de endpoints REST
-│   │   ├── services/           # Lógica y reglas de negocio del sistema
-│   │   ├── types/              # Declaraciones de tipos TypeScript y DTOs
-│   │   ├── utils/              # Funciones auxiliares de cálculo y formato
-│   │   ├── validation/         # Esquemas de validación declarativa con Zod
-│   │   ├── app.ts              # Configuración de la aplicación Express
-│   │   └── server.ts           # Punto de entrada y levantamiento del servidor
-│   ├── tests/                  # Pruebas automatizadas con Vitest
-│   │   ├── unit/               # Tests unitarios (controladores, servicios, repositorios)
-│   │   ├── integration/        # Tests de integración
-│   │   └── setup.ts            # Configuración del entorno de testing
-│   ├── .env.example            # Plantilla de variables de entorno para backend
-│   ├── package.json            # Dependencias y scripts del backend
-│   ├── prisma.config.ts        # Configuración de Prisma
-│   ├── tsconfig.json           # Configuración de TypeScript
-│   └── vitest.config.ts        # Configuración de Vitest para backend
-│
+│   │   ├── config/              # Entorno, Prisma y Supabase
+│   │   ├── controllers/         # Entrada y salida HTTP
+│   │   ├── errors/              # Errores de aplicación
+│   │   ├── middlewares/         # Autenticación, validación y errores
+│   │   ├── repositories/        # Acceso a datos y mapeos
+│   │   ├── routes/              # Endpoints y composición
+│   │   ├── services/            # Reglas de negocio
+│   │   ├── types/               # Contratos y DTO
+│   │   ├── validation/          # Esquemas Zod
+│   │   ├── app.ts               # Configuración de Express
+│   │   └── server.ts            # Inicio del servidor
+│   ├── tests/                   # Pruebas unitarias y de integración
+│   ├── .env.example
+│   └── prisma.config.ts
 ├── frontend/
-│   ├── public/                 # Archivos estáticos públicos (logos, favicons)
+│   ├── public/images/           # Recursos visuales de FINZO
 │   ├── src/
-│   │   ├── components/         # Componentes reutilizables (UI, layout, dashboard)
-│   │   ├── context/            # Contextos globales de React (AuthContext)
-│   │   ├── hooks/              # Custom hooks para lógica desacoplada
-│   │   ├── pages/              # Vistas principales (Dashboard, Movimientos, Login)
-│   │   ├── routes/             # Enrutamiento de la aplicación (protegidas/públicas)
-│   │   ├── services/           # Clientes HTTP y llamadas al backend
-│   │   ├── styles/             # Estilos globales y configuración de estilos
-│   │   ├── types/              # Tipos compartidos en la interfaz
-│   │   ├── utils/              # Funciones auxiliares de formato y fechas
-│   │   ├── App.tsx             # Componente raíz de React
-│   │   ├── main.tsx            # Punto de montaje en el DOM
-│   │   └── vite-env.d.ts       # Declaraciones de tipos de variables de entorno Vite
-│   │
-│   ├── index.html              # Punto de entrada HTML de Vite
-│   ├── .env.example            # Plantilla de variables de entorno para frontend
-│   ├── package.json            # Dependencias y scripts del frontend
-│   ├── tsconfig.json           # Configuración de TypeScript
-│   ├── vite.config.ts          # Configuración del bundler Vite
-│   └── vitest.config.ts        # Configuración de pruebas para frontend
-│
-├── docs/                       # Documentación técnica y académica
-│   ├── API.md                  # Especificación de endpoints REST
-│   └── decisiones-diseno.md    # Registro de decisiones de diseño y refactorización (Taller II)
-├── .github/                    # Automatización e integración continua
-│   └── workflows/              # GitHub Actions para CI/CD
-├── .gitignore                  # Reglas de exclusión de Git
-├── .nvmrc                      # Versión de Node.js requerida
-├── .prettierrc                 # Configuración de formato de código (Prettier)
-├── eslint.config.js            # Configuración de linter (ESLint Flat Config)
-├── pnpm-workspace.yaml         # Configuración del monorepo con pnpm
-├── package.json                # Configuración raíz del monorepo
-├── LICENSE                     # Licencia del proyecto
-├── PROPUESTA.md                # Documento completo de la propuesta académica
-└── README.md                   # Documentación principal del proyecto
+│   │   ├── components/          # Componentes visuales reutilizables
+│   │   ├── context/             # Estado de autenticación
+│   │   ├── hooks/               # Lógica reutilizable
+│   │   ├── pages/               # Pantallas de la aplicación
+│   │   ├── routes/              # Navegación y protección de rutas
+│   │   ├── services/            # Cliente HTTP y servicios
+│   │   ├── styles/              # Estilos y tokens visuales
+│   │   ├── types/               # Tipos del frontend
+│   │   └── utils/               # Formateadores y utilidades
+│   ├── tests/                   # Pruebas unitarias y de integración
+│   └── .env.example
+├── docs/                        # Documentación técnica complementaria
+├── eslint.config.js             # Análisis estático compartido
+├── .prettierrc                  # Convenciones de formato
+├── package.json                 # Scripts comunes
+├── pnpm-workspace.yaml          # Workspaces
+├── pnpm-lock.yaml               # Dependencias resueltas
+├── PROPUESTA.md                 # Propuesta del proyecto
+└── README.md                    # Punto de entrada
 ```
 
----
+## API REST
 
-## 🎯 Alcance del MVP y Roadmap
+La API utiliza JSON y concentra sus módulos bajo `/api`. Para las operaciones protegidas se envía el encabezado `Authorization: Bearer <access_token>`.
 
-El proyecto se va a desarrollar por fases y de manera gradual:
+| Ruta base | Responsabilidad |
+| --- | --- |
+| `/api/perfil` | Perfil del usuario. |
+| `/api/monedas` | Catálogo de monedas. |
+| `/api/perfil/monedas` | Monedas asociadas al perfil. |
+| `/api/movimientos` | Ingresos y gastos. |
+| `/api/categorias` | Categorías de movimientos. |
+| `/api/medios-pago` | Medios de pago. |
+| `/api/resumen` | Resumen financiero. |
+| `/api/estadisticas` | Estadísticas financieras. |
+| `/api/presupuestos` | Gestión de presupuestos y seguimiento de ahorro (módulo incorporado en PR #35). |
 
-### Fase 1: MVP (Mínimo Producto Viable) — _Prioridad Alta_
+Por ejemplo, `GET /api/resumen?mes=10&anio=2026` devuelve un resumen correspondiente al período solicitado. Las pruebas de integración verifican una respuesta como esta (datos ficticios):
 
-- **Autenticación:** Registro de usuario, inicio de sesión, cierre de sesión y control de accesos mediante JWT.
-- **Gestión de Movimientos:** Crear, editar y eliminar ingresos y gastos (monto, fecha, descripción, categoría y medio de pago). El tipo de movimiento se determina por la categoría seleccionada.
-- **Gestión de Categorías:** Categorías predeterminadas y personalizadas separadas por tipo (ingreso / gasto).
-- **Dashboard Principal:** Visualización de balance total, ingresos del mes, gastos del mes y listado de movimientos con filtros (fecha, categoría y medio de pago).
+```json
+{
+  "exito": true,
+  "datos": {
+    "totalIngresos": 1000,
+    "totalGastos": 300,
+    "balance": 700,
+    "moneda": "ARS"
+  }
+}
+```
 
-### Fase 2: Página de Estadísticas y Análisis Financiero — _Prioridad Media_
+Una petición sin token a ese endpoint devuelve HTTP 401. Un mes inválido devuelve HTTP 400 antes de consultar los repositorios. La definición real de rutas se encuentra en [`backend/src/routes/`](backend/src/routes/) y los esquemas de entrada en [`backend/src/validation/`](backend/src/validation/). Esta sección es un mapa general, no un contrato exhaustivo. La [referencia de la API REST](docs/API.md) documenta las 27 operaciones de los nueve módulos, incluidos presupuestos y metas de ahorro, con sus entradas, respuestas, validaciones y límites de verificación.
 
-- Gráfico de evolución mensual de gastos e ingresos (últimos 6 o 12 meses).
-- Gráfico de distribución de gastos por categoría.
-- Promedio de gasto por día.
-- Indicador de ahorro.
-- Ranking de top 5 gastos más altos del mes.
-- Gráfico de barras por días: indica qué días de la semana se gasta más.
-- Proyección a fin de mes: toma el gasto promedio diario y proyecta con cuánto dinero (o deuda) cerrará el mes el usuario si mantiene ese mismo ritmo.
+## Pruebas automatizadas
 
-### Fase 3: Página de Metas y Página de Presupuestos — _Prioridad Media-Baja_
+Utilizamos Vitest en ambos workspaces. En el backend ejecutamos pruebas en Node.js y utilizamos Supertest para comprobar la integración HTTP. En el frontend usamos React Testing Library y jsdom para probar componentes y hooks. Los mocks permiten controlar las dependencias externas y reproducir escenarios sin conectarse necesariamente a una base real.
 
-- Presupuestos límite por categoría con alertas visuales en caso de exceso.
-- Metas de ahorro (nombre, monto, fecha de vencimiento, prioridad e indicador de progreso).
+```bash
+pnpm test                         # Suite completa
+pnpm --filter backend test        # Solo backend
+pnpm --filter frontend test       # Solo frontend
+```
 
-### Fase 4: Funciones avanzadas — _Prioridad Baja_
+### Resultado registrado el 27/11/2026
 
-- Exportación e importación de movimientos en formato CSV.
-- Análisis de IA sobre el flujo de caja y generación de un consejo adecuado al caso.
+| Workspace | Archivos aprobados | Pruebas aprobadas | Pruebas fallidas |
+| --- | ---: | ---: | ---: |
+| Backend | 29 | 189 | 0 |
+| Frontend | 15 | 35 | 0 |
+| **Total** | **44** | **224** | **0** |
 
----
+Es una evidencia de la ejecución local realizada en `develop` (`d70bb6d`), no un contador dinámico ni una garantía de resultados en futuras revisiones. El 100 % de aprobación no equivale a cobertura total del código; no medimos un porcentaje de cobertura en esta revisión.
 
-## 📜 Metodología de Trabajo y Convenciones
+### Casos representativos
 
-Para mantener el repositorio organizado entre los cuatro, usamos la estrategia Git Flow orientada a ramas de características y los estándares de contribución detallados a continuación.
+| Caso | Tipo | Qué verificamos y por qué |
+| --- | --- | --- |
+| Tasa de ahorro del 70 % con ingresos de 100.000 y gastos de 30.000 | Normal | Exactitud de un cálculo financiero relevante. |
+| Estadísticas sin movimientos | Límite | Respuesta con un arreglo vacío para usuarios sin datos. |
+| Ingreso sin medio de pago | Límite | El servicio normaliza el medio a `null`, incluso si recibe otro valor. |
+| Gasto sin medio de pago | Error | Rechazo de una operación que incumple una regla de negocio. |
+| Edición o eliminación de un movimiento ajeno | Error | Rechazo del acceso a datos de otro perfil en el servicio. |
+| Resumen válido (1.000 de ingresos y 300 de gastos) | Normal | HTTP 200, balance 700 y filtros correctos enviados al repositorio. |
+| Mes 18 o token ausente en resumen | Error | HTTP 400 o 401, sin consultar los repositorios. |
+| Repetición de consulta y fallo en `useApi` | Normal / error | Reutilización de argumentos y gestión del estado de error y carga. |
+| Filtros de movimientos con rangos válidos, iguales e invertidos | Normal / límite / error | HTTP 200 para rangos válidos e iguales y HTTP 400 para rangos invertidos o parámetros no admitidos. |
+| Fecha de movimiento anterior, actual o futura | Normal / límite / error | Aceptación de ayer y hoy; rechazo de fechas futuras, con reloj controlado en los tests. |
+| Movimientos recientes en ARS, USD y EUR | Regresión | Cada importe se presenta con su moneda; un código desconocido no se representa como ARS. |
 
-### Estrategia de Ramificación Git Flow
+Código de las pruebas seleccionadas: [estadísticas](backend/tests/unit/estadisticas.service.test.ts), [movimientos](backend/tests/unit/movimiento.service.test.ts), [resumen HTTP](backend/tests/integration/resumen.routes.test.ts) y [useApi](frontend/tests/unit/useApi.test.ts).
 
-- `main`: Código en su versión estable y completa (V1.0).
+En la prueba de integración de resumen, el controlador, el servicio y los middlewares son reales, pero simulamos Supabase Auth y los repositorios. Las pruebas verifican las capas y reglas bajo condiciones controladas; no prueban por sí solas las políticas RLS reales ni el recorrido completo de un usuario en el navegador. Queda pendiente comprobar los escenarios de respuestas fuera de orden y desmontaje en `useApi`.
 
-- `release/x.0`: Preparación de una nueva versión. Se crea cuando develop tiene suficientes funcionalidades para una entrega; sirve para corregir errores menores durante la revisión, ajustar números de versión, actualizar documentación e **IMPORTANTE: no agregar funcionalidades nuevas**.
+### Ampliaciones del Sprint 3
 
-  > Se crea desde **develop**, y una vez que se completa el trabajo en dicha rama (obtenemos la versión estable) se realiza el merge a main y a develop para actualizar el código en ambas ramas, y se genera el tag correspondiente en main.
+En la PR #34 aplicamos TDD para los filtros y las fechas futuras: registramos primero pruebas fallidas (`434ea0b`, `d7f50c6`) y luego las implementaciones que las hacen pasar (`4babc63`, `c18d0ce`). También incorporamos pruebas de regresión de monedas en el Dashboard (`62d9f44`). Las PR #35 y #36 incorporaron pruebas de presupuestos y metas, pruebas de componentes comunes (`Boton`, `Modal`, `InputTexto`, `EstadoVacio`) y la estabilización de la autenticación en `App.test.tsx`. La ejecución completa aprobó los 44 archivos; la salida resumida no permite confirmar la ausencia de todas las advertencias de React.
 
-- `develop`: Rama de desarrollo.
+## Calidad del código
 
-- `feature/nombre-de-la-funcionalidad`: Para crear nuevas funcionalidades.
+### Scripts disponibles
 
-  > Se crea desde **develop** para trabajar en una nueva función a implementar. Una vez completada la funcionalidad, se hace el merge a develop y se elimina la rama.
+Ejecutar desde la raíz del repositorio:
 
-- `hotfix`: Corrección urgente de un error que se encuentra en main.
-  > Cuando encontramos un error importante en la versión estable, se crea desde **main** para trabajar en la corrección del error y solucionarlo lo antes posible. Una vez corregido el bug, se hace el merge a main y a develop, y se crea un nuevo tag de parche.
+| Comando | Función |
+| --- | --- |
+| `pnpm dev` | Iniciar frontend y backend en desarrollo. |
+| `pnpm build` | Compilar TypeScript y construir ambos workspaces. |
+| `pnpm test` | Ejecutar las suites de pruebas. |
+| `pnpm lint` | Analizar el código con ESLint. |
+| `pnpm format:check` | Verificar el formato sin modificar archivos. |
+| `pnpm format` | Aplicar Prettier a los archivos incluidos en su configuración. |
 
-### Estándares de contribución
+ESLint utiliza una configuración común y reglas específicas para React y Node.js. Prettier establece comillas simples, punto y coma, sangría de dos espacios y ancho preferido de 120 caracteres. Los archivos [`eslint.config.js`](eslint.config.js) y [`.prettierrc`](.prettierrc) son la referencia de las reglas aplicadas.
 
-- **Commits**: Utilizar títulos descriptivos con el formato `tipo: descripción`.
+### Evidencia de revisión — 27/11/2026
 
-  > Ejemplo: `feat: implementación de login` o `fix: corrección de ruta API`.
+| Verificación | Resultado registrado |
+| --- | --- |
+| `pnpm test` | 224 pruebas aprobadas en 44 archivos. |
+| `pnpm lint` | Sin errores ni advertencias. |
+| `pnpm format:check` | Última revisión (24/11): 91 archivos con diferencias de formato. Pendiente de repetir sobre la versión actual. |
+| `pnpm build` | Backend y frontend compilaron correctamente. Vite emitió una advertencia por tamaño de chunk (1.092,75 kB minificados; 310,95 kB gzip). |
 
-- **Revisiones de Pull Requests (PR)**: Al menos un compañero de equipo debe revisar una solicitud de incorporación de cambios antes de fusionarla (merge) con develop.
+Detectamos errores de compilación asociados a tipos del cliente Prisma desactualizado (campo `icono` y medio de pago nullable). Regeneramos el cliente con `prisma generate` y repetimos el build, que terminó correctamente sin modificar el código fuente. Incorporamos ese paso a la instalación como medida preventiva.
 
-- **Etiquetas de Versión (Tags)**: Se utilizan para identificar y registrar cada entrega de la versión estable sobre la rama `main`.
+La advertencia de ESLint fue resuelta en la PR #34. Las diferencias de formato y la optimización del tamaño del bundle siguen pendientes. Proponemos coordinar el formateo masivo en una tarea independiente para evitar cambios innecesarios en ramas de otros integrantes. No consideramos el proyecto libre de advertencias ni completamente optimizado.
 
-  > Se sigue la convención de **Versionado Semántico (SemVer)** con formato `vMAJOR.MINOR.PATCH`:
-  >
-  > - **MAJOR (`v1.0.0`)**: Cambios estructurales importantes, hitos de fase o modificaciones incompatibles hacia atrás.
-  > - **MINOR (`v1.1.0`)**: Incorporación de nuevas funcionalidades compatibles (al cerrar y fusionar una rama `release/*`).
-  > - **PATCH (`v1.0.1`)**: Correcciones urgentes de bugs o parches menores (al cerrar y fusionar una rama `hotfix`).
-  >
-  > Al completar el merge hacia `main`, se genera un **tag anotado** y se publica en el repositorio:
-  >
-  > ```bash
-  > # 1. Crear tag anotado con mensaje descriptivo
-  > git tag -a v1.0.0 -m "v1.0.0: Primera versión estable del MVP"
-  >
-  > # 2. Subir el tag al repositorio remoto
-  > git push origin v1.0.0
-  >
-  > # 3. Listar los tags existentes
-  > git tag -l
-  > ```
+## Flujo de trabajo
+
+Seguimos las convenciones de trabajo colaborativo definidas en la propuesta: `develop` como rama de integración, `main` para versiones estables, ramas `feature/` para funcionalidades y ramas de preparación `release/` cuando correspondan. Los cambios de calidad, presupuestos y tests comunes fueron integrados mediante las PR #34, #35 y #36, respectivamente.
+
+Vinculamos las tareas con Jira, realizamos commits descriptivos y proponemos los cambios mediante Pull Requests hacia la rama de integración. Antes de integrar, revisamos el código, ejecutamos las verificaciones pertinentes y actualizamos la documentación afectada. Para el Taller III documentamos las verificaciones locales. La configuración de CI/CD no forma parte del alcance de esta revisión.
+
+## Documentación complementaria
+
+| Documento | Contenido |
+| --- | --- |
+| [Propuesta del proyecto](PROPUESTA.md) | Objetivos y planificación original; no representa por sí sola el estado actual. |
+| [API REST](docs/API.md) | Contratos HTTP, entradas, respuestas, validaciones y errores. |
+| [Configuración de Supabase](docs/configuracion-supabase.md) | Preparación de Auth, trigger de perfiles y políticas RLS. |
+| [Decisiones de diseño](docs/decisiones-diseno.md) | Problemas, alternativas, refactorizaciones, costos y evidencias históricas. |
+| [Guía de desarrollo frontend](docs/guia-frontend.md) | Convenciones visuales, componentes, hooks y organización del frontend. |
+| [Hoja de ruta de mejoras](docs/mejoras-pendientes.md) | Registro actualizado de mejoras pendientes al cierre del Sprint 3. |
+| [Controlador de resumen anterior](docs/resumen-controller.md) y [rutas anteriores](docs/resumen.routes.md) | Material histórico para comparar el antes y el después de la refactorización. |
+
+Mantenemos el README como punto de entrada y la documentación complementaria como referencia especializada. Cuando modificamos una funcionalidad o configuración, revisamos también los documentos que la describen.
+
+## Equipo
+
+Grupo 1 — Metodología de Sistemas II (2026).
+
+| Integrante | GitHub | Rol |
+| --- | --- | --- |
+| Federico Heinrich | [@fedeheinrich](https://github.com/fedeheinrich) | Fullstack Developer |
+| Máximo Messina | [@maxemessina](https://github.com/maxemessina) | Fullstack Developer |
+| Valentina Vitale | [@valenvitale](https://github.com/valenvitale) | Fullstack Developer |
+| Alessio Cragno | [@alesiocragno](https://github.com/alesiocragno) | Fullstack Developer |
+
+Proyecto académico. Consultar [`LICENSE`](LICENSE) para conocer las condiciones de licencia del repositorio.
