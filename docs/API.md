@@ -1,3 +1,17 @@
+## Índice
+
+- [1. Convenciones y autenticación](#1-convenciones-y-autenticación)
+- [2. Catálogo de endpoints](#2-catálogo-de-endpoints)
+- [3. Perfil](#3-perfil)
+- [4. Monedas](#4-monedas)
+- [5. Movimientos](#5-movimientos)
+- [6. Categorías](#6-categorías)
+- [7. Medios de pago](#7-medios-de-pago)
+- [8. Resumen financiero](#8-resumen-financiero)
+- [9. Estadísticas](#9-estadísticas)
+- [10. Presupuestos y metas de ahorro](#10-presupuestos-y-metas-de-ahorro)
+- [11. Verificación de contratos y límites de esta referencia](#11-verificación-de-contratos-y-límites-de-esta-referencia)
+
 # API REST — FINZO
 
 Referencia técnica del backend al cierre del Sprint 3 (27/11/2026), basada en `develop` (`d70bb6d`) y en las rutas, controladores, servicios y esquemas revisados. Complementa el [README](../README.md) y la [guía de Supabase](configuracion-supabase.md). Los ejemplos usan datos ficticios; deben reemplazarse los identificadores por los de la instancia de desarrollo.
@@ -40,7 +54,7 @@ Respuesta de error gestionada por el middleware global (ejemplo):
 
 Código de referencia: [rutas](../backend/src/routes/), [validaciones](../backend/src/validation/), [middleware de autenticación](../backend/src/middlewares/auth.middleware.ts), [middleware de validación](../backend/src/middlewares/validacion.middleware.ts), [manejo de errores](../backend/src/middlewares/errorHandler.ts) y [errores de dominio](../backend/src/errors/errores.ts).
 
-## 2. Inventario de operaciones
+## 2. Catálogo de endpoints
 
 Todas las rutas de esta tabla se concatenan con `/api`. Los códigos indican el éxito esperado; los errores se detallan en las secciones siguientes.
 
