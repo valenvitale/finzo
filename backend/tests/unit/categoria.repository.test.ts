@@ -9,6 +9,7 @@ describe('CategoriaRepository', () => {
     nombre: 'Supermercado',
     color: '#FF5733',
     tipo: 'GASTO' as const,
+    icono: 'shopping-cart',
     id_perfil: 'perfil-1',
     created_at: new Date('2026-10-12T12:00:00Z'),
     updated_at: new Date('2026-10-12T12:00:00Z'),
@@ -26,6 +27,7 @@ describe('CategoriaRepository', () => {
       nombre: 'Supermercado',
       color: '#FF5733',
       tipo: 'GASTO',
+      icono: 'shopping-cart',
     };
 
     const resultado = await repository.crear('perfil-1', dto);
@@ -36,6 +38,7 @@ describe('CategoriaRepository', () => {
         nombre: dto.nombre,
         color: dto.color,
         tipo: dto.tipo,
+        icono: dto.icono,
       },
     });
 
@@ -44,6 +47,7 @@ describe('CategoriaRepository', () => {
       nombre: 'Supermercado',
       color: '#FF5733',
       tipo: 'GASTO',
+      icono: 'shopping-cart',
       perfilId: 'perfil-1',
       createdAt: mockPrismaCategoria.created_at,
       updatedAt: mockPrismaCategoria.updated_at,
