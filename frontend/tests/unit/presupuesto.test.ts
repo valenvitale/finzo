@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatearMonto, obtenerEstadoPresupuesto } from './presupuesto';
+import { formatearMonto, obtenerEstadoPresupuesto } from '../../src/utils/presupuesto';
 
 describe('utilidades de presupuesto', () => {
   it('aplica los umbrales visuales de consumo del presupuesto', () => {
