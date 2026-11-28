@@ -148,7 +148,7 @@ it('pagina los resultados y vuelve a la primera página al aplicar o limpiar fil
     expect(screen.getByRole('button', { name: 'Página anterior' })).toHaveProperty('disabled', true);
     expect(within(screen.getByRole('table')).getAllByRole('row')).toHaveLength(11);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Página 3', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Página 3'}));
     expect(screen.getByText('Mostrando 21–24 de 24')).toBeDefined();
     expect(screen.getByRole('button', { name: 'Página siguiente' })).toHaveProperty('disabled', true);
     expect(screen.queryByRole('cell', { name: 'Movimiento 1' })).toBeNull();
