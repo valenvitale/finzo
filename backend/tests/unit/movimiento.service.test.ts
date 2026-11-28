@@ -69,6 +69,9 @@ describe('MovimientoService', () => {
     const mockMedioRepo: IMedioPagoRepository = {
       listarPorPerfil: vi.fn(),
       obtenerPorId: vi.fn().mockResolvedValue(mockMedioPago),
+      crear: vi.fn(),
+      actualizar: vi.fn(),
+      eliminar: vi.fn(),
       ...mockMedioRepoOverrides,
     };
 
