@@ -8,7 +8,15 @@ import { ErrorNoAutorizado } from '../../src/errors/errores.js';
 function preparar() {
   const listarPorPerfil = vi.fn().mockResolvedValue([]);
   const obtenerPorId = vi.fn().mockResolvedValue(null);
-  const controller = new MedioPagoController(new MedioPagoService({ listarPorPerfil, obtenerPorId }));
+    const controller = new MedioPagoController(
+    new MedioPagoService({
+      listarPorPerfil,
+      obtenerPorId,
+      crear: vi.fn(),
+      actualizar: vi.fn(),
+      eliminar: vi.fn(),
+    })
+  );
   const json = vi.fn();
   const status = vi.fn().mockReturnValue({ json });
   const res = { status } as unknown as Response;

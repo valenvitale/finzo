@@ -9,6 +9,7 @@ describe('CategoriaService', () => {
     nombre: 'Gimnasio',
     color: '#00FF00',
     tipo: 'GASTO' as const,
+    icono: 'tag',
     perfilId: 'perfil-1',
     createdAt: new Date('2026-10-12T12:00:00Z'),
     updatedAt: new Date('2026-10-12T12:00:00Z'),
@@ -19,6 +20,7 @@ describe('CategoriaService', () => {
     nombre: 'Comida',
     color: '#FFAA00',
     tipo: 'GASTO' as const,
+    icono: 'utensils',
     perfilId: null,
     createdAt: new Date('2026-10-12T12:00:00Z'),
     updatedAt: new Date('2026-10-12T12:00:00Z'),
@@ -43,16 +45,21 @@ describe('CategoriaService', () => {
   describe('crear', () => {
     it('crea una categoría cuando el límite no fue alcanzado', async () => {
       const { service, mockRepo } = preparar();
+
       const resultado = await service.crear('perfil-1', {
         nombre: 'Gimnasio',
         color: '#00FF00',
         tipo: 'GASTO',
+        icono: 'tag',
       });
+
       expect(mockRepo.crear).toHaveBeenCalledWith('perfil-1', {
         nombre: 'Gimnasio',
         color: '#00FF00',
         tipo: 'GASTO',
+        icono: 'tag',
       });
+
       expect(resultado).toEqual(mockCategoriaPropia);
     });
 
@@ -60,13 +67,12 @@ describe('CategoriaService', () => {
       const { service } = preparar({
         contarPersonalizadasPorPerfil: vi.fn().mockResolvedValue(8),
       });
-      await expect(
-        service.crear('perfil-1', {
-          nombre: 'Extra',
-          color: '#111111',
-          tipo: 'GASTO',
-        })
-      ).rejects.toThrow(ErrorDeConflicto);
+      await expect(service.crear('perfil-1', {
+        nombre: 'Extra',
+        color: '#111111',
+        tipo: 'GASTO',
+        icono: 'tag',
+      })).rejects.toThrow(ErrorDeConflicto);
     });
   });
 
